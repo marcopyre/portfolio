@@ -6,81 +6,75 @@ const client = new InferenceClient(process.env.HF_TOKEN);
 // Knowledge Base du portfolio - Marco Pyré
 const KNOWLEDGE_BASE = `
 INFORMATIONS PORTFOLIO - MARCO PYRÉ
-Développeur Fullstack - Ingénierie Cloud
+Développeur Fullstack & Ingénierie Cloud — Orienté Architecture
 
 ## Informations de Contact
 - **Email**: ytmarcopyre@gmail.com
-- **Statut**: Recherche d'une opportunité post études (alternance)
+- **GitHub**: https://github.com/marcopyre
+- **Statut**: Recherche d'un CDI post-études (2025)
 
 ## Expérience Professionnelle
 
 ### Deloitte, Grenoble — Alternant Développeur Cloud
 **Septembre 2022 - AUJOURD'HUI**
-- **Projet Pernod Ricard - Data Portal**: Conception et développement d'une solution de gestion de données avec développement front-end et back-end, intégration avec services cloud
-- **Projet World Athletics - Stats Zone Pro**: Développement d'interfaces utilisateur modernes et implémentation d'architectures cloud natives
+- **Projets clés** :
+  - *Pernod Ricard - Data Portal* : Conception et développement d'une solution de gestion de données, intégration cloud, architecture serverless, développement fullstack
+  - *World Athletics - Stats Zone Pro* : Développement d'interfaces modernes, intégration de microservices, cloud natif
+- **Défis techniques rencontrés** :
+  - Résolution de bugs complexes au niveau du compilateur JavaScript via reverse engineering
+  - Collaboration sur des choix d’architecture cloud avec fort impact technique
 
 ### Hurence, Grenoble — Stagiaire
 **Mai 2021 - Juin 2021**
-- Création d'une interface utilisateur de gestion de données massives (Big Data)
-- Intégration avec des frameworks de big data
+- Développement d'une interface de gestion de données massives avec frameworks Big Data
 
 ### Oracle, Grenoble — Stagiaire
 **Décembre 2015**
-- Développement d'un logiciel d'encryptage
+- Développement d’un logiciel d’encryptage
 
 ## Formation
-- **Master Expert en informatique et systèmes d'information** - Epsi, Grenoble (Septembre 2023 - Septembre 2025)
-- **Licence concepteur développeur d'applications** - Epsi, Grenoble (Septembre 2020 - Septembre 2023)
+- **Master Expert en informatique et systèmes d'information** - Epsi, Grenoble (2023 - 2025)
+- **Licence Concepteur Développeur d'Applications** - Epsi, Grenoble (2020 - 2023)
 
 ## Compétences Techniques
 
 ### Cloud & Infrastructure
-- **Plateformes Cloud**: AWS, Azure, GCP
-- **Systèmes**: Linux, Windows
-- **DevOps**: CI/CD, Docker, Kubernetes
-- **FinOps**: Optimisation des coûts cloud
+- **Expertise** : Architecture cloud native, Serverless, FinOps, déploiement automatisé
+- **Plateformes** : AWS, Azure, GCP
+- **DevOps** : Docker, Kubernetes, CI/CD, IaC (Terraform)
+- **Systèmes** : Linux, Windows
 
 ### Développement
-- **Langages**: TypeScript, JavaScript, C++, C, Python, Java, Scala, Kotlin, Swift, C#, R, SQL, CSS, HTML
-- **Infrastructure as Code**: Terraform
-- **Frameworks**: Express, NestJs, Strapi, Angular, Next.js, SwiftUI, Jest
-- **Outils**: Node.js, Git, CI/CD, VSCode, XCode, PlatformIO, Knime
+- **Langages** : TypeScript, JavaScript, C++, C, Python, Java, Scala, Kotlin, Swift, C#, R, SQL, CSS, HTML
+- **Frameworks** : NestJS, Express, Strapi, AngularJS, Next.js, SwiftUI
+- **Outils** : Node.js, Git, VSCode, XCode, PlatformIO, Knime, Jest
 
 ### Bases de Données
-- **Relationnelles**: PostgreSQL, MySQL, SQLite
-- **NoSQL**: MongoDB
+- **SQL** : PostgreSQL, MySQL, SQLite
+- **NoSQL** : MongoDB
 
-### Spécialisations
-- **Architecture**: Conception d'Architecture, Conception de base de données
-- **Firmware**: Conception de Firmware
-- **Data**: Machine Learning, Data Science, Data Mining, Data Visualisation, Big Data
-- **Gestion de projet**: Méthodes agiles, rédaction de cahier des charges, élaboration de stratégies SI, gouvernance
-
-## Certifications
-- **Microsoft Certified: Azure Developer Associate** (Certification niveau 2)
-- **Numéro de certification**: 7AD53B-G21DD4
-
-## Langues
-- **Français**: Langue maternelle
-- **Anglais**: Fluent (C2)
+### Domaines de Spécialisation
+- **Architecture** : Cloud, base de données, microservices
+- **Firmware / Hardware** : Développement de PCB, conception de firmware
+- **Data** : Machine Learning, Data Mining, Big Data, visualisation
+- **Autres** : Méthodologies agiles, gestion de projet, gouvernance SI
 
 ## Projets Notables
-- **Data Portal Pernod Ricard**: Solution complète de gestion de données avec architecture cloud native
-- **Stats Zone Pro World Athletics**: Interface utilisateur moderne pour les statistiques sportives
-- **Interface Big Data**: Gestion de données massives avec intégration de frameworks spécialisés
-- **Logiciel d'encryptage**: Développement de solutions de sécurité
+- **App iOS avec Siri IA intégrée** : Application mobile intelligente avec commandes vocales avancées
+- **PCB custom** : Développement d'une carte électronique avec firmware embarqué
+- **Projets open-source** : Contributions sur GitHub dans divers domaines (firmware, cloud, outils dev)
 
-## Expertise Technique
-Marco Pyré est un développeur fullstack spécialisé dans l'ingénierie cloud avec une forte expertise en :
-- Développement d'applications web modernes (front-end et back-end)
-- Architecture cloud native sur AWS, Azure et GCP
-- Gestion et traitement de données massives
-- Intégration de services cloud
-- Méthodologies DevOps et FinOps
-- Développement multi-plateforme (web, mobile, desktop)
+## Certifications
+- **Microsoft Certified: Azure Developer Associate** (Niveau 2 - Certification n° 7AD53B-G21DD4)
+
+## Langues
+- **Français** : Langue maternelle
+- **Anglais** : Courant (C2)
 
 ## Profil Professionnel
-Actuellement en Master Expert en informatique et systèmes d'information, Marco combine une solide expérience pratique chez Deloitte avec des compétences techniques polyvalentes. Il recherche une opportunité post-études en alternance pour continuer à développer son expertise en ingénierie cloud et développement fullstack.
+Marco Pyré est un développeur fullstack orienté technique, avec une forte appétence pour l’architecture cloud et les systèmes complexes. Il se distingue par sa polyvalence — cloud, back-end, front-end, firmware — et par sa curiosité constante pour les technologies de pointe. Fort de son alternance chez Deloitte, il a su relever des défis complexes allant du serverless à l’analyse bas-niveau de code, en passant par l’optimisation de pipelines cloud. En parallèle, il mène des projets personnels et open-source ambitieux. Sa discipline rigoureuse, nourrie par une pratique quotidienne d’haltérophilie depuis 2022, reflète son engagement dans la durée et sa constance.
+
+Il est aujourd’hui à la recherche d’un CDI pour poursuivre son évolution vers des postes à forte composante technique ou d’architecture.
 `;
 
 export async function POST(request: NextRequest) {
