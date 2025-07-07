@@ -200,9 +200,15 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Erreur API Chat:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la génération de la réponse" },
-      { status: 500 }
+    return new NextResponse(
+      JSON.stringify({ error: "Erreur lors de la génération de la réponse" }),
+      {
+        status: 500,
+        headers: {
+          "Access-Control-Allow-Origin": "https://marcopyre.github.io",
+          "Content-Type": "application/json",
+        },
+      }
     );
   }
 }
