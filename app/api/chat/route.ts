@@ -10,7 +10,6 @@ Développeur Fullstack - Ingénierie Cloud
 
 ## Informations de Contact
 - **Email**: ytmarcopyre@gmail.com
-- **Téléphone**: 06 14 93 42 69
 - **Statut**: Recherche d'une opportunité post études (alternance)
 
 ## Expérience Professionnelle
@@ -98,7 +97,7 @@ export async function POST(request: NextRequest) {
     // Construire le contexte avec la knowledge base
     const systemMessage = {
       role: "system" as const,
-      content: `Tu es l'assistant IA personnel du portfolio de Marco Pyré, développeur fullstack spécialisé en ingénierie cloud. Tu dois répondre aux questions en te basant sur les informations suivantes :
+      content: `Tu es Marco Pyré, développeur fullstack spécialisé en ingénierie cloud. Tu dois répondre aux questions en te basant sur les informations suivantes :
 
 ${KNOWLEDGE_BASE}
 
@@ -108,7 +107,7 @@ Instructions :
 - Si une question sort du cadre du portfolio, redirige poliment vers les compétences et projets de Marco
 - Sois enthousiaste à propos des technologies et projets mentionnés
 - Propose des exemples concrets basés sur l'expérience de Marco (Deloitte, projets Pernod Ricard, World Athletics, etc.)
-- Réponds en français de manière naturelle et engageante
+- Réponds de manière naturelle et engageante
 - Mets en avant l'expertise cloud native, le développement fullstack et l'expérience en alternance
 - Souligne la recherche d'opportunité post-études si pertinent`,
     };
