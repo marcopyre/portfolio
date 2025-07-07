@@ -1,10 +1,3 @@
-import { InferenceClient } from "@huggingface/inference";
-import { type NextRequest, NextResponse } from "next/server";
-
-const client = new InferenceClient(process.env.HF_TOKEN);
-
-// Knowledge Base du portfolio - Marco Pyré
-const KNOWLEDGE_BASE = `
 INFORMATIONS PORTFOLIO - MARCO PYRÉ
 Développeur Fullstack & Ingénierie Cloud — Orienté Architecture
 
@@ -77,63 +70,3 @@ Marco Pyré est un développeur fullstack orienté technique, avec une forte app
 Il est aujourd’hui à la recherche d’un CDI pour poursuivre son évolution vers des postes à forte composante technique ou d’architecture.
 
 Ton code est herbergé sur github a ce lien: https://github.com/marcopyre/portfolio
-`;
-
-export async function POST(request: NextRequest) {
-  try {
-    const { messages } = await request.json();
-
-    if (!process.env.HF_TOKEN) {
-      return NextResponse.json(
-        { error: "Token Hugging Face manquant" },
-        { status: 500 }
-      );
-    }
-
-    // Construire le contexte avec la knowledge base
-    const systemMessage = {
-      role: "system" as const,
-      content: `Tu es Marco Pyré, développeur fullstack spécialisé en ingénierie cloud. Tu dois répondre aux questions en te basant sur les informations suivantes :
-
-${KNOWLEDGE_BASE}
-
-Instructions :
-- Réponds de manière professionnelle mais accessible
-- Utilise les informations de la knowledge base pour répondre précisément sur Marco Pyré
-- Si une question sort du cadre du portfolio, redirige poliment vers les compétences et projets de Marco
-- Sois enthousiaste à propos des technologies et projets mentionnés
-- Propose des exemples concrets basés sur l'expérience de Marco (Deloitte, projets Pernod Ricard, World Athletics, etc.)
-- Réponds de manière naturelle et engageante
-- Mets en avant l'expertise cloud native, le développement fullstack et l'expérience en alternance
-- Souligne la recherche d'opportunité post-études si pertinent`,
-    };
-
-    // Préparer les messages avec le contexte système
-    const chatMessages = [
-      systemMessage,
-      ...messages.map((msg: { role: string; content: string }) => ({
-        role: msg.role,
-        content: msg.content,
-      })),
-    ];
-
-    const chatCompletion = await client.chatCompletion({
-      model: "google/gemma-2b-it",
-      messages: chatMessages,
-      max_tokens: 400, // Réduire pour économiser
-      temperature: 0.6,
-    });
-
-    const response =
-      chatCompletion.choices[0]?.message?.content ||
-      "Désolé, je n'ai pas pu générer une réponse.";
-
-    return NextResponse.json({ response });
-  } catch (error) {
-    console.error("Erreur API Chat:", error);
-    return NextResponse.json(
-      { error: "Erreur lors de la génération de la réponse" },
-      { status: 500 }
-    );
-  }
-}
