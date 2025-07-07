@@ -31,9 +31,8 @@ async function fetchKnowledgeBaseFromDataset(): Promise<string> {
 
     const data = await response.json();
 
-    // Assembler le contenu de la knowledge base
     const knowledgeBase = data.rows
-      .map((row: any) => row.row.content)
+      .map((row: { row: { content: unknown } }) => row.row.content)
       .join("\n\n");
 
     return knowledgeBase;
