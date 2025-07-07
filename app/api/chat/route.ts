@@ -115,7 +115,7 @@ Instructions :
     // Préparer les messages avec le contexte système
     const chatMessages = [
       systemMessage,
-      ...messages.map((msg: any) => ({
+      ...messages.map((msg: { role: string; content: string }) => ({
         role: msg.role,
         content: msg.content,
       })),

@@ -70,7 +70,7 @@ export default function Portfolio() {
 
   const randomTypingPhrase = useMemo(() => {
     return typingPhrases[Math.floor(Math.random() * typingPhrases.length)];
-  }, [isTyping]);
+  }, [isTyping, typingPhrases]);
 
   useEffect(() => {
     setIsClient(true);
