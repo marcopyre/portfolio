@@ -33,6 +33,98 @@ interface Particle {
   duration: number;
 }
 
+const MarkdownRenderer = ({ content }: { content: string }) => {
+  const formatMarkdown = (text: string) => {
+    let formatted = text
+      .replace(
+        /^### (.*$)/gm,
+        '<h3 class="text-lg font-semibold text-white mb-2 mt-4">$1</h3>'
+      )
+      .replace(
+        /^## (.*$)/gm,
+        '<h2 class="text-xl font-semibold text-white mb-3 mt-4">$1</h2>'
+      )
+      .replace(
+        /^# (.*$)/gm,
+        '<h1 class="text-2xl font-bold text-white mb-4 mt-4">$1</h1>'
+      );
+
+    // gras
+    formatted = formatted.replace(
+      /\*\*(.*?)\*\*/g,
+      '<strong class="font-semibold text-white">$1</strong>'
+    );
+
+    // italique
+    formatted = formatted.replace(
+      /\*(.*?)\*/g,
+      '<em class="italic text-slate-200">$1</em>'
+    );
+
+    // liens
+    formatted = formatted.replace(
+      /\[([^\]]+)\]\(([^)]+)\)/g,
+      '<a href="$2" class="text-purple-400 hover:text-purple-300 underline" target="_blank" rel="noopener noreferrer">$1</a>'
+    );
+
+    // listes à puces
+    formatted = formatted.replace(
+      /^\s*[\-\*\+]\s+(.*$)/gm,
+      '<li class="ml-4 mb-1 text-slate-200">• $1</li>'
+    );
+    formatted = formatted.replace(/(<li.*<\/li>)/s, '<ul class="my-2">$1</ul>');
+
+    // listes numérotées
+    formatted = formatted.replace(
+      /^\s*\d+\.\s+(.*$)/gm,
+      '<li class="ml-4 mb-1 text-slate-200">$1</li>'
+    );
+    formatted = formatted.replace(
+      /(<li.*<\/li>)/s,
+      '<ol class="my-2 list-decimal list-inside">$1</ol>'
+    );
+
+    // citations
+    formatted = formatted.replace(
+      /^>\s+(.*$)/gm,
+      '<blockquote class="border-l-4 border-purple-500 pl-4 ml-4 my-2 text-slate-300 italic">$1</blockquote>'
+    );
+
+    // splitter horizontaux
+    formatted = formatted.replace(
+      /^---$/gm,
+      '<hr class="border-white/20 my-4" />'
+    );
+
+    // sauts de ligne
+    formatted = formatted.replace(
+      /\n\n/g,
+      '</p><p class="mb-2 text-slate-200">'
+    );
+    formatted = formatted.replace(/\n/g, "<br />");
+
+    if (
+      !formatted.includes("<h1>") &&
+      !formatted.includes("<h2>") &&
+      !formatted.includes("<h3>") &&
+      !formatted.includes("<ul>") &&
+      !formatted.includes("<ol>") &&
+      !formatted.includes("<pre>")
+    ) {
+      formatted = `<p class="mb-2 text-slate-200">${formatted}</p>`;
+    }
+
+    return formatted;
+  };
+
+  return (
+    <div
+      className="prose prose-invert max-w-none"
+      dangerouslySetInnerHTML={{ __html: formatMarkdown(content) }}
+    />
+  );
+};
+
 export default function Portfolio() {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -54,9 +146,9 @@ export default function Portfolio() {
   const typingPhrases = [
     "Je connecte mes neurones virtuels...",
     "Je remue les octets de mes pensées...",
-    "Je frotte ma lampe d’IA magique...",
+    "Je frotte ma lampe d'IA magique...",
     "Je brasse mes idées comme un shaker d'infos...",
-    "J’analyse votre question...",
+    "J'analyse votre question...",
     "Je réfléchis...",
     "Je traite votre demande...",
     "Je fouille mes connaissances...",
@@ -111,21 +203,18 @@ export default function Portfolio() {
     setIsTyping(true);
 
     try {
-      const response = await fetch(
-        "https://portfolio-one-sable-65.vercel.app/api/chat",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            messages: [...messages, userMessage].map((msg) => ({
-              role: msg.role,
-              content: msg.content,
-            })),
-          }),
-        }
-      );
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: [...messages, userMessage].map((msg) => ({
+            role: msg.role,
+            content: msg.content,
+          })),
+        }),
+      });
 
       if (!response.ok) throw new Error("Erreur réseau");
       const data = await response.json();
@@ -183,13 +272,11 @@ export default function Portfolio() {
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden flex flex-col">
-      {/* Animated Background Matrix */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 via-blue-900/30 to-cyan-900/30"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-500/10 via-transparent to-transparent animate-pulse"></div>
       </div>
 
-      {/* Floating Particles */}
       {isClient && (
         <div className="absolute inset-0">
           {particles.map((particle) => (
@@ -207,10 +294,8 @@ export default function Portfolio() {
         </div>
       )}
 
-      {/* Animated Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_80%)]"></div>
 
-      {/* Header avec animations */}
       <header className="relative z-10 p-4 md:p-6 border-b border-white/10 backdrop-blur-xl bg-black/30 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between">
@@ -235,9 +320,7 @@ export default function Portfolio() {
         </div>
       </header>
 
-      {/* Main Content - Flex grow to fill available space */}
       <div className="flex-1 flex flex-col relative z-10">
-        {/* Quick Questions avec animations */}
         {messages.length === 1 && (
           <div className="p-4 md:p-6 animate-fade-in flex-shrink-0">
             <div className="max-w-6xl mx-auto">
@@ -270,10 +353,8 @@ export default function Portfolio() {
           </div>
         )}
 
-        {/* Chat Container - Flex grow to fill remaining space */}
         <div className="flex-1 flex flex-col p-4 md:p-6">
           <div className="max-w-6xl mx-auto h-full flex flex-col">
-            {/* Messages Area - Flex grow */}
             <div className="flex-1 mb-6 rounded-2xl border border-white/20 bg-black/40 backdrop-blur-xl shadow-2xl overflow-hidden">
               <ScrollArea className="h-full">
                 <div ref={scrollAreaRef} className="p-4 md:p-6 space-y-6">
@@ -317,9 +398,15 @@ export default function Portfolio() {
                           }`}
                         >
                           <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
-                          <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap relative z-10">
-                            {message.content}
-                          </p>
+                          <div className="relative z-10">
+                            {message.role === "user" ? (
+                              <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap">
+                                {message.content}
+                              </p>
+                            ) : (
+                              <MarkdownRenderer content={message.content} />
+                            )}
+                          </div>
                         </div>
                         {isClient && (
                           <p className="text-xs text-slate-400 mt-2 px-2 flex items-center">
@@ -359,7 +446,6 @@ export default function Portfolio() {
               </ScrollArea>
             </div>
 
-            {/* Input Area - Flex shrink */}
             <div className="relative animate-fade-in flex-shrink-0">
               <div className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-4">
                 <div className="flex-1 relative">
@@ -395,7 +481,6 @@ export default function Portfolio() {
         </div>
       </div>
 
-      {/* Footer - Flex shrink, stays at bottom */}
       <footer className="relative z-10 p-4 border-t border-white/10 backdrop-blur-xl bg-black/30 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-center space-y-2 md:space-y-0">
