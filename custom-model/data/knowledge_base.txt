@@ -1,0 +1,76 @@
+INFORMATIONS PORTFOLIO - MARCO PYRÉ
+Développeur Fullstack & Ingénierie Cloud — Orienté Architecture
+
+## Informations de Contact
+- **Email**: ytmarcopyre@gmail.com
+- **GitHub**: https://github.com/marcopyre
+- **Statut**: Recherche d'un CDI post-études (2025)
+
+## Expérience Professionnelle
+
+### Deloitte, Grenoble — Alternant Développeur Cloud
+**Septembre 2022 - AUJOURD'HUI**
+- **Projets clés** :
+  - *Pernod Ricard - Data Portal* : Conception et développement d'une solution de gestion de données, intégration cloud, architecture serverless, développement fullstack
+  - *World Athletics - Stats Zone Pro* : Développement d'interfaces modernes, intégration de microservices, cloud natif
+- **Défis techniques rencontrés** :
+  - Résolution de bugs complexes au niveau du compilateur JavaScript via reverse engineering
+  - Collaboration sur des choix d’architecture cloud avec fort impact technique
+
+### Hurence, Grenoble — Stagiaire
+**Mai 2021 - Juin 2021**
+- Développement d'une interface de gestion de données massives avec frameworks Big Data
+
+### Oracle, Grenoble — Stagiaire
+**Décembre 2015**
+- Développement d’un logiciel d’encryptage
+
+## Formation
+- **Master Expert en informatique et systèmes d'information** - Epsi, Grenoble (2023 - 2025)
+- **Licence Concepteur Développeur d'Applications** - Epsi, Grenoble (2020 - 2023)
+
+## Compétences Techniques
+
+### Cloud & Infrastructure
+- **Expertise** : Architecture cloud native, Serverless, FinOps, déploiement automatisé
+- **Plateformes** : AWS, Azure, GCP
+- **DevOps** : Docker, Kubernetes, CI/CD, IaC (Terraform)
+- **Systèmes** : Linux, Windows
+
+### Développement
+- **Langages** : TypeScript, JavaScript, C++, C, Python, Java, Scala, Kotlin, Swift, C#, R, SQL, CSS, HTML
+- **Frameworks** : NestJS, Express, Strapi, AngularJS, Next.js, SwiftUI
+- **Outils** : Node.js, Git, VSCode, XCode, PlatformIO, Knime, Jest
+
+### Bases de Données
+- **SQL** : PostgreSQL, MySQL, SQLite
+- **NoSQL** : MongoDB
+
+### Domaines de Spécialisation
+- **Architecture** : Cloud, base de données, microservices
+- **Firmware / Hardware** : Développement de PCB, conception de firmware
+- **Data** : Machine Learning, Data Mining, Big Data, visualisation
+- **Autres** : Méthodologies agiles, gestion de projet, gouvernance SI
+
+## Projets Notables
+- **Airf** : Développement d'une carte électronique avec firmware embarqué, utilisé dans un cadre automobile, associé a une application mobile ios et android avec une intégration a Siri
+- **Projets open-source** : Contributions sur GitHub dans divers domaines (firmware, hardware)
+
+## Certifications
+- **Microsoft Certified: Azure Developer Associate** (Niveau 2 - Certification n° 7AD53B-G21DD4)
+
+## Langues
+- **Français** : Langue maternelle
+- **Anglais** : Courant (C2)
+
+## Profil Professionnel
+Marco Pyré est un développeur fullstack orienté technique, avec une forte appétence pour l’architecture cloud et les systèmes complexes. Il se distingue par sa polyvalence — cloud, back-end, front-end, firmware — et par sa curiosité constante pour les technologies de pointe. Fort de son alternance chez Deloitte, il a su relever des défis complexes allant du serverless à l’analyse bas-niveau de code, en passant par l’optimisation de pipelines cloud. En parallèle, il mène des projets personnels et open-source ambitieux. Sa discipline rigoureuse, nourrie par une pratique quotidienne d’haltérophilie depuis 2022, reflète son engagement dans la durée et sa constance.
+
+## Passions
+- **Hardware** : Création physique de matériel informatique customisé, compétences acquise en autodidact
+- **Haltérophilie et fitness** : pratique rigoureuse et discipliné depuis le 07/2022
+- **Automobile** : passioné de mécanique en tout genre, surtout automobile, j'aime également le sport automobile
+
+Il est aujourd’hui à la recherche d’un CDI pour poursuivre son évolution vers des postes à forte composante technique ou d’architecture.
+
+Ton code est herbergé sur github a ce lien: https://github.com/marcopyre/portfolio
