@@ -11,8 +11,10 @@ Développeur Fullstack & Ingénierie Cloud — Orienté Architecture
 ### Deloitte, Grenoble — Alternant Développeur Cloud
 **Septembre 2022 - AUJOURD'HUI**
 - **Projets clés** :
-  - *Pernod Ricard - Data Portal* : Conception et développement d'une solution de gestion de données, intégration cloud, architecture serverless, développement fullstack
-  - *World Athletics - Stats Zone Pro* : Développement d'interfaces modernes, intégration de microservices, cloud natif
+  - *Pernod Ricard - Data Portal* : Conception et développement d'une solution de gestion de données, intégration cloud, architecture serverless, développement fullstack, stack: Angular, NestJS, PostgreSQL, projet sur lequel j'ai été développeur fullstack, j'ai également effectué la formation des nouveaux développeurs lors de la passation
+  - *World Athletics - Stats Zone Pro* : Développement d'interfaces modernes, intégration de microservices, cloud natif, stack: NextJS, Strapi, projet sur lequel j'ai été développeur fullstack, j'ai participer a la conception de l'architecture, au devops et a la publication dans le cloud AWS
+  - *Deloitte - Neptune* : Développement d'un SaaS modulaire, adaptable aux différents clients et déployable rapidement, utilisé comme projet vitrine de l'entreprise, stack: Angular, NestJS, PostgreSQL, projet sur le quel j'ai été développeur fullstack et cloud, j'ai mis participer a tout le développement de l'application, la mise en place de l'assistant IA, j'ai également encadrer le déploiement de la partie Azure (cloud) suite a ma certification AZ204
+  - *Odyssee* : Refection totale d'un SaaS, utilisé dans un contexte scolaire, stack: Angular, NestJS, PostgreSQL, projet sur lequel j'ai été développeur fullstack
 - **Défis techniques rencontrés** :
   - Résolution de bugs complexes au niveau du compilateur JavaScript via reverse engineering
   - Collaboration sur des choix d’architecture cloud avec fort impact technique
@@ -52,9 +54,10 @@ Développeur Fullstack & Ingénierie Cloud — Orienté Architecture
 - **Data** : Machine Learning, Data Mining, Big Data, visualisation
 - **Autres** : Méthodologies agiles, gestion de projet, gouvernance SI
 
-## Projets Notables
-- **Airf** : Développement d'une carte électronique avec firmware embarqué, utilisé dans un cadre automobile, associé a une application mobile ios et android avec une intégration a Siri
-- **Projets open-source** : Contributions sur GitHub dans divers domaines (firmware, hardware)
+## Projets Personnels
+- **App iOS avec Siri IA intégrée** : Application mobile intelligente avec commandes vocales avancées, stack: Swift, SwiftUI
+- **PCB custom** : Développement d'une carte électronique avec firmware embarqué
+- **Projets open-source** : Contributions sur GitHub dans divers domaines (firmware, cloud, outils dev)
 
 ## Certifications
 - **Microsoft Certified: Azure Developer Associate** (Niveau 2 - Certification n° 7AD53B-G21DD4)
@@ -65,11 +68,6 @@ Développeur Fullstack & Ingénierie Cloud — Orienté Architecture
 
 ## Profil Professionnel
 Marco Pyré est un développeur fullstack orienté technique, avec une forte appétence pour l’architecture cloud et les systèmes complexes. Il se distingue par sa polyvalence — cloud, back-end, front-end, firmware — et par sa curiosité constante pour les technologies de pointe. Fort de son alternance chez Deloitte, il a su relever des défis complexes allant du serverless à l’analyse bas-niveau de code, en passant par l’optimisation de pipelines cloud. En parallèle, il mène des projets personnels et open-source ambitieux. Sa discipline rigoureuse, nourrie par une pratique quotidienne d’haltérophilie depuis 2022, reflète son engagement dans la durée et sa constance.
-
-## Passions
-- **Hardware** : Création physique de matériel informatique customisé, compétences acquise en autodidact
-- **Haltérophilie et fitness** : pratique rigoureuse et discipliné depuis le 07/2022
-- **Automobile** : passioné de mécanique en tout genre, surtout automobile, j'aime également le sport automobile
 
 Il est aujourd’hui à la recherche d’un CDI pour poursuivre son évolution vers des postes à forte composante technique ou d’architecture.
 

@@ -42,6 +42,15 @@ const AVAILABLE_FUNCTIONS = {
   },
 };
 
+function getCorsHeaders() {
+  return {
+    "Access-Control-Allow-Origin": "https://marcopyre.github.io",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Max-Age": "86400",
+  };
+}
+
 async function fetchKnowledgeBaseFromDataset(): Promise<string> {
   try {
     const response = await fetch(
@@ -161,6 +170,7 @@ RÈGLES ABSOLUES:
 - Souligne la recherche d'opportunité post-études si pertinent
 - Formatte tes réponses au format Markdown
 - Utilise des emojis quand cela est pertinent
+- Si tu n'as pas les informations necessaire a la reponse, invite l'utilisateur a mon contacter a: ytmarcopyre@gmail.com
 
 INSTRUCTIONS POUR LES FONCTIONS:
 - Si l'utilisateur demande le CV, le curriculum vitae, ou veut télécharger le résumé, utilise la fonction get_resume
@@ -277,7 +287,10 @@ export async function POST(request: NextRequest) {
     if (!process.env.HF_TOKEN) {
       return NextResponse.json(
         { error: "Configuration manquante" },
-        { status: 500 }
+        {
+          status: 500,
+          headers: getCorsHeaders(),
+        }
       );
     }
 
@@ -288,7 +301,10 @@ export async function POST(request: NextRequest) {
     ) {
       return NextResponse.json(
         { error: "Format de messages invalide" },
-        { status: 400 }
+        {
+          status: 400,
+          headers: getCorsHeaders(),
+        }
       );
     }
 
@@ -365,24 +381,26 @@ export async function POST(request: NextRequest) {
       .replace(/\[FUNCTION_CALL\].*?\[\/FUNCTION_CALL\]/gs, "")
       .trim();
 
-    return NextResponse.json({
-      response: cleanResponse,
-      metadata: {
-        useRAG,
-        knowledgeBaseSource: useRAG ? "RAG" : "Full KB",
-        timestamp: new Date().toISOString(),
+    return NextResponse.json(
+      {
+        response: cleanResponse,
+        metadata: {
+          useRAG,
+          knowledgeBaseSource: useRAG ? "RAG" : "Full KB",
+          timestamp: new Date().toISOString(),
+        },
       },
-    });
+      {
+        headers: getCorsHeaders(),
+      }
+    );
   } catch (error) {
     console.error("Erreur API Chat:", error);
-    return new NextResponse(
-      JSON.stringify({ error: "Erreur lors de la génération de la réponse" }),
+    return NextResponse.json(
+      { error: "Erreur lors de la génération de la réponse" },
       {
         status: 500,
-        headers: {
-          "Access-Control-Allow-Origin": "https://marcopyre.github.io",
-          "Content-Type": "application/json",
-        },
+        headers: getCorsHeaders(),
       }
     );
   }
