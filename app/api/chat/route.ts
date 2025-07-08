@@ -29,7 +29,8 @@ function getCorsHeaders() {
   return {
     "Access-Control-Allow-Origin": "https://marcopyre.github.io",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Headers":
+      "Content-Type, Authorization, X-Requested-With",
     "Access-Control-Max-Age": "86400",
   };
 }
