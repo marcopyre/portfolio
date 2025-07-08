@@ -274,6 +274,7 @@ export default function Portfolio() {
     "Quelles sont tes compétences techniques ?",
     "Peux-tu me parler de tes projets ?",
     "Quelle est ton expérience professionnelle ?",
+    "Quelles technologies maîtrises-tu ?",
     "Puis-je avoir ton CV ?",
     "Comment puis-je te contacter ?",
   ];
