@@ -417,7 +417,8 @@ export default function Portfolio() {
                     onKeyPress={(e) => e.key === "Enter" && handleSubmit(e)}
                     placeholder="Posez votre question sur le portfolio..."
                     disabled={isLoading}
-                    className="relative bg-black/50 backdrop-blur-xl border-white/30 text-white placeholder:text-slate-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/50 rounded-xl h-12 sm:h-12 md:h-14 px-3 sm:px-4 md:px-6 text-sm sm:text-base transition-all duration-300 shadow-lg w-full"
+                    className="relative bg-black/50 backdrop-blur-xl border-white/30 text-white placeholder:text-slate-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/50 rounded-xl h-12 sm:h-12 md:h-14 px-3 sm:px-4 md:px-6 text-base transition-all duration-300 shadow-lg w-full"
+                    style={{ fontSize: "16px" }}
                   />
                 </div>
                 <Button
