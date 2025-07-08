@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+// Interfaces
 interface Message {
   id: string;
   content: string;
@@ -33,6 +34,7 @@ interface Particle {
   duration: number;
 }
 
+// Markdown renderer
 const MarkdownRenderer = ({ content }: { content: string }) => {
   const formatMarkdown = (text: string) => {
     let formatted = text
@@ -47,69 +49,41 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
       .replace(
         /^# (.*$)/gm,
         '<h1 class="text-2xl font-bold text-white mb-4 mt-4">$1</h1>'
-      );
-
-    // gras
-    formatted = formatted.replace(
-      /\*\*(.*?)\*\*/g,
-      '<strong class="font-semibold text-white">$1</strong>'
-    );
-
-    // italique
-    formatted = formatted.replace(
-      /\*(.*?)\*/g,
-      '<em class="italic text-slate-200">$1</em>'
-    );
-
-    // liens
-    formatted = formatted.replace(
-      /\[([^\]]+)\]\(([^)]+)\)/g,
-      '<a href="$2" class="text-purple-400 hover:text-purple-300 underline" target="_blank" rel="noopener noreferrer">$1</a>'
-    );
-
-    // listes à puces
-    formatted = formatted.replace(
-      /^\s*[\-\*\+]\s+(.*$)/gm,
-      '<li class="ml-4 mb-1 text-slate-200">• $1</li>'
-    );
-    formatted = formatted.replace(/(<li.*<\/li>)/s, '<ul class="my-2">$1</ul>');
-
-    // listes numérotées
-    formatted = formatted.replace(
-      /^\s*\d+\.\s+(.*$)/gm,
-      '<li class="ml-4 mb-1 text-slate-200">$1</li>'
-    );
-    formatted = formatted.replace(
-      /(<li.*<\/li>)/s,
-      '<ol class="my-2 list-decimal list-inside">$1</ol>'
-    );
-
-    // citations
-    formatted = formatted.replace(
-      /^>\s+(.*$)/gm,
-      '<blockquote class="border-l-4 border-purple-500 pl-4 ml-4 my-2 text-slate-300 italic">$1</blockquote>'
-    );
-
-    // splitter horizontaux
-    formatted = formatted.replace(
-      /^---$/gm,
-      '<hr class="border-white/20 my-4" />'
-    );
-
-    // sauts de ligne
-    formatted = formatted.replace(
-      /\n\n/g,
-      '</p><p class="mb-2 text-slate-200">'
-    );
-    formatted = formatted.replace(/\n/g, "<br />");
+      )
+      .replace(
+        /\*\*(.*?)\*\*/g,
+        '<strong class="font-semibold text-white">$1</strong>'
+      )
+      .replace(/\*(.*?)\*/g, '<em class="italic text-slate-200">$1</em>')
+      .replace(
+        /\[([^\]]+)\]\(([^)]+)\)/g,
+        '<a href="$2" class="text-purple-400 hover:text-purple-300 underline" target="_blank" rel="noopener noreferrer">$1</a>'
+      )
+      .replace(
+        /^\s*[\-\*\+]\s+(.*$)/gm,
+        '<li class="ml-4 mb-1 text-slate-200">• $1</li>'
+      )
+      .replace(/(<li.*<\/li>)/s, '<ul class="my-2">$1</ul>')
+      .replace(
+        /^\s*\d+\.\s+(.*$)/gm,
+        '<li class="ml-4 mb-1 text-slate-200">$1</li>'
+      )
+      .replace(
+        /(<li.*<\/li>)/s,
+        '<ol class="my-2 list-decimal list-inside">$1</ol>'
+      )
+      .replace(
+        /^>\s+(.*$)/gm,
+        '<blockquote class="border-l-4 border-purple-500 pl-4 ml-4 my-2 text-slate-300 italic">$1</blockquote>'
+      )
+      .replace(/^---$/gm, '<hr class="border-white/20 my-4" />')
+      .replace(/\n\n/g, '</p><p class="mb-2 text-slate-200">')
+      .replace(/\n/g, "<br />");
 
     if (
-      !formatted.includes("<h1>") &&
-      !formatted.includes("<h2>") &&
-      !formatted.includes("<h3>") &&
+      !formatted.includes("<h") &&
       !formatted.includes("<ul>") &&
-      !formatted.includes("<ol>") &&
-      !formatted.includes("<pre>")
+      !formatted.includes("<ol>")
     ) {
       formatted = `<p class="mb-2 text-slate-200">${formatted}</p>`;
     }
@@ -123,6 +97,22 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
       dangerouslySetInnerHTML={{ __html: formatMarkdown(content) }}
     />
   );
+};
+
+const get_resume = () => {
+  const googleDriveLink =
+    "https://drive.google.com/uc?export=download&id=1Wjp02VjqKPbGkk9vReIHe6JNk0mlKfpv";
+  const link = document.createElement("a");
+  link.href = googleDriveLink;
+  link.download = "CV-Marco-Pyré.pdf";
+  link.click();
+};
+
+const send_contact_email = (sujet: string, message: string) => {
+  const mailto = `mailto:ytmarcopyre@gmail.com?subject=${encodeURIComponent(
+    sujet
+  )}&body=${encodeURIComponent(message)}`;
+  window.location.href = mailto;
 };
 
 export default function Portfolio() {
@@ -162,29 +152,19 @@ export default function Portfolio() {
 
   const randomTypingPhrase = useMemo(() => {
     return typingPhrases[Math.floor(Math.random() * typingPhrases.length)];
-  }, [isTyping, typingPhrases]);
+  }, [isTyping]);
 
   useEffect(() => {
     setIsClient(true);
+    const newParticles: Particle[] = Array.from({ length: 50 }, (_, i) => ({
+      id: i,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 5,
+      duration: 2 + Math.random() * 3,
+    }));
+    setParticles(newParticles);
   }, []);
-
-  useEffect(() => {
-    if (!isClient) return;
-    const generateParticles = () => {
-      const newParticles: Particle[] = [];
-      for (let i = 0; i < 50; i++) {
-        newParticles.push({
-          id: i,
-          left: Math.random() * 100,
-          top: Math.random() * 100,
-          delay: Math.random() * 5,
-          duration: 2 + Math.random() * 3,
-        });
-      }
-      setParticles(newParticles);
-    };
-    generateParticles();
-  }, [isClient]);
 
   const handleSubmit = async (e: React.FormEvent | React.MouseEvent) => {
     e.preventDefault();
@@ -207,9 +187,7 @@ export default function Portfolio() {
         "https://portfolio-one-sable-65.vercel.app/api/chat",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             messages: [...messages, userMessage].map((msg) => ({
               role: msg.role,
@@ -221,32 +199,62 @@ export default function Portfolio() {
 
       if (!response.ok) throw new Error("Erreur réseau");
       const data = await response.json();
-      if (data.error) throw new Error(data.error);
 
-      setTimeout(() => {
+      if (
+        data.response &&
+        typeof data.response === "object" &&
+        data.response.action
+      ) {
+        const { action, params } = data.response;
+
+        if (action === "get_resume") {
+          if (confirm("Souhaitez-vous télécharger le CV de Marco Pyré ?")) {
+            get_resume();
+          }
+        }
+
+        if (action === "send_contact_email") {
+          if (
+            confirm(
+              "Souhaitez-vous ouvrir votre client mail pour contacter Marco ?"
+            )
+          ) {
+            send_contact_email(params?.sujet || "", params?.message || "");
+          }
+        }
+
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: Date.now().toString(),
+            content: "✅ Action en cours...",
+            role: "assistant",
+            timestamp: new Date(),
+          },
+        ]);
+      } else {
         const assistantMessage: Message = {
-          id: (Date.now() + 1).toString(),
+          id: Date.now().toString(),
           content: data.response,
           role: "assistant",
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, assistantMessage]);
-        setIsTyping(false);
-      }, 1000);
+      }
     } catch (error) {
       console.error("Erreur:", error);
-      setTimeout(() => {
-        const errorMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          content: "Désolé, une erreur s'est produite. Veuillez réessayer.",
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          content: "❌ Une erreur s'est produite. Veuillez réessayer.",
           role: "assistant",
           timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, errorMessage]);
-        setIsTyping(false);
-      }, 1000);
+        },
+      ]);
     } finally {
       setIsLoading(false);
+      setIsTyping(false);
     }
   };
 
@@ -256,21 +264,18 @@ export default function Portfolio() {
   };
 
   useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
-    }
+    scrollAreaRef.current!.scrollTop = scrollAreaRef.current!.scrollHeight;
   }, [messages]);
 
-  const formatTime = (date: Date): string => {
-    if (!isClient) return "";
-    return date.toLocaleTimeString();
-  };
+  const formatTime = (date: Date) =>
+    isClient ? date.toLocaleTimeString() : "";
 
   const quickQuestions = [
     "Quelles sont tes compétences techniques ?",
     "Peux-tu me parler de tes projets ?",
     "Quelle est ton expérience professionnelle ?",
-    "Quelles technologies maîtrises-tu ?",
+    "Puis-je avoir ton CV ?",
+    "Comment puis-je te contacter ?",
   ];
 
   return (
@@ -450,33 +455,26 @@ export default function Portfolio() {
             </div>
 
             <div className="relative animate-fade-in flex-shrink-0">
-              <div className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-4">
-                <div className="flex-1 relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-xl blur-sm"></div>
-                  <Input
-                    ref={inputRef}
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyPress={(e) => e.key === "Enter" && handleSubmit(e)}
-                    placeholder="Posez votre question sur le portfolio..."
-                    disabled={isLoading}
-                    className="relative bg-black/50 backdrop-blur-xl border-white/30 text-white placeholder:text-slate-400 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/50 rounded-xl h-12 md:h-14 px-4 md:px-6 text-sm md:text-base transition-all duration-300 shadow-lg"
-                  />
-                </div>
+              <div className="p-4 md:p-6 flex flex-col md:flex-row gap-4">
+                <Input
+                  ref={inputRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
+                  placeholder="Posez votre question..."
+                  disabled={isLoading}
+                  className="bg-black/50 text-white border-white/20 rounded-xl px-4 py-3 flex-1"
+                />
                 <Button
                   onClick={handleSubmit}
                   disabled={isLoading || !input.trim()}
-                  className="relative bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 text-white rounded-xl h-12 md:h-14 px-6 md:px-8 transition-all duration-300 disabled:opacity-50 cursor-pointer shadow-lg hover:shadow-purple-500/25 transform hover:scale-105"
+                  className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:opacity-90 text-white rounded-xl px-6"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent rounded-xl"></div>
-                  <div className="relative flex items-center space-x-2">
-                    {isLoading ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <Send className="w-5 h-5" />
-                    )}
-                    <span className="hidden md:inline">Envoyer</span>
-                  </div>
+                  {isLoading ? (
+                    <Loader2 className="animate-spin w-5 h-5" />
+                  ) : (
+                    <Send className="w-5 h-5" />
+                  )}
                 </Button>
               </div>
             </div>
