@@ -14,6 +14,15 @@ let knowledgeBaseCache: string | null = null;
 let cacheTimestamp = 0;
 const CACHE_DURATION = 30 * 60 * 1000;
 
+function getCorsHeaders() {
+  return {
+    "Access-Control-Allow-Origin": "https://marcopyre.github.io",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Max-Age": "86400",
+  };
+}
+
 async function fetchKnowledgeBaseFromDataset(): Promise<string> {
   try {
     const response = await fetch(
@@ -132,6 +141,13 @@ RÈGLES ABSOLUES:
 `;
 }
 
+export async function OPTIONS(request: NextRequest) {
+  return new NextResponse(null, {
+    status: 200,
+    headers: getCorsHeaders(),
+  });
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { messages, useRAG = false } = await request.json();
@@ -139,7 +155,10 @@ export async function POST(request: NextRequest) {
     if (!process.env.HF_TOKEN) {
       return NextResponse.json(
         { error: "Configuration manquante" },
-        { status: 500 }
+        { 
+          status: 500,
+          headers: getCorsHeaders()
+        }
       );
     }
 
@@ -150,7 +169,10 @@ export async function POST(request: NextRequest) {
     ) {
       return NextResponse.json(
         { error: "Format de messages invalide" },
-        { status: 400 }
+        { 
+          status: 400,
+          headers: getCorsHeaders()
+        }
       );
     }
 
@@ -197,17 +219,17 @@ export async function POST(request: NextRequest) {
         knowledgeBaseSource: useRAG ? "RAG" : "Full KB",
         timestamp: new Date().toISOString(),
       },
+    }, {
+      headers: getCorsHeaders()
     });
+
   } catch (error) {
     console.error("Erreur API Chat:", error);
-    return new NextResponse(
-      JSON.stringify({ error: "Erreur lors de la génération de la réponse" }),
+    return NextResponse.json(
+      { error: "Erreur lors de la génération de la réponse" },
       {
         status: 500,
-        headers: {
-          "Access-Control-Allow-Origin": "https://marcopyre.github.io",
-          "Content-Type": "application/json",
-        },
+        headers: getCorsHeaders(),
       }
     );
   }
