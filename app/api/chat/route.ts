@@ -17,30 +17,13 @@ const CACHE_DURATION = 30 * 60 * 1000;
 // Types pour les fonctions
 interface FunctionCall {
   name: string;
-  parameters?: Record<string, any>;
+  parameters?: Record<string, unknown>;
 }
 
 interface FunctionResponse {
   action: string;
-  params?: Record<string, any>;
+  params?: Record<string, unknown>;
 }
-
-// Définition des fonctions disponibles
-const AVAILABLE_FUNCTIONS = {
-  get_resume: {
-    name: "get_resume",
-    description: "Télécharge le CV de Marco Pyré",
-    parameters: {},
-  },
-  send_contact_email: {
-    name: "send_contact_email",
-    description: "Envoie un email de contact à Marco Pyré",
-    parameters: {
-      sujet: "string",
-      message: "string",
-    },
-  },
-};
 
 function getCorsHeaders() {
   return {
