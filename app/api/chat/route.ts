@@ -34,6 +34,13 @@ function getCorsHeaders() {
   };
 }
 
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: getCorsHeaders(),
+  });
+}
+
 async function fetchKnowledgeBaseFromDataset(): Promise<string> {
   try {
     const response = await fetch(
