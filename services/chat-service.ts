@@ -82,8 +82,7 @@ INSTRUCTIONS POUR LES IMAGES:
 - Si tu as déja envoyer une image dans une conversation, ne la renvoie pas.
 
 Pour utiliser une image, intégre la dans la réponse avec le format:
-[IMAGE] nom_de_l_image 
-[/IMAGE]
+[IMAGE] nom_de_l_image [/IMAGE]
 `;
   }
 
