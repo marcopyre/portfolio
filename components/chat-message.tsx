@@ -8,12 +8,13 @@ export default function ChatMessage({
   formatTime,
 }: {
   message: {
-    role: string;
     index: number;
-    content: string;
-    isWelcome: boolean;
     tWelcome: string;
+    id: string;
+    content: string;
+    role: "user" | "assistant";
     timestamp: Date;
+    isWelcome?: boolean;
   };
   isClient: boolean;
   formatTime: (date: Date) => string;
