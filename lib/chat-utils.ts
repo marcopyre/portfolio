@@ -35,3 +35,8 @@ export const send_contact_email = (sujet: string, message: string) => {
   )}&body=${encodeURIComponent(message)}`;
   window.location.href = mailto;
 };
+
+export const get_source_code = () => {
+  const githubUrl = "https://github.com/marcopyre/portfolio";
+  window.open(githubUrl, "_blank");
+};

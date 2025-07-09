@@ -11,7 +11,12 @@ import Header from "../components/header";
 import QuickQuestions from "../components/quick-questions";
 import ChatMessage from "../components/chat-message";
 import TypingIndicator from "../components/typing-indicator";
-import { getApiUrl, get_resume, send_contact_email } from "../lib/chat-utils";
+import {
+  getApiUrl,
+  get_resume,
+  send_contact_email,
+  get_source_code,
+} from "../lib/chat-utils";
 import { quickQuestionsKeys } from "../constants/chat";
 import ConfirmModal from "../components/confirm-modal";
 
@@ -124,6 +129,16 @@ export default function Portfolio() {
             question: translation("confirm_send_email"),
             onConfirm: () => {
               send_contact_email(params?.sujet || "", params?.message || "");
+            },
+          });
+        }
+
+        if (action === "get_source_code") {
+          setConfirmState({
+            open: true,
+            question: translation("confirm_open_github"),
+            onConfirm: () => {
+              get_source_code();
             },
           });
         }
