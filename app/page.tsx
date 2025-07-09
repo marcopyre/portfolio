@@ -184,8 +184,8 @@ export default function Portfolio() {
 
     try {
       const response = await fetch(
-        // "https://portfolio-one-sable-65.vercel.app/api/chat",
-        "/api/chat",
+        "https://portfolio-one-sable-65.vercel.app/api/chat",
+        // "/api/chat",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
