@@ -9,17 +9,17 @@ export const LanguageContext = createContext<{
   setLanguage: (lang: Language) => void;
   isLoading: boolean;
 }>({
-  language: "en",
+  language: "fr",
   setLanguage: () => {},
   isLoading: true,
 });
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>("en");
+  const [language, setLanguage] = useState<Language>("fr");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const browserLang = navigator.language.startsWith("en") ? "fr" : "en";
+    const browserLang = navigator.language.startsWith("fr") ? "fr" : "en";
     setLanguage(browserLang as Language);
     setIsLoading(false);
   }, []);

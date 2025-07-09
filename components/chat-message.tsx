@@ -15,6 +15,7 @@ export default function ChatMessage({
     role: "user" | "assistant";
     timestamp: Date;
     isWelcome?: boolean;
+    images?: string[];
   };
   isClient: boolean;
   formatTime: (date: Date) => string;
@@ -59,9 +60,37 @@ export default function ChatMessage({
                 {message.content}
               </p>
             ) : (
-              <MarkdownRenderer
-                content={message.isWelcome ? message.tWelcome : message.content}
-              />
+              <>
+                <MarkdownRenderer
+                  content={
+                    message.isWelcome ? message.tWelcome : message.content
+                  }
+                />
+                {Array.isArray(message.images) && message.images.length > 0 && (
+                  <div
+                    style={{
+                      marginTop: 16,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 12,
+                    }}
+                  >
+                    {message.images.map((img: string, idx: number) => (
+                      <img
+                        key={img + idx}
+                        src={img}
+                        alt={`Image ${idx + 1}`}
+                        style={{
+                          maxWidth: "100%",
+                          borderRadius: 8,
+                          boxShadow: "0 2px 12px #0004",
+                        }}
+                        loading="lazy"
+                      />
+                    ))}
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

@@ -21,6 +21,7 @@ interface Message {
   role: "user" | "assistant";
   timestamp: Date;
   isWelcome?: boolean;
+  images?: string[];
 }
 
 interface Particle {
@@ -142,6 +143,7 @@ export default function Portfolio() {
           content: data.response,
           role: "assistant",
           timestamp: new Date(),
+          images: data.images || [],
         };
         setMessages((prev) => [...prev, assistantMessage]);
       }
