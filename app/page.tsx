@@ -186,7 +186,6 @@ export default function Portfolio() {
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 via-blue-900/30 to-cyan-900/30"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-500/10 via-transparent to-transparent animate-pulse"></div>
       </div>
-
       {isClient && (
         <div className="absolute inset-0">
           {particles.map((particle) => (
@@ -203,9 +202,7 @@ export default function Portfolio() {
           ))}
         </div>
       )}
-
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_80%)]"></div>
-
       <Header
         title={translation("header_title")}
         subtitle={translation("header_subtitle")}
@@ -272,7 +269,6 @@ export default function Portfolio() {
           </div>
         </div>
       </div>
-
       <footer className="relative z-10 p-4 border-t border-white/10 backdrop-blur-xl bg-black/30 flex-shrink-0">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-center space-y-2 md:space-y-0">

@@ -125,17 +125,13 @@ Pour utiliser une image, intégre la dans la réponse avec le format:
   }
 
   extractImagesFromResponse(response: string): string[] {
-    // Extrait tous les liens Google Drive ou noms d'images entre [IMAGE] ... [/IMAGE]
     const imageBlocks = Array.from(
       response.matchAll(/\[IMAGE\](.*?)\[\/IMAGE\]/gs)
     );
-    // On suppose que le LLM met le lien complet ou le nom de l'image (à adapter si besoin)
     return imageBlocks.map((match) => {
       const val = match[1].trim();
-      // Si c'est déjà un lien, on le garde, sinon on construit le lien Google Drive
       if (val.startsWith("http")) return val;
-      // Sinon, on construit le lien Google Drive (adapter le bucket si besoin)
-      return `https://drive.google.com/thumbnail?id=${val}`;
+      return `https://drive.google.com/thumbnail?id=${val}&sz=w1000`;
     });
   }
 
