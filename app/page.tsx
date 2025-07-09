@@ -102,8 +102,6 @@ const getApiUrl = () => {
   if (typeof window === 'undefined') return '/api/chat';
   
   const hostname = window.location.hostname;
-  const protocol = window.location.protocol;
-  const port = window.location.port;
   
   const isLocal = hostname === 'localhost' || 
                  hostname === '127.0.0.1' || 
@@ -179,7 +177,7 @@ export default function Portfolio() {
 
   const randomTypingPhrase = useMemo(() => {
     return typingPhrases[Math.floor(Math.random() * typingPhrases.length)];
-  }, [isTyping]);
+  }, [isTyping, typingPhrases]);
 
   useEffect(() => {
     setIsClient(true);

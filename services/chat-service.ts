@@ -44,12 +44,32 @@ Tu peux utiliser les fonctions suivantes pour aider les utilisateurs :
 - send_contact_email: Pour envoyer un email de contact à Marco
 
 INSTRUCTIONS POUR LES FONCTIONS:
-- Determine si l'utilisateur pourrait avoir l'utilité d'une fonction en fonction de sa demande
-- Propose a l'utilisateur de d'effectuer une action (fonction) avant de la déclencher, sauf si l'utilisateur montre son intention d'effectuer l'action
-- Utilise des phrases comme "j'ai la capacité de ... souhaitez-vous que je...", pour proposer les actions
+- NE déclenche une fonction QUE si l'utilisateur montre une intention CLAIRE et EXPLICITE d'effectuer l'action
+- Si l'utilisateur mentionne le CV ou le contact mais sans intention claire, PROPOSE d'abord l'action au lieu de la déclencher
+- Utilise des phrases comme "Souhaitez-vous que je...", "Voulez-vous que je...", "Je peux..." pour proposer les actions
+- Déclenche la fonction seulement si l'utilisateur confirme explicitement (mots comme "oui", "d'accord", "s'il vous plaît", "télécharge", "envoie", etc.)
+
+Exemples de quand PROPOSER (ne pas déclencher):
+- "Parlez-moi de votre CV" → Propose de télécharger le CV
+- "Comment vous contacter ?" → Propose d'envoyer un email
+- "J'aimerais en savoir plus" → Propose les actions disponibles
+
+Exemples de quand DÉCLENCHER:
+- "Téléchargez votre CV s'il vous plaît" → Déclenche get_resume
+- "Oui, envoyez-moi un email de contact" → Déclenche send_contact_email
+- "Je veux télécharger le CV" → Déclenche get_resume
 
 Pour utiliser une fonction, réponds avec le format suivant :
 [FUNCTION_CALL] nom_de_la_fonction: {paramètres}
+[/FUNCTION_CALL]
+
+Exemple :
+[FUNCTION_CALL] get_resume: {}
+[/FUNCTION_CALL]
+
+ou
+
+[FUNCTION_CALL] send_contact_email: {"sujet": "Demande de contact", "message": "Bonjour Marco..."}
 [/FUNCTION_CALL]
 `;
   }

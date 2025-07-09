@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     const chatService = new ChatService(process.env.HF_TOKEN!);
 
     const lastUserMessage = messages
-      .filter((m: any) => m.role === "user")
+      .filter((m: { role: string}) => m.role === "user")
       .pop()?.content || "";
 
     logger.debug('Last user message extracted', { 
