@@ -17,13 +17,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useTranslation } from "./i18n/useTranslation";
+import LanguageSelector from "../components/language-selector";
 
-// Interfaces
 interface Message {
   id: string;
   content: string;
   role: "user" | "assistant";
   timestamp: Date;
+  isWelcome?: boolean;
 }
 
 interface Particle {
@@ -99,28 +101,29 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
 };
 
 const getApiUrl = () => {
-  if (typeof window === 'undefined') return '/api/chat';
-  
+  if (typeof window === "undefined") return "/api/chat";
+
   const hostname = window.location.hostname;
-  
-  const isLocal = hostname === 'localhost' || 
-                 hostname === '127.0.0.1' || 
-                 hostname.startsWith('192.168.') ||
-                 hostname.startsWith('10.') ||
-                 hostname.endsWith('.local');
-  
-  const isGithubPages = hostname.includes('github.io');
-  
-  const isVercel = hostname.includes('vercel.app');
-  
+
+  const isLocal =
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname.startsWith("192.168.") ||
+    hostname.startsWith("10.") ||
+    hostname.endsWith(".local");
+
+  const isGithubPages = hostname.includes("github.io");
+
+  const isVercel = hostname.includes("vercel.app");
+
   if (isLocal) {
-    return '/api/chat';
+    return "/api/chat";
   } else if (isGithubPages) {
-    return 'https://portfolio-one-sable-65.vercel.app/api/chat';
+    return "https://portfolio-one-sable-65.vercel.app/api/chat";
   } else if (isVercel) {
-    return '/api/chat';
+    return "/api/chat";
   } else {
-    return 'https://portfolio-one-sable-65.vercel.app/api/chat';
+    return "https://portfolio-one-sable-65.vercel.app/api/chat";
   }
 };
 
@@ -141,13 +144,14 @@ const send_contact_email = (sujet: string, message: string) => {
 };
 
 export default function Portfolio() {
+  const { t } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content:
-        "Bonjour ! Je suis l'assistant IA de ce portfolio. Je peux vous renseigner sur les compétences, projets, expérience et formation. Que souhaitez-vous savoir ?",
+      content: "", // sera remplacé dynamiquement
       role: "assistant",
       timestamp: new Date(),
+      isWelcome: true,
     },
   ]);
   const [input, setInput] = useState("");
@@ -208,19 +212,16 @@ export default function Portfolio() {
     setIsTyping(true);
 
     try {
-      const response = await fetch(
-        getApiUrl(),
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            messages: [...messages, userMessage].map((msg) => ({
-              role: msg.role,
-              content: msg.content,
-            })),
-          }),
-        }
-      );
+      const response = await fetch(getApiUrl(), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [...messages, userMessage].map((msg) => ({
+            role: msg.role,
+            content: msg.content,
+          })),
+        }),
+      });
 
       if (!response.ok) throw new Error("Erreur réseau");
       const data = await response.json();
@@ -233,17 +234,13 @@ export default function Portfolio() {
         const { action, params } = data.response;
 
         if (action === "get_resume") {
-          if (confirm("Souhaitez-vous télécharger le CV de Marco Pyré ?")) {
+          if (confirm(t("confirm_download_cv"))) {
             get_resume();
           }
         }
 
         if (action === "send_contact_email") {
-          if (
-            confirm(
-              "Souhaitez-vous ouvrir votre client mail pour contacter Marco ?"
-            )
-          ) {
+          if (confirm(t("confirm_send_email"))) {
             send_contact_email(params?.sujet || "", params?.message || "");
           }
         }
@@ -252,7 +249,7 @@ export default function Portfolio() {
           ...prev,
           {
             id: Date.now().toString(),
-            content: "✅ Action en cours...",
+            content: t("action_in_progress"),
             role: "assistant",
             timestamp: new Date(),
           },
@@ -272,7 +269,7 @@ export default function Portfolio() {
         ...prev,
         {
           id: Date.now().toString(),
-          content: "❌ Une erreur s'est produite. Veuillez réessayer.",
+          content: t("error_generic"),
           role: "assistant",
           timestamp: new Date(),
         },
@@ -296,12 +293,12 @@ export default function Portfolio() {
     isClient ? date.toLocaleTimeString() : "";
 
   const quickQuestions = [
-    "Quelles sont tes compétences techniques ?",
-    "Peux-tu me parler de tes projets ?",
-    "Quelle est ton expérience professionnelle ?",
-    "Quelles technologies maîtrises-tu ?",
-    "Puis-je avoir ton CV ?",
-    "Comment puis-je te contacter ?",
+    t("quick_question_1"),
+    t("quick_question_2"),
+    t("quick_question_3"),
+    t("quick_question_4"),
+    t("quick_question_5"),
+    t("quick_question_6"),
   ];
 
   return (
@@ -342,14 +339,15 @@ export default function Portfolio() {
               </div>
               <div>
                 <h1 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-white via-purple-200 to-cyan-200 bg-clip-text text-transparent">
-                  Ask about Marco Pyré
+                  {t("header_title")}
                 </h1>
                 <p className="text-slate-400 text-sm md:text-base flex items-center">
                   <Sparkles className="w-4 h-4 mr-2" />
-                  Assistant intelligent • Knowledge Base
+                  {t("header_subtitle")}
                 </p>
               </div>
             </div>
+            <LanguageSelector />
           </div>
         </div>
       </header>
@@ -360,7 +358,7 @@ export default function Portfolio() {
             <div className="max-w-6xl mx-auto">
               <h2 className="text-lg md:text-xl font-semibold text-white mb-6 flex items-center">
                 <Rocket className="w-6 h-6 mr-3 text-purple-400" />
-                Questions rapides
+                {t("quick_questions_title")}
                 <Zap className="w-5 h-5 ml-2 text-yellow-400" />
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -438,7 +436,13 @@ export default function Portfolio() {
                                 {message.content}
                               </p>
                             ) : (
-                              <MarkdownRenderer content={message.content} />
+                              <MarkdownRenderer
+                                content={
+                                  message.isWelcome
+                                    ? t("welcome_assistant")
+                                    : message.content
+                                }
+                              />
                             )}
                           </div>
                         </div>
@@ -470,7 +474,7 @@ export default function Portfolio() {
                             ></div>
                           </div>
                           <span className="text-slate-300 text-sm">
-                            {randomTypingPhrase}
+                            {t("typing_1")}
                           </span>
                         </div>
                       </div>
@@ -487,7 +491,7 @@ export default function Portfolio() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
-                  placeholder="Posez votre question..."
+                  placeholder={t("type_message")}
                   disabled={isLoading}
                   className="bg-black/50 text-white border-white/20 rounded-xl px-4 py-3 flex-1"
                 />
@@ -514,7 +518,7 @@ export default function Portfolio() {
             <div className="flex items-center space-x-3 text-slate-400">
               <div className="flex items-center space-x-2">
                 <Code className="w-4 h-4" />
-                <span className="text-sm">Alimenté par Google Gemma</span>
+                <span className="text-sm">{t("footer_powered_by")}</span>
               </div>
             </div>
           </div>
