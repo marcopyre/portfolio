@@ -34,7 +34,6 @@ interface Particle {
   duration: number;
 }
 
-// Markdown renderer
 const MarkdownRenderer = ({ content }: { content: string }) => {
   const formatMarkdown = (text: string) => {
     let formatted = text
@@ -97,6 +96,34 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
       dangerouslySetInnerHTML={{ __html: formatMarkdown(content) }}
     />
   );
+};
+
+const getApiUrl = () => {
+  if (typeof window === 'undefined') return '/api/chat';
+  
+  const hostname = window.location.hostname;
+  const protocol = window.location.protocol;
+  const port = window.location.port;
+  
+  const isLocal = hostname === 'localhost' || 
+                 hostname === '127.0.0.1' || 
+                 hostname.startsWith('192.168.') ||
+                 hostname.startsWith('10.') ||
+                 hostname.endsWith('.local');
+  
+  const isGithubPages = hostname.includes('github.io');
+  
+  const isVercel = hostname.includes('vercel.app');
+  
+  if (isLocal) {
+    return '/api/chat';
+  } else if (isGithubPages) {
+    return 'https://portfolio-one-sable-65.vercel.app/api/chat';
+  } else if (isVercel) {
+    return '/api/chat';
+  } else {
+    return 'https://portfolio-one-sable-65.vercel.app/api/chat';
+  }
 };
 
 const get_resume = () => {
@@ -184,8 +211,7 @@ export default function Portfolio() {
 
     try {
       const response = await fetch(
-        "https://portfolio-one-sable-65.vercel.app/api/chat",
-        // "/api/chat",
+        getApiUrl(),
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
