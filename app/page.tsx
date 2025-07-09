@@ -12,7 +12,7 @@ import QuickQuestions from "../components/quick-questions";
 import ChatMessage from "../components/chat-message";
 import TypingIndicator from "../components/typing-indicator";
 import { getApiUrl, get_resume, send_contact_email } from "../lib/chat-utils";
-import { quickQuestionsKeys, typingPhraseKeys } from "../constants/chat";
+import { quickQuestionsKeys } from "../constants/chat";
 import ConfirmModal from "../components/confirm-modal";
 
 interface Message {

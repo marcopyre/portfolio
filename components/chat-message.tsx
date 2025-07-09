@@ -7,7 +7,14 @@ export default function ChatMessage({
   isClient,
   formatTime,
 }: {
-  message: any;
+  message: {
+    role: string;
+    index: number;
+    content: string;
+    isWelcome: boolean;
+    tWelcome: string;
+    timestamp: Date;
+  };
   isClient: boolean;
   formatTime: (date: Date) => string;
 }) {
