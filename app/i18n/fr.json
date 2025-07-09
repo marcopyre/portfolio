@@ -1,6 +1,6 @@
 {
   "welcome": "Bienvenue sur mon portfolio !",
-  "send": "Envoyer",
+  "confirm": "Confirmer",
   "type_message": "Tapez votre message...",
   "header_title": "Une question a propos de Marco Pyré ?",
   "header_subtitle": "Assistant intelligent • Base de connaissances",
@@ -9,7 +9,7 @@
   "quick_question_2": "Peux-tu me parler de tes projets ?",
   "quick_question_3": "Quelle est ton expérience professionnelle ?",
   "quick_question_4": "Quelles technologies maîtrises-tu ?",
-  "quick_question_5": "Puis-je avoir ton CV ?",
+  "quick_question_5": "Comment puis-je avoir ton CV ?",
   "quick_question_6": "Comment puis-je te contacter ?",
   "error_network": "Erreur réseau",
   "error_generic": "❌ Une erreur s'est produite. Veuillez réessayer.",
@@ -31,5 +31,6 @@
   "typing_12": "Je connecte les neurones...",
   "typing_13": "Analyse en cours...",
   "typing_14": "hmmmmm...",
-  "welcome_assistant": "Bonjour ! Je suis l'assistant IA de ce portfolio. Je peux vous renseigner sur les compétences, projets, expérience et formation. Que souhaitez-vous savoir ?"
+  "welcome_assistant": "Bonjour ! Je suis l'assistant IA de ce portfolio. Je peux vous renseigner sur les compétences, projets, expérience et formation. Que souhaitez-vous savoir ?",
+  "cancel": "Annuler"
 } 

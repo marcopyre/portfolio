@@ -6,13 +6,14 @@ import { Send, Loader2, Code } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useTranslation } from "./i18n/useTranslation";
+import { useTranslation } from "./i18n/use-translation";
 import Header from "../components/header";
 import QuickQuestions from "../components/quick-questions";
 import ChatMessage from "../components/chat-message";
 import TypingIndicator from "../components/typing-indicator";
 import { getApiUrl, get_resume, send_contact_email } from "../lib/chat-utils";
 import { quickQuestionsKeys, typingPhraseKeys } from "../constants/chat";
+import ConfirmModal from "../components/confirm-modal";
 
 interface Message {
   id: string;
@@ -31,7 +32,7 @@ interface Particle {
 }
 
 export default function Portfolio() {
-  const { t } = useTranslation();
+  const { translation } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -48,6 +49,11 @@ export default function Portfolio() {
   const [isClient, setIsClient] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [confirmState, setConfirmState] = useState<{
+    open: boolean;
+    question: string;
+    onConfirm: (() => void) | null;
+  }>({ open: false, question: "", onConfirm: null });
 
   useEffect(() => {
     setIsClient(true);
@@ -84,7 +90,9 @@ export default function Portfolio() {
         body: JSON.stringify({
           messages: [...messages, userMessage].map((msg) => ({
             role: msg.role,
-            content: msg.isWelcome ? t("welcome_assistant") : msg.content,
+            content: msg.isWelcome
+              ? translation("welcome_assistant")
+              : msg.content,
           })),
         }),
       });
@@ -100,22 +108,30 @@ export default function Portfolio() {
         const { action, params } = data.response;
 
         if (action === "get_resume") {
-          if (confirm(t("confirm_download_cv"))) {
-            get_resume();
-          }
+          setConfirmState({
+            open: true,
+            question: translation("confirm_download_cv"),
+            onConfirm: () => {
+              get_resume();
+            },
+          });
         }
 
         if (action === "send_contact_email") {
-          if (confirm(t("confirm_send_email"))) {
-            send_contact_email(params?.sujet || "", params?.message || "");
-          }
+          setConfirmState({
+            open: true,
+            question: translation("confirm_send_email"),
+            onConfirm: () => {
+              send_contact_email(params?.sujet || "", params?.message || "");
+            },
+          });
         }
 
         setMessages((prev) => [
           ...prev,
           {
             id: Date.now().toString(),
-            content: t("action_in_progress"),
+            content: translation("action_in_progress"),
             role: "assistant",
             timestamp: new Date(),
           },
@@ -135,7 +151,7 @@ export default function Portfolio() {
         ...prev,
         {
           id: Date.now().toString(),
-          content: t("error_generic"),
+          content: translation("error_generic"),
           role: "assistant",
           timestamp: new Date(),
         },
@@ -159,8 +175,8 @@ export default function Portfolio() {
     isClient ? date.toLocaleTimeString() : "";
 
   const quickQuestions = useMemo(() => {
-    return quickQuestionsKeys.map((key) => t(key));
-  }, [t]);
+    return quickQuestionsKeys.map((key) => translation(key));
+  }, [translation]);
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden flex flex-col">
@@ -188,7 +204,11 @@ export default function Portfolio() {
 
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_at_center,black_50%,transparent_80%)]"></div>
 
-      <Header title={t("header_title")} subtitle={t("header_subtitle")} />
+      <Header
+        title={translation("header_title")}
+        subtitle={translation("header_subtitle")}
+        showLanguageSelector={messages.length === 1}
+      />
 
       <div className="flex-1 flex flex-col relative z-10">
         {messages.length === 1 && (
@@ -209,14 +229,16 @@ export default function Portfolio() {
                       message={{
                         ...message,
                         index,
-                        tWelcome: t("welcome_assistant"),
+                        tWelcome: translation("welcome_assistant"),
                       }}
                       formatTime={formatTime}
                       isClient={isClient}
                     />
                   ))}
-
-                  {isTyping && <TypingIndicator phrase={t("typing_1")} />}
+                  translation
+                  {isTyping && (
+                    <TypingIndicator phrase={translation("typing_1")} />
+                  )}
                 </div>
               </ScrollArea>
             </div>
@@ -228,14 +250,14 @@ export default function Portfolio() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
-                  placeholder={t("type_message")}
+                  placeholder={translation("type_message")}
                   disabled={isLoading}
                   className="bg-black/50 text-white border-white/20 rounded-xl px-4 py-3 flex-1"
                 />
                 <Button
                   onClick={handleSubmit}
                   disabled={isLoading || !input.trim()}
-                  className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:opacity-90 text-white rounded-xl px-6"
+                  className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:opacity-90 text-white rounded-xl px-6 cursor-pointer"
                 >
                   {isLoading ? (
                     <Loader2 className="animate-spin w-5 h-5" />
@@ -255,12 +277,25 @@ export default function Portfolio() {
             <div className="flex items-center space-x-3 text-slate-400">
               <div className="flex items-center space-x-2">
                 <Code className="w-4 h-4" />
-                <span className="text-sm">{t("footer_powered_by")}</span>
+                <span className="text-sm">
+                  {translation("footer_powered_by")}
+                </span>
               </div>
             </div>
           </div>
         </div>
       </footer>
+      <ConfirmModal
+        open={confirmState.open}
+        question={confirmState.question}
+        onConfirm={() => {
+          if (confirmState.onConfirm) confirmState.onConfirm();
+          setConfirmState({ ...confirmState, open: false });
+        }}
+        onCancel={() => setConfirmState({ ...confirmState, open: false })}
+        yesLabel={translation("confirm")}
+        noLabel={translation("cancel") || "Annuler"}
+      />
     </div>
   );
 }

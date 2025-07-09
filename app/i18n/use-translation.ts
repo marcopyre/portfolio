@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { LanguageContext } from "./LanguageProvider";
+import { LanguageContext } from "./language-provider";
 import en from "./en.json";
 import fr from "./fr.json";
 
@@ -7,8 +7,8 @@ const resources = { en, fr } as Record<string, Record<string, string>>;
 
 export function useTranslation() {
   const { language } = useContext(LanguageContext);
-  const t = (key: string) => {
+  const translation = (key: string) => {
     return resources[language][key] || key;
   };
-  return { t, language };
+  return { translation, language };
 }

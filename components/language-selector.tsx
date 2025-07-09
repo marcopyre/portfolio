@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext } from "react";
-import { LanguageContext } from "../app/i18n/LanguageProvider";
+import { LanguageContext } from "../app/i18n/language-provider";
 
 export default function LanguageSelector() {
   const { language, setLanguage } = useContext(LanguageContext);

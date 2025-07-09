@@ -1,6 +1,6 @@
 {
   "welcome": "Welcome to my portfolio!",
-  "send": "Send",
+  "confirm": "Confirm",
   "type_message": "Type your message...",
   "header_title": "Ask about Marco Pyré",
   "header_subtitle": "Smart assistant • Knowledge Base",
@@ -9,7 +9,7 @@
   "quick_question_2": "Can you tell me about your projects?",
   "quick_question_3": "What is your professional experience?",
   "quick_question_4": "Which technologies do you master?",
-  "quick_question_5": "Can I have your resume?",
+  "quick_question_5": "How can I have your resume?",
   "quick_question_6": "How can I contact you?",
   "error_network": "Network error",
   "error_generic": "❌ An error occurred. Please try again.",
@@ -31,5 +31,6 @@
   "typing_12": "Connecting neurons...",
   "typing_13": "Analysis in progress...",
   "typing_14": "hmmmmm...",
-  "welcome_assistant": "Hello! I am the AI assistant of this portfolio. I can inform you about skills, projects, experience, and education. What would you like to know?"
+  "welcome_assistant": "Hello! I am the AI assistant of this portfolio. I can inform you about skills, projects, experience, and education. What would you like to know?",
+  "cancel": "Cancel"
 } 

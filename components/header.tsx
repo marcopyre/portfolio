@@ -5,9 +5,11 @@ import LanguageSelector from "./language-selector";
 export default function Header({
   title,
   subtitle,
+  showLanguageSelector = true,
 }: {
   title: string;
   subtitle: string;
+  showLanguageSelector?: boolean;
 }) {
   return (
     <header className="relative z-10 p-4 md:p-6 border-b border-white/10 backdrop-blur-xl bg-black/30 flex-shrink-0">
@@ -30,7 +32,7 @@ export default function Header({
               </p>
             </div>
           </div>
-          <LanguageSelector />
+          {showLanguageSelector && <LanguageSelector />}
         </div>
       </div>
     </header>
