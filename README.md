@@ -26,10 +26,7 @@
 - [🤖 IA & RAG](#-ia--rag)
 - [🌐 Internationalisation](#-internationalisation)
 - [📱 Responsive Design](#-responsive-design)
-- [🔧 Configuration](#-configuration)
 - [📄 API Endpoints](#-api-endpoints)
-- [🤝 Contribution](#-contribution)
-- [📄 Licence](#-licence)
 
 ## 🎯 À propos
 
@@ -69,13 +66,10 @@ Portfolio interactif de **Marco Pyré**, développeur fullstack spécialisé en 
 graph TB
     A[Frontend - GitHub Pages] --> B[API - Vercel]
     B --> C[LLM - Hugging Face]
-    C --> D[RAG Database - Hugging Face]
+    D[RAG Database - Hugging Face] --> C
 
-    E[Knowledge Base] --> D
-    F[Custom Model] --> C
+    F[Google Gemma] --> C
 
-    G[User] --> A
-    A --> G
 ```
 
 ### 📊 Stack Technique
@@ -164,9 +158,6 @@ npm run dev
 ```env
 # Hugging Face API
 HUGGINGFACE_API_KEY=your_huggingface_token
-
-# Configuration de l'API
-NEXT_PUBLIC_API_URL=http://localhost:3000/api
 ```
 
 ## 🎨 Interface
@@ -210,6 +201,9 @@ get_resume(): Promise<void>
 
 // Envoi d'email de contact
 send_contact_email(sujet: string, message: string): Promise<void>
+
+// Ouverture du Github du projet
+get_source_code(): Promise<void>
 ```
 
 ## 🌐 Internationalisation
@@ -218,7 +212,6 @@ send_contact_email(sujet: string, message: string): Promise<void>
 
 - 🇫🇷 **Français** (par défaut)
 - 🇬🇧 **Anglais**
-- 🇪🇸 **Espagnol**
 
 ### Structure i18n
 
@@ -243,37 +236,6 @@ i18n/
 - **Images** : Lazy loading et formats optimisés
 - **Fonts** : Preload des polices critiques
 - **Performance** : Code splitting automatique
-
-## 🔧 Configuration
-
-### Next.js Config
-
-```typescript
-// next.config.ts
-const nextConfig = {
-  output: "export", // Pour GitHub Pages
-  trailingSlash: true, // Compatibilité GitHub Pages
-  images: {
-    unoptimized: true, // Pour export statique
-  },
-};
-```
-
-### Tailwind Config
-
-```javascript
-// tailwind.config.js
-module.exports = {
-  content: ["./app/**/*.{js,ts,jsx,tsx}"],
-  theme: {
-    extend: {
-      animation: {
-        "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-      },
-    },
-  },
-};
-```
 
 ## 📄 API Endpoints
 
@@ -300,32 +262,6 @@ Response:
   }
 }
 ```
-
-### Fonctions Disponibles
-
-- `get_resume()` : Télécharge le CV
-- `send_contact_email(sujet, message)` : Envoie un email
-
-## 🤝 Contribution
-
-### Guidelines
-
-1. **Fork** le repository
-2. **Créer** une branche feature (`git checkout -b feature/AmazingFeature`)
-3. **Commit** vos changements (`git commit -m 'Add AmazingFeature'`)
-4. **Push** vers la branche (`git push origin feature/AmazingFeature`)
-5. **Ouvrir** une Pull Request
-
-### Code Style
-
-- **TypeScript** strict mode
-- **ESLint** configuration Next.js
-- **Prettier** pour le formatage
-- **Conventional Commits** pour les messages
-
-## 📄 Licence
-
-Ce projet est sous licence **MIT**. Voir le fichier `LICENSE` pour plus de détails.
 
 ---
 
