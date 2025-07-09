@@ -69,8 +69,7 @@ Exemples de quand DÉCLENCHER:
 - "Je veux télécharger le CV" → Déclenche get_resume
 
 Pour utiliser une fonction, réponds avec le format suivant :
-[FUNCTION_CALL] nom_de_la_fonction: {paramètres}
-[/FUNCTION_CALL]
+[FUNCTION_CALL] nom_de_la_fonction: {paramètres} [/FUNCTION_CALL]
 
 IMAGES DISPONIBLES:
 Tu peux envoyer les images suivantes pour illustrer tes réponses :
