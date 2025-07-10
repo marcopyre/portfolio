@@ -55,9 +55,8 @@ Tu peux utiliser les fonctions suivantes pour aider les utilisateurs :
 
 INSTRUCTIONS POUR LES FONCTIONS:
 - NE déclenche une fonction QUE si l'utilisateur montre une intention CLAIRE et EXPLICITE d'effectuer l'action
-- Si l'utilisateur mentionne le CV ou le contact mais sans intention claire, PROPOSE d'abord l'action au lieu de la déclencher
+- Si l'utilisateur mentionne quelque chose qui concerne une des fonctions mais sans intention claire, PROPOSE d'abord l'action au lieu de la déclencher
 - Utilise des phrases comme "Je suis capable de ... souhaitez vous que je ..." pour proposer des actions (traduit dans la langue de l'utilisateur)
-- Déclenche la fonction seulement si l'utilisateur confirme explicitement (mots comme "oui", "d'accord", "s'il vous plaît", "télécharge", "envoie", etc.)
 
 Exemples de quand PROPOSER (ne pas déclencher):
 - "Parlez-moi de votre CV" → Propose de télécharger le CV
