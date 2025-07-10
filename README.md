@@ -59,6 +59,7 @@ Portfolio interactif de **Marco Pyré**, développeur fullstack spécialisé en 
 - **Gestion d'état** optimisée avec React hooks
 - **Validation** côté client et serveur
 - **Logging** structuré pour le debugging
+- **Système de notifications email** via Resend (production uniquement)
 
 ## 🏗️ Architecture
 
@@ -67,21 +68,26 @@ graph TB
     A[Frontend - GitHub Pages] --> B[API - Vercel]
     B --> C[LLM - Hugging Face]
     D[RAG Database - Hugging Face] --> C
+    B --> E[Email Service - Resend]
+    E --> F[Marco's Email]
 
-    F[Google Gemma] --> C
+    G[Google Gemma] --> C
+    H[Error Detection] --> E
+    I[Conversation Logs] --> E
 
 ```
 
 ### 📊 Stack Technique
 
-| Composant        | Technologie           | Hébergement  |
-| ---------------- | --------------------- | ------------ |
-| **Frontend**     | Next.js 15 + React 19 | GitHub Pages |
-| **Backend**      | Next.js API Routes    | Vercel       |
-| **IA Model**     | Google Gemma-2B-IT    | Hugging Face |
-| **RAG Database** | Vector Database       | Hugging Face |
-| **Styling**      | Tailwind CSS 4        | -            |
-| **Language**     | TypeScript            | -            |
+| Composant         | Technologie           | Hébergement  |
+| ----------------- | --------------------- | ------------ |
+| **Frontend**      | Next.js 15 + React 19 | GitHub Pages |
+| **Backend**       | Next.js API Routes    | Vercel       |
+| **IA Model**      | Google Gemma-2B-IT    | Hugging Face |
+| **RAG Database**  | Vector Database       | Hugging Face |
+| **Styling**       | Tailwind CSS 4        | -            |
+| **Language**      | TypeScript            | -            |
+| **Email Service** | Resend                | -            |
 
 ## 🚀 Déploiement
 
@@ -103,6 +109,13 @@ graph TB
 - **Knowledge Base** : Dataset vectorisé personnalisé
 - **Inference** : API Hugging Face avec token d'accès
 
+### 📧 Email Service (Resend)
+
+- **Service** : Notifications automatiques
+- **Environnement** : Production uniquement
+- **Types** : Alertes d'erreur, logs de conversation, notifications de crédits
+- **Destinataire** : Marco Pyré (ytmarcopyre@gmail.com)
+
 ## 🛠️ Technologies
 
 ### Frontend
@@ -122,6 +135,7 @@ graph TB
 ```json
 {
   "@huggingface/inference": "^4.3.2",
+  "resend": "^3.0.0",
   "radix-ui": "^1.0.5",
   "class-variance-authority": "^0.7.1"
 }
@@ -188,6 +202,15 @@ RESEND_API_KEY=your_resend_api_key
 - **Context** : 4096 tokens maximum
 - **Temperature** : 0.7 pour créativité équilibrée
 - **Functions** : Actions contextuelles (CV, email)
+
+## 📧 Services
+
+### Email Service (Resend)
+
+- **Environnement** : Production uniquement (`NODE_ENV=production`)
+- **Notifications** : Alertes d'erreur, logs de conversation, crédits épuisés
+- **Configuration** : Variable d'environnement `RESEND_API_KEY`
+- **Sécurité** : Emails désactivés en développement pour éviter les envois accidentels
 
 ### Base de Connaissances
 
@@ -269,19 +292,19 @@ Response:
 }
 ```
 
-## 🚨 Gestion d'Erreur
+## 🚨 Gestion d'Erreur & Notifications
 
 ### Crédits Hugging Face Épuisés
 
 Le système détecte automatiquement les erreurs de crédits Hugging Face et :
 
 1. **Affiche un message utilisateur** : "Je suis à court de token, une notification a été envoyé à Marco, le soucis seras corrigé d'ici peu."
-2. **Envoie une notification email** à Marco via Resend
+2. **Envoie une notification email** à Marco via Resend (production uniquement)
 3. **Log les erreurs** pour le debugging
 
-### Notifications Email
+### Système de Notifications Email
 
-Le système envoie automatiquement des emails via Resend pour :
+Le système envoie automatiquement des emails via Resend **uniquement en production** :
 
 - **Alertes de crédits épuisés** : Notification immédiate quand les crédits Hugging Face sont épuisés
 - **Logs de conversation** : Chaque conversation utilisateur + réponse du bot
@@ -293,6 +316,7 @@ Le système envoie automatiquement des emails via Resend pour :
 2. Obtenez votre clé API
 3. Configurez la variable d'environnement `RESEND_API_KEY`
 4. Vérifiez votre domaine d'envoi dans Resend
+5. Les emails ne sont envoyés qu'en environnement de production (`NODE_ENV=production`)
 
 ---
 
