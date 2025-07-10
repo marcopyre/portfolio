@@ -82,7 +82,7 @@ Exemple de trigger fonctionnel: [FUNCTION_CALL] get_link: {"url": "https://githu
 
 IMAGES DISPONIBLES:
 Tu peux envoyer les images suivantes pour illustrer tes réponses :
-- 19wOPm6vwNQ2MKGKV9gOXKiyVcQ6qY7Si: un schéma de ton architecture et de la platforme sur laquelle tu est, lié a comment tu as été développé.
+- 1k8GsIhF6HFerkYPR33f0e9g0vFfyCr4Q: un schéma de ton architecture et de la platforme sur laquelle tu est, lié a comment tu as été développé.
 - 1NFlRRtgvxf76hKmQRyt_IqL_3MkNJ803: un schéma d'architecture du site / projet ostea38
 
 INSTRUCTIONS POUR LES IMAGES:
