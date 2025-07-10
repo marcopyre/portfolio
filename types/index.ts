@@ -19,6 +19,7 @@ export interface APIResponse {
     useRAG?: boolean;
     knowledgeBaseSource?: string;
     functionTriggered?: string;
+    error?: string;
     timestamp: string;
   };
   images?: string[];

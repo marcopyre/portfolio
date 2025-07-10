@@ -1,4 +1,4 @@
-import { KnowledgeBaseConfig } from '../types';
+import { KnowledgeBaseConfig } from "../types";
 
 export const KNOWLEDGE_BASE_CONFIG: KnowledgeBaseConfig = {
   datasetId: "marcopyre/portfolio-knowledge-base",
@@ -7,7 +7,7 @@ export const KNOWLEDGE_BASE_CONFIG: KnowledgeBaseConfig = {
     "https://api-inference.huggingface.co/models/marcopyre/portfolio-kb",
 };
 
-export const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
+export const CACHE_DURATION = 30 * 60 * 1000;
 export const MAX_MESSAGES = 10;
 export const MAX_TOKENS = 400;
 export const TEMPERATURE = 0.6;

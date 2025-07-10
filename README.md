@@ -157,7 +157,10 @@ npm run dev
 
 ```env
 # Hugging Face API
-HUGGINGFACE_API_KEY=your_huggingface_token
+HF_TOKEN=your_huggingface_token
+
+# Resend Email Service (pour les notifications)
+RESEND_API_KEY=your_resend_api_key
 ```
 
 ## 🎨 Interface
@@ -265,6 +268,31 @@ Response:
   }
 }
 ```
+
+## 🚨 Gestion d'Erreur
+
+### Crédits Hugging Face Épuisés
+
+Le système détecte automatiquement les erreurs de crédits Hugging Face et :
+
+1. **Affiche un message utilisateur** : "Je suis à court de token, une notification a été envoyé à Marco, le soucis seras corrigé d'ici peu."
+2. **Envoie une notification email** à Marco via Resend
+3. **Log les erreurs** pour le debugging
+
+### Notifications Email
+
+Le système envoie automatiquement des emails via Resend pour :
+
+- **Alertes de crédits épuisés** : Notification immédiate quand les crédits Hugging Face sont épuisés
+- **Logs de conversation** : Chaque conversation utilisateur + réponse du bot
+- **Erreurs système** : Notifications pour les erreurs techniques
+
+### Configuration Resend
+
+1. Créez un compte sur [Resend](https://resend.com)
+2. Obtenez votre clé API
+3. Configurez la variable d'environnement `RESEND_API_KEY`
+4. Vérifiez votre domaine d'envoi dans Resend
 
 ---
 

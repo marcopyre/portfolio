@@ -67,9 +67,8 @@ export async function POST(request: NextRequest) {
     let contextualKnowledge: string;
     if (useRAG) {
       logger.info("Using RAG for contextual knowledge", { requestId });
-      contextualKnowledge = await knowledgeBaseService.fetchRelevantContext(
-        lastUserMessage
-      );
+      contextualKnowledge =
+        await knowledgeBaseService.fetchRelevantContext(lastUserMessage);
       if (!contextualKnowledge) {
         logger.warn("RAG returned empty context, falling back to full KB", {
           requestId,
@@ -94,6 +93,27 @@ export async function POST(request: NextRequest) {
 
     const response = await chatService.generateResponse(chatMessages);
     const images = chatService.extractImagesFromResponse(response);
+
+    if (
+      response ===
+      "Je suis à court de token, une notification a été envoyé à Marco, le soucis seras corrigé d'ici peu."
+    ) {
+      const apiResponse: APIResponse = {
+        response: response,
+        metadata: {
+          error: "token_expired",
+          timestamp: new Date().toISOString(),
+        },
+      };
+
+      logger.warn("Token expired response returned", {
+        requestId,
+      });
+
+      return NextResponse.json(apiResponse, {
+        headers: getCorsHeaders(),
+      });
+    }
 
     const functionCall = await chatService.parseResponseForFunctions(response);
 

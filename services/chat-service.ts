@@ -1,6 +1,7 @@
 import { InferenceClient } from "@huggingface/inference";
 import { ChatMessage, FunctionCall } from "../types";
 import { logger } from "@/utils/logger";
+import { EmailService } from "./email-service";
 import {
   MAX_TOKENS,
   TEMPERATURE,
@@ -11,9 +12,11 @@ import {
 
 export class ChatService {
   private client: InferenceClient;
+  private emailService: EmailService;
 
   constructor(token: string) {
     this.client = new InferenceClient(token);
+    this.emailService = new EmailService();
     logger.info("ChatService initialized");
   }
 
@@ -176,9 +179,57 @@ Pour utiliser une image, intégre la dans la réponse avec le format:
         responseLength: response.length,
       });
 
+      const lastUserMessage =
+        messages.filter((m) => m.role === "user").pop()?.content || "";
+      if (lastUserMessage && response) {
+        this.emailService
+          .sendConversationLog(
+            lastUserMessage,
+            response,
+            new Date().toISOString()
+          )
+          .catch((error) => {
+            logger.error("Failed to send conversation log", error);
+          });
+      }
+
       return response;
     } catch (error) {
       logger.error("Error generating chat response", error);
+
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      const isTokenError =
+        errorMessage.includes("quota") ||
+        errorMessage.includes("rate limit") ||
+        errorMessage.includes("insufficient") ||
+        errorMessage.includes("credits") ||
+        errorMessage.includes("payment") ||
+        errorMessage.includes("billing");
+
+      if (isTokenError) {
+        logger.warn("Hugging Face token/credits error detected", {
+          error: errorMessage,
+        });
+
+        try {
+          await this.emailService.sendTokenExpiredNotification();
+        } catch (emailError) {
+          logger.error("Failed to send token expired notification", emailError);
+        }
+
+        return "Je suis à court de token, une notification a été envoyé à Marco, le soucis seras corrigé d'ici peu.";
+      }
+
+      try {
+        await this.emailService.sendErrorNotification(
+          error instanceof Error ? error : new Error(String(error)),
+          "Chat response generation"
+        );
+      } catch (emailError) {
+        logger.error("Failed to send error notification", emailError);
+      }
+
       throw error;
     }
   }
