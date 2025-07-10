@@ -6,20 +6,24 @@ export class EmailService {
 
   constructor() {
     const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
+    const isProduction = process.env.NODE_ENV === "production";
+
+    if (!apiKey || !isProduction) {
       logger.warn(
-        "RESEND_API_KEY is not configured - email notifications will be disabled"
+        "Email notifications disabled - not in production or RESEND_API_KEY not configured"
       );
       this.resend = null;
     } else {
       this.resend = new Resend(apiKey);
-      logger.info("EmailService initialized with Resend");
+      logger.info("EmailService initialized with Resend for production");
     }
   }
 
   async sendTokenExpiredNotification(): Promise<void> {
     if (!this.resend) {
-      logger.warn("Resend not configured, skipping token expired notification");
+      logger.warn(
+        "Email notifications disabled, skipping token expired notification"
+      );
       return;
     }
     try {
@@ -57,7 +61,7 @@ export class EmailService {
     timestamp: string
   ): Promise<void> {
     if (!this.resend) {
-      logger.warn("Resend not configured, skipping conversation log");
+      logger.warn("Email notifications disabled, skipping conversation log");
       return;
     }
     try {
@@ -94,7 +98,7 @@ export class EmailService {
 
   async sendErrorNotification(error: Error, context: string): Promise<void> {
     if (!this.resend) {
-      logger.warn("Resend not configured, skipping error notification");
+      logger.warn("Email notifications disabled, skipping error notification");
       return;
     }
     try {
