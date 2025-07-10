@@ -16,6 +16,7 @@ import {
   get_resume,
   send_contact_email,
   get_source_code,
+  get_ostea38,
 } from "../lib/chat-utils";
 import { quickQuestionsKeys } from "../constants/chat";
 import ConfirmModal from "../components/confirm-modal";
