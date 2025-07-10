@@ -1,5 +1,6 @@
 import React from "react";
 import { Rocket, Zap, Star } from "lucide-react";
+import { useTranslation } from "@/app/i18n/use-translation";
 
 export default function QuickQuestions({
   questions,
@@ -8,12 +9,13 @@ export default function QuickQuestions({
   questions: string[];
   onSelect: (q: string) => void;
 }) {
+  const { translation } = useTranslation();
   return (
     <div className="p-4 md:p-6 animate-fade-in flex-shrink-0">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-lg md:text-xl font-semibold text-white mb-6 flex items-center">
           <Rocket className="w-6 h-6 mr-3 text-purple-400" />
-          Questions rapides
+          {translation("quick_questions_title")}
           <Zap className="w-5 h-5 ml-2 text-yellow-400" />
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
