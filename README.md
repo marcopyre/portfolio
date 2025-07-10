@@ -69,11 +69,8 @@ graph TB
     B --> C[LLM - Hugging Face]
     D[RAG Database - Hugging Face] --> C
     B --> E[Email Service - Resend]
-    E --> F[Marco's Email]
 
     G[Google Gemma] --> C
-    H[Error Detection] --> E
-    I[Conversation Logs] --> E
 
 ```
 
