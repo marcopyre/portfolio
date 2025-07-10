@@ -204,6 +204,9 @@ send_contact_email(sujet: string, message: string): Promise<void>
 
 // Ouverture du Github du projet
 get_source_code(): Promise<void>
+
+// Ouverture du site ostea38.fr
+get_ostea38(): Promise<void>
 ```
 
 ## 🌐 Internationalisation

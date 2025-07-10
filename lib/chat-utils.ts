@@ -40,3 +40,8 @@ export const get_source_code = () => {
   const githubUrl = "https://github.com/marcopyre/portfolio";
   window.open(githubUrl, "_blank");
 };
+
+export const get_ostea38 = () => {
+  const githubUrl = "https://ostea38.fr";
+  window.open(githubUrl, "_blank");
+};

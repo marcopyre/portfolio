@@ -143,6 +143,16 @@ export default function Portfolio() {
           });
         }
 
+        if (action === "get_ostea38") {
+          setConfirmState({
+            open: true,
+            question: translation("confirm_open_github"),
+            onConfirm: () => {
+              get_ostea38();
+            },
+          });
+        }
+
         setMessages((prev) => [
           ...prev,
           {

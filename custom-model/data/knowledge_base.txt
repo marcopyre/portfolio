@@ -55,6 +55,7 @@ Développeur Fullstack & Ingénierie Cloud — Orienté Architecture
 - **Autres** : Méthodologies agiles, gestion de projet, gouvernance SI
 
 ## Projets Personnels
+- **Ostea38** : Site vitrine pour une ostéopathe animaliére, mis en place dans un objectif de limitation de cout tout en maximisant les performance (FinOps), développé en NextJS, utilisation de CloudFlare en tant que CDN, hebergé sur Azure, un gros travail de SEO as été effectué afin d'améliorer le référencement sur google, qui as résulté en une premiére position dans les recherches, devant des sites CMS (wordpress, prestahop...)
 - **App iOS avec Siri IA intégrée** : Application mobile intelligente avec commandes vocales avancées, stack: Swift, SwiftUI
 - **PCB custom** : Développement d'une carte électronique avec firmware embarqué
 - **Projets open-source** : Contributions sur GitHub dans divers domaines (firmware, cloud, outils dev)
