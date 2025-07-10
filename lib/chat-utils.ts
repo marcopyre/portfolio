@@ -30,18 +30,13 @@ export const get_resume = () => {
 };
 
 export const send_contact_email = (sujet: string, message: string) => {
-  const mailto = `mailto:ytmarcopyre@gmail.com?subject=${encodeURIComponent(
+  const email = "ytmarcopyre@gmail.com";
+  const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(
     sujet
   )}&body=${encodeURIComponent(message)}`;
-  window.location.href = mailto;
+  window.open(mailtoLink, "_blank");
 };
 
-export const get_source_code = () => {
-  const githubUrl = "https://github.com/marcopyre/portfolio";
-  window.open(githubUrl, "_blank");
-};
-
-export const get_ostea38 = () => {
-  const githubUrl = "https://ostea38.fr";
-  window.open(githubUrl, "_blank");
+export const get_link = (url: string) => {
+  window.open(url, "_blank");
 };

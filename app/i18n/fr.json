@@ -16,7 +16,7 @@
   "action_in_progress": "✅ Action en cours...",
   "confirm_download_cv": "Souhaitez-vous télécharger le CV de Marco Pyré ?",
   "confirm_send_email": "Souhaitez-vous ouvrir votre client mail pour contacter Marco ?",
-  "confirm_open_github": "Souhaitez-vous ouvrir le repository GitHub de ce portfolio ?",
+  "confirm_open_link": "Souhaitez-vous ouvrir ce lien dans un nouvel onglet ?",
   "footer_powered_by": "Alimenté par Google Gemma",
   "typing_1": "Je connecte mes neurones virtuels...",
   "typing_2": "Je remue les octets de mes pensées...",

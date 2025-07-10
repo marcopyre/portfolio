@@ -15,8 +15,7 @@ import {
   getApiUrl,
   get_resume,
   send_contact_email,
-  get_source_code,
-  get_ostea38,
+  get_link,
 } from "../lib/chat-utils";
 import { quickQuestionsKeys } from "../constants/chat";
 import ConfirmModal from "../components/confirm-modal";
@@ -60,6 +59,7 @@ export default function Portfolio() {
     open: boolean;
     question: string;
     onConfirm: (() => void) | null;
+    link?: string;
   }>({ open: false, question: "", onConfirm: null });
 
   useEffect(() => {
@@ -134,24 +134,18 @@ export default function Portfolio() {
           });
         }
 
-        if (action === "get_source_code") {
-          setConfirmState({
-            open: true,
-            question: translation("confirm_open_github"),
-            onConfirm: () => {
-              get_source_code();
-            },
-          });
-        }
-
-        if (action === "get_ostea38") {
-          setConfirmState({
-            open: true,
-            question: translation("confirm_open_github"),
-            onConfirm: () => {
-              get_ostea38();
-            },
-          });
+        if (action === "get_link") {
+          const url = params?.url;
+          if (url) {
+            setConfirmState({
+              open: true,
+              question: translation("confirm_open_link"),
+              onConfirm: () => {
+                get_link(url);
+              },
+              link: url,
+            });
+          }
         }
 
         setMessages((prev) => [
@@ -319,6 +313,7 @@ export default function Portfolio() {
         onCancel={() => setConfirmState({ ...confirmState, open: false })}
         yesLabel={translation("confirm")}
         noLabel={translation("cancel") || "Annuler"}
+        link={confirmState.link}
       />
     </div>
   );

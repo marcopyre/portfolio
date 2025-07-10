@@ -8,6 +8,7 @@ export default function ConfirmModal({
   onCancel,
   yesLabel = "Oui",
   noLabel = "Non",
+  link,
 }: {
   open: boolean;
   question: string;
@@ -15,6 +16,7 @@ export default function ConfirmModal({
   onCancel: () => void;
   yesLabel?: string;
   noLabel?: string;
+  link?: string;
 }) {
   if (!open) return null;
   return (
@@ -42,6 +44,22 @@ export default function ConfirmModal({
         <div style={{ marginBottom: 24, fontSize: 18, fontWeight: 500 }}>
           {question}
         </div>
+        {link && (
+          <div
+            style={{
+              marginBottom: 16,
+              fontSize: 14,
+              color: "#a21caf",
+              wordBreak: "break-all",
+              padding: "8px 12px",
+              background: "rgba(162, 28, 175, 0.1)",
+              borderRadius: "6px",
+              border: "1px solid rgba(162, 28, 175, 0.3)",
+            }}
+          >
+            {link}
+          </div>
+        )}
         <div style={{ display: "flex", gap: 16, justifyContent: "flex-end" }}>
           <button
             onClick={onCancel}
