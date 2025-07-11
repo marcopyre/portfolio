@@ -101,6 +101,7 @@ export default function Portfolio() {
               ? translation("welcome_assistant")
               : msg.content,
           })),
+          useRAG: true,
         }),
       });
 
