@@ -9,7 +9,6 @@ export const KNOWLEDGE_BASE_CONFIG: KnowledgeBaseConfig = {
 
 export const CACHE_DURATION = 30 * 60 * 1000;
 export const MAX_MESSAGES = 10;
-export const MAX_TOKENS = 400;
 export const TEMPERATURE = 0.6;
 export const TOP_P = 0.9;
 export const FREQUENCY_PENALTY = 0.1;

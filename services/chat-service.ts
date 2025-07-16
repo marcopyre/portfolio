@@ -3,7 +3,6 @@ import { ChatMessage, FunctionCall } from "../types";
 import { logger } from "@/utils/logger";
 import { EmailService } from "./email-service";
 import {
-  MAX_TOKENS,
   TEMPERATURE,
   TOP_P,
   FREQUENCY_PENALTY,
@@ -162,9 +161,8 @@ Pour utiliser une image, intégre la dans la réponse avec le format:
         this.convertMessagesToHuggingFaceFormat(messages);
 
       const chatCompletion = await this.client.chatCompletion({
-        model: "google/gemma-2-2b-it",
+        model: "Qwen/Qwen2.5-7B-Instruct",
         messages: compatibleMessages,
-        max_tokens: MAX_TOKENS,
         temperature: TEMPERATURE,
         top_p: TOP_P,
         frequency_penalty: FREQUENCY_PENALTY,
