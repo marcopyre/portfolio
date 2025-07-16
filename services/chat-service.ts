@@ -162,7 +162,7 @@ Pour utiliser une image, intégre la dans la réponse avec le format:
         this.convertMessagesToHuggingFaceFormat(messages);
 
       const chatCompletion = await this.client.chatCompletion({
-        model: "meta-llama/Llama-3.2-3B-Instruct",
+        model: "Qwen/Qwen2.5-7B-Instruct",
         messages: compatibleMessages,
         max_tokens: MAX_TOKENS,
         temperature: TEMPERATURE,
