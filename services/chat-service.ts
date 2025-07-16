@@ -88,6 +88,7 @@ INSTRUCTIONS POUR LES IMAGES:
 - Inclus une image dans un message si le contexte est cohérent avec la description de l'image.
 - ne demande pas a l'utilisateur une confirmation pour l'envoi d'une image, inclus la en plus de ta réponse a son message.
 - Si tu as déja envoyer une image dans une conversation, ne la renvoie pas.
+- Envoi une image uniquement si ta reponse parle que de ce projet / contexte
 
 Pour utiliser une image, intégre la dans la réponse avec le format:
 [IMAGE] nom_de_l_image [/IMAGE]
