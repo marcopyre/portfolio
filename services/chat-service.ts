@@ -162,7 +162,7 @@ Pour utiliser une image, intégre la dans la réponse avec le format:
         this.convertMessagesToHuggingFaceFormat(messages);
 
       const chatCompletion = await this.client.chatCompletion({
-        model: 'google/gemma-2-2b-it',
+        model: 'google/gemma-3-4b-it',
         messages: compatibleMessages,
         max_tokens: MAX_TOKENS,
         temperature: TEMPERATURE,
