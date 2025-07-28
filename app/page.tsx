@@ -62,6 +62,10 @@ export default function Portfolio() {
     link?: string;
   }>({ open: false, question: "", onConfirm: null });
 
+  // Ajout pour l'effet machine à écrire
+  const [animatedText, setAnimatedText] = useState("");
+  const [animatingId, setAnimatingId] = useState<string | null>(null);
+
   useEffect(() => {
     setIsClient(true);
     const newParticles: Particle[] = Array.from({ length: 50 }, (_, i) => ({
@@ -73,6 +77,34 @@ export default function Portfolio() {
     }));
     setParticles(newParticles);
   }, []);
+
+  // Effet machine à écrire pour le dernier message assistant
+  useEffect(() => {
+    if (messages.length === 0) return;
+    const lastMsg = messages[messages.length - 1];
+    if (lastMsg.role !== "assistant" || !lastMsg.content || lastMsg.isWelcome) {
+      setAnimatedText("");
+      setAnimatingId(null);
+      return;
+    }
+    setAnimatedText("");
+    setAnimatingId(lastMsg.id);
+    let i = 0;
+    const interval = setInterval(() => {
+      setAnimatedText((prev) => {
+        if (i >= lastMsg.content.length) {
+          clearInterval(interval);
+          setAnimatingId(null);
+          return lastMsg.content;
+        }
+        const next = lastMsg.content.slice(0, i + 1);
+        i++;
+        return next;
+      });
+    }, 1); // vitesse de "frappe"
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
 
   const handleSubmit = async (e: React.FormEvent | React.MouseEvent) => {
     e.preventDefault();
@@ -243,18 +275,29 @@ export default function Portfolio() {
             <div className="flex-1 mb-6 rounded-2xl border border-white/20 bg-black/40 backdrop-blur-xl shadow-2xl overflow-hidden">
               <ScrollArea className="h-full">
                 <div ref={scrollAreaRef} className="p-4 md:p-6 space-y-6">
-                  {messages.map((message, index) => (
-                    <ChatMessage
-                      key={message.id}
-                      message={{
-                        ...message,
-                        index,
-                        tWelcome: translation("welcome_assistant"),
-                      }}
-                      formatTime={formatTime}
-                      isClient={isClient}
-                    />
-                  ))}
+                  {messages.map((message, index) => {
+                    // Affichage animé uniquement pour le dernier message assistant non-welcome
+                    const isLastAssistant =
+                      index === messages.length - 1 &&
+                      message.role === "assistant" &&
+                      !message.isWelcome;
+                    return (
+                      <ChatMessage
+                        key={message.id}
+                        message={{
+                          ...message,
+                          content:
+                            isLastAssistant && animatingId === message.id
+                              ? animatedText
+                              : message.content,
+                          index,
+                          tWelcome: translation("welcome_assistant"),
+                        }}
+                        formatTime={formatTime}
+                        isClient={isClient}
+                      />
+                    );
+                  })}
                   translation
                   {isTyping && (
                     <TypingIndicator phrase={translation("typing_1")} />

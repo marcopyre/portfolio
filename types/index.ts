@@ -24,9 +24,3 @@ export interface APIResponse {
   };
   images?: string[];
 }
-
-export interface KnowledgeBaseConfig {
-  datasetId: string;
-  embeddingModel: string;
-  knowledgeBaseEndpoint: string;
-}
