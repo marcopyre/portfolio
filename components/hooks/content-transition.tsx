@@ -10,7 +10,7 @@ export function useContentTransition<T>(
   content: T,
   options: UseContentTransitionOptions = {}
 ) {
-  const { duration = 300, type = "default", key } = options;
+  const { duration = 300, type = "default" } = options;
   const [displayContent, setDisplayContent] = useState(content);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -25,7 +25,6 @@ export function useContentTransition<T>(
 
       timeoutRef.current = setTimeout(() => {
         setDisplayContent(content);
-
         setTimeout(() => {
           setIsTransitioning(false);
         }, 50);
@@ -73,67 +72,11 @@ export function useContentTransition<T>(
     }: {
       children: React.ReactNode;
       className?: string;
-      [key: string]: any;
+      [key: string]: unknown;
     }) => (
       <div className={`${getTransitionClasses()} ${className}`} {...props}>
         {children}
       </div>
     ),
   };
-}
-
-export function useMultipleContentTransitions() {
-  const transitions = useRef<Map<string | number, any>>(new Map());
-
-  const createTransition = useCallback(
-    <T,>(
-      key: string | number,
-      content: T,
-      options: UseContentTransitionOptions = {}
-    ) => {
-      const transitionKey = `${key}-${JSON.stringify(options)}`;
-
-      if (!transitions.current.has(transitionKey)) {
-        transitions.current.set(transitionKey, { content, options });
-      }
-
-      return useContentTransition(content, { ...options, key });
-    },
-    []
-  );
-
-  const getTransition = useCallback((key: string | number) => {
-    return transitions.current.get(key);
-  }, []);
-
-  return { createTransition, getTransition };
-}
-
-interface ContentTransitionItemProps<T> {
-  content: T;
-  index: number;
-  options?: UseContentTransitionOptions;
-  className?: string;
-  children: (
-    content: T,
-    transitionClasses: string,
-    isTransitioning: boolean
-  ) => React.ReactNode;
-}
-
-export function ContentTransitionItem<T>({
-  content,
-  index,
-  options = {},
-  className = "",
-  children,
-}: ContentTransitionItemProps<T>) {
-  const { displayContent, transitionClasses, isTransitioning } =
-    useContentTransition(content, { ...options, key: index });
-
-  return (
-    <div className={`${transitionClasses} ${className}`}>
-      {children(displayContent, transitionClasses, isTransitioning)}
-    </div>
-  );
 }

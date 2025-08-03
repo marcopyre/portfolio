@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
       messageLength: lastUserMessage.length,
     });
 
-    let contextualKnowledge: string;
+    // let contextualKnowledge: string;
     // if (useRAG) {
     //   logger.info("Using RAG for contextual knowledge", { requestId });
     //   contextualKnowledge =
@@ -78,9 +78,9 @@ export async function POST(request: NextRequest) {
     // } else {
     //   logger.info("Using full knowledge base", { requestId });
     //   contextualKnowledge = await knowledgeBaseService.getKnowledgeBase();
-    // }
+    // } TO FIX TO USE RAG CORRECTLY
 
-    contextualKnowledge = await knowledgeBaseService.getKnowledgeBase();
+    const contextualKnowledge = await knowledgeBaseService.getKnowledgeBase(); // TO REMOVE
 
     const systemMessage = {
       role: "system" as const,

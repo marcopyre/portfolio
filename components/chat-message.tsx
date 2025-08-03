@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import MarkdownRenderer from "./markdown-renderer";
 
 export default function ChatMessage({
@@ -58,7 +59,7 @@ export default function ChatMessage({
                     }}
                   >
                     {message.images.map((img: string, idx: number) => (
-                      <img
+                      <Image
                         key={img + idx}
                         src={img}
                         alt={`Image ${idx + 1}`}
