@@ -65,20 +65,22 @@ export async function POST(request: NextRequest) {
     });
 
     let contextualKnowledge: string;
-    if (useRAG) {
-      logger.info("Using RAG for contextual knowledge", { requestId });
-      contextualKnowledge =
-        await knowledgeBaseService.fetchRelevantContext(lastUserMessage);
-      if (!contextualKnowledge) {
-        logger.warn("RAG returned empty context, falling back to full KB", {
-          requestId,
-        });
-        contextualKnowledge = await knowledgeBaseService.getKnowledgeBase();
-      }
-    } else {
-      logger.info("Using full knowledge base", { requestId });
-      contextualKnowledge = await knowledgeBaseService.getKnowledgeBase();
-    }
+    // if (useRAG) {
+    //   logger.info("Using RAG for contextual knowledge", { requestId });
+    //   contextualKnowledge =
+    //     await knowledgeBaseService.fetchRelevantContext(lastUserMessage);
+    //   if (!contextualKnowledge) {
+    //     logger.warn("RAG returned empty context, falling back to full KB", {
+    //       requestId,
+    //     });
+    //     contextualKnowledge = await knowledgeBaseService.getKnowledgeBase();
+    //   }
+    // } else {
+    //   logger.info("Using full knowledge base", { requestId });
+    //   contextualKnowledge = await knowledgeBaseService.getKnowledgeBase();
+    // }
+
+    contextualKnowledge = await knowledgeBaseService.getKnowledgeBase();
 
     const systemMessage = {
       role: "system" as const,
