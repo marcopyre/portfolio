@@ -20,6 +20,14 @@ export default function QuickQuestions({
     }
   );
 
+  const questionTransitions = questions.map((question, index) =>
+    useContentTransition(question, {
+      type: "swap",
+      duration: 400,
+      key: `question-${index}`,
+    })
+  );
+
   return (
     <div className="animate-fade-in flex-shrink-0 w-full">
       <div className="max-w-6xl mx-auto">
@@ -30,14 +38,8 @@ export default function QuickQuestions({
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
           {questions.map((question, index) => {
-            const { displayContent, transitionClasses } = useContentTransition(
-              question,
-              {
-                type: "swap",
-                duration: 400,
-                key: `question-${index}`,
-              }
-            );
+            const { displayContent, transitionClasses } =
+              questionTransitions[index];
 
             return (
               <button
