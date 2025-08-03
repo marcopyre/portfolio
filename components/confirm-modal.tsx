@@ -49,12 +49,12 @@ export default function ConfirmModal({
             style={{
               marginBottom: 16,
               fontSize: 14,
-              color: "#a21caf",
+              color: "#ffd6b9",
               wordBreak: "break-all",
               padding: "8px 12px",
-              background: "rgba(162, 28, 175, 0.1)",
+              background: "#c8810b",
               borderRadius: "6px",
-              border: "1px solid rgba(162, 28, 175, 0.3)",
+              border: "1px solid #ffd6b9",
             }}
           >
             {link}
@@ -78,7 +78,7 @@ export default function ConfirmModal({
           <button
             onClick={onConfirm}
             style={{
-              background: "linear-gradient(90deg,#a21caf,#06b6d4)",
+              background: "#FCA311",
               color: "#fff",
               border: "none",
               borderRadius: 6,

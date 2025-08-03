@@ -2,7 +2,7 @@
 
 import React, { createContext, useState, useEffect, ReactNode } from "react";
 
-type Language = "en" | "fr";
+export type Language = "en" | "fr";
 
 export const LanguageContext = createContext<{
   language: Language;
