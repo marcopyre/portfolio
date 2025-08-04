@@ -1,18 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SplashScreen from "../components/splash-screen";
 import { LanguageProvider } from "./i18n/language-provider";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Marco Pyré",
@@ -26,9 +16,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-3CQRTTN3DL"
+        strategy="afterInteractive"
+      />
+      <Script id="ga-init" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-3CQRTTN3DL');
+        `}
+      </Script>
+      <body className="antialiased">
         <LanguageProvider>
           <SplashScreen>{children}</SplashScreen>
         </LanguageProvider>
