@@ -1,75 +1,73 @@
-INFORMATIONS PORTFOLIO - MARCO PYRÉ
-Développeur Fullstack & Ingénierie Cloud — Orienté Architecture
+PORTFOLIO INFORMATION - MARCO PYRÉ
+Fullstack Developer & Cloud Engineering — Architecture-Oriented
 
-## Informations de Contact
+## Contact Information
 - **Email**: ytmarcopyre@gmail.com
 - **GitHub**: https://github.com/marcopyre
-- **Statut**: Recherche d'un CDI post-études (2025)
+- **Status**: Seeking a permanent position post-graduation (2025)
 
-## Expérience Professionnelle
+## Professional Experience
 
-### Deloitte, Grenoble — Alternant Développeur Cloud
-**Septembre 2022 - AUJOURD'HUI**
-- **Projets clés** :
-  - *Pernod Ricard - Data Portal* : Conception et développement d'une solution de gestion de données, intégration cloud, architecture serverless, développement fullstack, stack: Angular, NestJS, PostgreSQL, projet sur lequel j'ai été développeur fullstack, j'ai également effectué la formation des nouveaux développeurs lors de la passation
-  - *World Athletics - Stats Zone Pro* : Développement d'interfaces modernes, intégration de microservices, cloud natif, stack: NextJS, Strapi, projet sur lequel j'ai été développeur fullstack, j'ai participer a la conception de l'architecture, au devops et a la publication dans le cloud AWS
-  - *Deloitte - Neptune* : Développement d'un SaaS modulaire, adaptable aux différents clients et déployable rapidement, utilisé comme projet vitrine de l'entreprise, stack: Angular, NestJS, PostgreSQL, projet sur le quel j'ai été développeur fullstack et cloud, j'ai mis participer a tout le développement de l'application, la mise en place de l'assistant IA, j'ai également encadrer le déploiement de la partie Azure (cloud) suite a ma certification AZ204
-  - *Odyssee* : Refection totale d'un SaaS, utilisé dans un contexte scolaire, stack: Angular, NestJS, PostgreSQL, projet sur lequel j'ai été développeur fullstack
-- **Défis techniques rencontrés** :
-  - Résolution de bugs complexes au niveau du compilateur JavaScript via reverse engineering
-  - Collaboration sur des choix d’architecture cloud avec fort impact technique
+### Deloitte, Grenoble — Cloud Developer Apprentice
+**September 2022 - PRESENT**
+- **Key Projects**:
+  - *Pernod Ricard - Data Portal*: Design and development of a data management solution, cloud integration, serverless architecture, fullstack development, stack: Angular, NestJS, PostgreSQL. I worked as a fullstack developer and also conducted training for new developers during handover
+  - *World Athletics - Stats Zone Pro*: Development of modern interfaces, microservices integration, cloud native, stack: NextJS, Strapi. I worked as a fullstack developer, participated in architecture design, DevOps, and AWS cloud deployment
+  - *Deloitte - Neptune*: Development of a modular SaaS, adaptable to different clients and rapidly deployable, used as the company's showcase project, stack: Angular, NestJS, PostgreSQL. I worked as a fullstack and cloud developer, participated in the entire application development, AI assistant implementation, and supervised Azure cloud deployment following my AZ204 certification
+  - *Odyssee*: Complete rebuild of a SaaS used in educational context, stack: Angular, NestJS, PostgreSQL, where I worked as a fullstack developer
+- **Technical Challenges**:
+  - Resolved complex bugs at JavaScript compiler level through reverse engineering
+  - Collaborated on cloud architecture decisions with high technical impact
 
-### Hurence, Grenoble — Stagiaire
-**Mai 2021 - Juin 2021**
-- Développement d'une interface de gestion de données massives avec frameworks Big Data
+### Hurence, Grenoble — Intern
+**May 2021 - June 2021**
+- Development of a massive data management interface using Big Data frameworks
 
-### Oracle, Grenoble — Stagiaire
-**Décembre 2015**
-- Développement d’un logiciel d’encryptage
+### Oracle, Grenoble — Intern
+**December 2015**
+- Development of encryption software
 
-## Formation
-- **Master Expert en informatique et systèmes d'information** - Epsi, Grenoble (2023 - 2025)
-- **Licence Concepteur Développeur d'Applications** - Epsi, Grenoble (2020 - 2023)
+## Education
+- **Master's in Computer Science and Information Systems** - Epsi, Grenoble (2023 - 2025)
+- **Bachelor's in Application Developer Designer** - Epsi, Grenoble (2020 - 2023)
 
-## Compétences Techniques
+## Technical Skills
 
 ### Cloud & Infrastructure
-- **Expertise** : Architecture cloud native, Serverless, FinOps, déploiement automatisé
-- **Plateformes** : AWS, Azure, GCP
-- **DevOps** : Docker, Kubernetes, CI/CD, IaC (Terraform)
-- **Systèmes** : Linux, Windows
+- **Expertise**: Cloud native architecture, Serverless, FinOps, automated deployment
+- **Platforms**: AWS, Azure, GCP
+- **DevOps**: Docker, Kubernetes, CI/CD, IaC (Terraform)
+- **Systems**: Linux, Windows
 
-### Développement
-- **Langages** : TypeScript, JavaScript, C++, C, Python, Java, Scala, Kotlin, Swift, C#, R, SQL, CSS, HTML
-- **Frameworks** : NestJS, Express, Strapi, AngularJS, Next.js, SwiftUI
-- **Outils** : Node.js, Git, VSCode, XCode, PlatformIO, Knime, Jest
+### Development
+- **Languages**: TypeScript, JavaScript, C++, C, Python, Java, Scala, Kotlin, Swift, C#, R, SQL, CSS, HTML
+- **Frameworks**: NestJS, Express, Strapi, AngularJS, Next.js, SwiftUI
+- **Tools**: Node.js, Git, VSCode, XCode, PlatformIO, Knime, Jest
 
-### Bases de Données
-- **SQL** : PostgreSQL, MySQL, SQLite
-- **NoSQL** : MongoDB
+### Databases
+- **SQL**: PostgreSQL, MySQL, SQLite
+- **NoSQL**: MongoDB
 
-### Domaines de Spécialisation
-- **Architecture** : Cloud, base de données, microservices
-- **Firmware / Hardware** : Développement de PCB, conception de firmware
-- **Data** : Machine Learning, Data Mining, Big Data, visualisation
-- **Autres** : Méthodologies agiles, gestion de projet, gouvernance SI
+### Specialization Areas
+- **Architecture**: Cloud, database, microservices
+- **Firmware / Hardware**: PCB development, firmware design
+- **Data**: Machine Learning, Data Mining, Big Data, visualization
+- **Other**: Agile methodologies, project management, IT governance
 
-## Projets Personnels
-- **Ostea38** : Site vitrine pour une ostéopathe animaliére, mis en place dans un objectif de limitation de cout tout en maximisant les performance (FinOps), développé en NextJS, utilisation de CloudFlare en tant que CDN, hebergé sur Azure, un gros travail de SEO as été effectué afin d'améliorer le référencement sur google, qui as résulté en une premiére position dans les recherches, devant des sites CMS (wordpress, prestahop...)
-- **App iOS avec Siri IA intégrée** : Application mobile intelligente avec commandes vocales avancées, stack: Swift, SwiftUI
-- **PCB custom** : Développement d'une carte électronique avec firmware embarqué
-- **Projets open-source** : Contributions sur GitHub dans divers domaines (firmware, cloud, outils dev)
+## Personal Projects
+- **Ostea38**: Showcase website for an animal osteopath, implemented with cost limitation objectives while maximizing performance (FinOps), developed in NextJS, using CloudFlare as CDN, hosted on Azure. Extensive SEO work was performed to improve Google ranking, resulting in first position in searches, ahead of CMS sites (WordPress, PrestaShop...)
+- **iOS App with integrated Siri AI**: Intelligent mobile application with advanced voice commands, stack: Swift, SwiftUI
+- **Custom PCB**: Development of an electronic board with embedded firmware
+- **Open-source projects**: GitHub contributions in various domains (firmware, cloud, dev tools)
 
 ## Certifications
-- **Microsoft Certified: Azure Developer Associate** (Niveau 2 - Certification n° 7AD53B-G21DD4)
+- **Microsoft Certified: Azure Developer Associate** (Level 2 - Certification 7AD53B-G21DD4)
 
-## Langues
-- **Français** : Langue maternelle
-- **Anglais** : Courant (C2)
+## Languages
+- **French**: Native language
+- **English**: Fluent (C2)
 
-## Profil Professionnel
-Marco Pyré est un développeur fullstack orienté technique, avec une forte appétence pour l’architecture cloud et les systèmes complexes. Il se distingue par sa polyvalence — cloud, back-end, front-end, firmware — et par sa curiosité constante pour les technologies de pointe. Fort de son alternance chez Deloitte, il a su relever des défis complexes allant du serverless à l’analyse bas-niveau de code, en passant par l’optimisation de pipelines cloud. En parallèle, il mène des projets personnels et open-source ambitieux. Sa discipline rigoureuse, nourrie par une pratique quotidienne d’haltérophilie depuis 2022, reflète son engagement dans la durée et sa constance.
+## Professional Profile
+Marco Pyré is a technically-oriented fullstack developer with a strong appetite for cloud architecture and complex systems. He stands out through his versatility — cloud, back-end, front-end, firmware — and his constant curiosity for cutting-edge technologies. Drawing from his apprenticeship at Deloitte, he has successfully tackled complex challenges ranging from serverless to low-level code analysis, including cloud pipeline optimization. In parallel, he leads ambitious personal and open-source projects. His rigorous discipline, nurtured by daily weightlifting practice since 2022, reflects his long-term commitment and consistency.
 
-Il est aujourd’hui à la recherche d’un CDI pour poursuivre son évolution vers des postes à forte composante technique ou d’architecture.
-
-Ton code est herbergé sur github a ce lien: https://github.com/marcopyre/portfolio
+He is currently seeking a permanent position to continue his evolution toward roles with strong technical or architectural components.

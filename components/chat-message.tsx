@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import MarkdownRenderer from "./markdown-renderer";
 
@@ -12,18 +12,46 @@ export default function ChatMessage({
     content: string;
     role: "user" | "assistant";
     timestamp: Date;
-    isWelcome?: boolean;
     images?: string[];
   };
   isClient: boolean;
-  formatTime: (date: Date) => string;
 }) {
+  const [isVisible, setIsVisible] = useState(false);
+  const messageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.2,
+        rootMargin: "20px",
+      }
+    );
+
+    if (messageRef.current) {
+      observer.observe(messageRef.current);
+    }
+
+    return () => {
+      if (messageRef.current) {
+        observer.unobserve(messageRef.current);
+      }
+    };
+  }, []);
+
   return (
     <div
-      className={`flex items-start space-x-4 animate-slide-up ${
-        message.role === "user" ? "flex-row-reverse space-x-reverse" : ""
-      }`}
-      style={{ animationDelay: `${message.index * 0.1}s` }}
+      ref={messageRef}
+      className={`flex items-start space-x-4 transition-all duration-700 ease-out ${
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+      } ${message.role === "user" ? "flex-row-reverse space-x-reverse" : ""}`}
     >
       <div
         className={`flex-1 max-w-[85%] ${
@@ -44,11 +72,7 @@ export default function ChatMessage({
               </p>
             ) : (
               <>
-                <MarkdownRenderer
-                  content={
-                    message.isWelcome ? message.tWelcome : message.content
-                  }
-                />
+                <MarkdownRenderer content={message.content} />
                 {Array.isArray(message.images) && message.images.length > 0 && (
                   <div
                     style={{
@@ -63,8 +87,11 @@ export default function ChatMessage({
                         key={img + idx}
                         src={img}
                         alt={`Image ${idx + 1}`}
+                        width={1000}
+                        height={600}
                         style={{
                           maxWidth: "100%",
+                          height: "auto",
                           borderRadius: 8,
                           boxShadow: "0 2px 12px #0004",
                         }}

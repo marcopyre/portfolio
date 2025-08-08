@@ -1,168 +1,167 @@
 from datasets import Dataset
 from huggingface_hub import login, HfApi
-import pandas as pd
 
 DATASET_NAME = "marcopyre/portfolio-knowledge-base"
 
-knowledge_base_data = [
+knowledge_base_data = knowledge_base_data = [
     {
         "id": "contact",
         "category": "contact",
-        "title": "Informations de Contact",
-        "content": "Marco Pyré - Développeur Fullstack & Ingénierie Cloud — Orienté Architecture\nEmail: ytmarcopyre@gmail.com\nGitHub: https://github.com/marcopyre\nPortfolio: https://github.com/marcopyre/portfolio\nStatut: Recherche d'un CDI post-études (2025)",
+        "title": "Contact Information",
+        "content": "Marco Pyré – Fullstack Developer & Cloud Engineering — Architecture Oriented\nEmail: ytmarcopyre@gmail.com\nGitHub: https://github.com/marcopyre\nPortfolio: https://github.com/marcopyre/portfolio\nStatus: Seeking a full-time position post-graduation (2025)",
         "keywords": ["contact", "email", "github", "marco", "pyré", "portfolio"],
         "priority": 1
     },
     {
         "id": "experience_deloitte",
         "category": "experience",
-        "title": "Expérience Deloitte",
-        "content": "Deloitte, Grenoble — Alternant Développeur Cloud (Septembre 2022 - Aujourd'hui)\nProjets clés :\n- Pernod Ricard - Data Portal : Conception et développement d'une solution de gestion de données, intégration cloud, architecture serverless, développement fullstack, stack: Angular, NestJS, PostgreSQL. Formation des nouveaux développeurs lors de la passation.\n- World Athletics - Stats Zone Pro : Développement d'interfaces modernes, intégration de microservices, cloud natif, stack: NextJS, Strapi. Développeur fullstack, participation à la conception de l'architecture, DevOps et publication dans le cloud AWS.\n- Deloitte - Neptune : Développement d'un SaaS modulaire, adaptable aux différents clients et déployable rapidement, utilisé comme projet vitrine de l'entreprise, stack: Angular, NestJS, PostgreSQL. Développeur fullstack et cloud, participation à tout le développement de l'application, mise en place de l'assistant IA, encadrement du déploiement Azure (certification AZ-204).\n- Odyssee : Refection totale d'un SaaS, utilisé dans un contexte scolaire, stack: Angular, NestJS, PostgreSQL.\nDéfis techniques : Résolution de bugs complexes au niveau du compilateur JavaScript via reverse engineering, collaboration sur des choix d'architecture cloud avec fort impact technique.",
-        "keywords": ["deloitte", "alternant", "cloud", "angular", "nestjs", "pernod", "ricard", "world athletics", "azure", "aws", "devops", "saas", "ia", "reverse engineering"],
+        "title": "Deloitte Experience",
+        "content": "Deloitte, Grenoble — Cloud Developer Apprentice (September 2022 - Present)\nKey projects:\n- Pernod Ricard - Data Portal: Designed and developed a data management solution, cloud integration, serverless architecture, fullstack development, stack: Angular, NestJS, PostgreSQL. Trained new developers during the handover.\n- World Athletics - Stats Zone Pro: Built modern interfaces, integrated microservices, cloud-native deployment, stack: NextJS, Strapi. Fullstack developer, contributed to architectural design, DevOps, and cloud publishing (AWS).\n- Deloitte - Neptune: Developed a modular SaaS product, adaptable to various clients and quickly deployable, used as a company showcase project, stack: Angular, NestJS, PostgreSQL. Fullstack and cloud developer, led full app development, integrated an AI assistant, and supervised Azure deployment (AZ-204 certified).\n- Odyssee: Complete overhaul of a SaaS used in an educational context, stack: Angular, NestJS, PostgreSQL.\nTechnical challenges: Solved complex JavaScript compiler bugs via reverse engineering, collaborated on impactful cloud architecture decisions.",
+        "keywords": ["deloitte", "apprentice", "cloud", "angular", "nestjs", "pernod", "ricard", "world athletics", "azure", "aws", "devops", "saas", "ai", "reverse engineering"],
         "priority": 2
     },
     {
         "id": "experience_hurence_oracle",
         "category": "experience",
-        "title": "Expérience Hurence et Oracle",
-        "content": "Hurence, Grenoble — Stagiaire (Mai 2021 - Juin 2021) : Développement d'une interface de gestion de données massives avec frameworks Big Data\nOracle, Grenoble — Stagiaire (Décembre 2015) : Développement d'un logiciel d'encryptage",
-        "keywords": ["hurence", "oracle", "stage", "big data", "encryptage", "données massives"],
+        "title": "Hurence and Oracle Experience",
+        "content": "Hurence, Grenoble — Intern (May 2021 - June 2021): Developed a big data management interface using Big Data frameworks.\nOracle, Grenoble — Intern (December 2015): Developed encryption software.",
+        "keywords": ["hurence", "oracle", "internship", "big data", "encryption", "data"],
         "priority": 3
     },
     {
         "id": "formation",
         "category": "formation",
-        "title": "Formation",
-        "content": "Master Expert en informatique et systèmes d'information - Epsi, Grenoble (2023 - 2025)\nLicence Concepteur Développeur d'Applications - Epsi, Grenoble (2020 - 2023)",
-        "keywords": ["formation", "epsi", "grenoble", "master", "licence", "informatique", "études"],
+        "title": "Education",
+        "content": "Master's Degree – IT and Information Systems Expert - Epsi, Grenoble (2023 - 2025)\nBachelor's Degree – Application Developer - Epsi, Grenoble (2020 - 2023)",
+        "keywords": ["education", "epsi", "grenoble", "master", "bachelor", "computer science", "studies"],
         "priority": 3
     },
     {
         "id": "competences_cloud",
         "category": "competences",
-        "title": "Compétences Cloud & Infrastructure",
-        "content": "Expertise : Architecture cloud native, Serverless, FinOps, déploiement automatisé\nPlateformes : AWS, Azure, GCP\nDevOps : Docker, Kubernetes, CI/CD, IaC (Terraform)\nSystèmes : Linux, Windows",
+        "title": "Cloud & Infrastructure Skills",
+        "content": "Expertise: Cloud-native architecture, Serverless, FinOps, automated deployment\nPlatforms: AWS, Azure, GCP\nDevOps: Docker, Kubernetes, CI/CD, IaC (Terraform)\nSystems: Linux, Windows",
         "keywords": ["cloud", "aws", "azure", "gcp", "docker", "kubernetes", "terraform", "devops", "finops", "serverless"],
         "priority": 2
     },
     {
         "id": "competences_dev",
         "category": "competences",
-        "title": "Compétences Développement",
-        "content": "Langages : TypeScript, JavaScript, C++, C, Python, Java, Scala, Kotlin, Swift, C#, R, SQL, CSS, HTML\nFrameworks : NestJS, Express, Strapi, AngularJS, Next.js, SwiftUI\nOutils : Node.js, Git, VSCode, XCode, PlatformIO, Knime, Jest",
-        "keywords": ["typescript", "javascript", "python", "nestjs", "nextjs", "xcode", "swiftui", "platformio", "langages", "frameworks", "git", "vscode"],
+        "title": "Development Skills",
+        "content": "Languages: TypeScript, JavaScript, C++, C, Python, Java, Scala, Kotlin, Swift, C#, R, SQL, CSS, HTML\nFrameworks: NestJS, Express, Strapi, AngularJS, Next.js, SwiftUI\nTools: Node.js, Git, VSCode, XCode, PlatformIO, Knime, Jest",
+        "keywords": ["typescript", "javascript", "python", "nestjs", "nextjs", "xcode", "swiftui", "platformio", "languages", "frameworks", "git", "vscode"],
         "priority": 2
     },
     {
         "id": "competences_db",
         "category": "competences",
-        "title": "Bases de Données",
-        "content": "SQL : PostgreSQL, MySQL, SQLite\nNoSQL : MongoDB",
-        "keywords": ["postgresql", "mysql", "mongodb", "sqlite", "sql", "nosql", "bases de données"],
+        "title": "Databases",
+        "content": "SQL: PostgreSQL, MySQL, SQLite\nNoSQL: MongoDB",
+        "keywords": ["postgresql", "mysql", "mongodb", "sqlite", "sql", "nosql", "databases"],
         "priority": 3
     },
     {
         "id": "competences_divers",
         "category": "competences",
-        "title": "Spécialisations et Autres Compétences",
-        "content": "Architecture : Cloud, base de données, microservices\nFirmware / Hardware : Développement de PCB, conception de firmware\nData : Machine Learning, Data Mining, Big Data, visualisation\nAutres : Méthodologies agiles, gestion de projet, gouvernance SI",
-        "keywords": ["architecture", "firmware", "hardware", "pcb", "machine learning", "gouvernance", "gestion", "microservices", "agile"],
+        "title": "Specializations & Other Skills",
+        "content": "Architecture: Cloud, database, microservices\nFirmware / Hardware: PCB development, firmware design\nData: Machine Learning, Data Mining, Big Data, visualization\nOthers: Agile methodologies, project management, IT governance",
+        "keywords": ["architecture", "firmware", "hardware", "pcb", "machine learning", "governance", "management", "microservices", "agile"],
         "priority": 3
     },
     {
         "id": "projets",
         "category": "projets",
-        "title": "Projets Personnels",
-        "content": "Ostea38 : Site vitrine pour une ostéopathe animalière, mis en place dans un objectif de limitation de coût tout en maximisant les performances (FinOps), développé en NextJS, utilisation de CloudFlare en tant que CDN, hébergé sur Azure, un gros travail de SEO a été effectué afin d'améliorer le référencement sur Google, qui a résulté en une première position dans les recherches, devant des sites CMS (WordPress, PrestaShop...).\nApp iOS avec Siri IA intégrée : Application mobile intelligente avec commandes vocales avancées, stack: Swift, SwiftUI.\nPCB custom : Développement d'une carte électronique avec firmware embarqué.\nProjets open-source : Contributions sur GitHub dans divers domaines (firmware, cloud, outils dev).",
-        "keywords": ["osteopathie", "ios", "siri", "swift", "nextjs", "azure", "finops", "seo", "github", "open-source", "pcb", "firmware", "cloudflare", "wordpress"],
+        "title": "Personal Projects",
+        "content": "Ostea38: Showcase site for an animal osteopath, built with cost optimization and performance in mind (FinOps), developed with NextJS, CloudFlare as CDN, hosted on Azure. Extensive SEO work resulted in top Google ranking, ahead of CMS platforms (WordPress, PrestaShop...).\niOS App with Integrated Siri AI: Smart mobile app with advanced voice commands, stack: Swift, SwiftUI.\nCustom PCB: Developed an electronic board with embedded firmware.\nOpen-source Projects: GitHub contributions across various areas (firmware, cloud, dev tools).",
+        "keywords": ["osteopathy", "ios", "siri", "swift", "nextjs", "azure", "finops", "seo", "github", "open-source", "pcb", "firmware", "cloudflare", "wordpress"],
         "priority": 3
     },
     {
         "id": "certifications",
         "category": "certifications",
         "title": "Certifications",
-        "content": "Microsoft Certified: Azure Developer Associate (Niveau 2)\nCertification n° 7AD53B-G21DD4",
+        "content": "Microsoft Certified: Azure Developer Associate (Level 2)\nCertificate ID: 7AD53B-G21DD4",
         "keywords": ["certification", "microsoft", "azure", "developer", "associate", "az204"],
         "priority": 3
     },
     {
         "id": "langues",
         "category": "langues",
-        "title": "Langues",
-        "content": "Français : Langue maternelle\nAnglais : Courant (C2)",
-        "keywords": ["langue", "français", "anglais", "c2", "langues"],
+        "title": "Languages",
+        "content": "French: Native\nEnglish: Fluent (C2)",
+        "keywords": ["language", "french", "english", "c2", "languages"],
         "priority": 3
     },
     {
         "id": "profil",
         "category": "profil",
-        "title": "Profil Professionnel",
-        "content": "Marco Pyré est un développeur fullstack orienté technique, avec une forte appétence pour l'architecture cloud et les systèmes complexes. Il se distingue par sa polyvalence — cloud, back-end, front-end, firmware — et par sa curiosité constante pour les technologies de pointe. Fort de son alternance chez Deloitte, il a su relever des défis complexes allant du serverless à l'analyse bas-niveau de code, en passant par l'optimisation de pipelines cloud. En parallèle, il mène des projets personnels et open-source ambitieux. Sa discipline rigoureuse, nourrie par une pratique quotidienne d'haltérophilie depuis 2022, reflète son engagement dans la durée et sa constance. Il est aujourd'hui à la recherche d'un CDI pour poursuivre son évolution vers des postes à forte composante technique ou d'architecture.",
-        "keywords": ["fullstack", "architecture", "polyvalent", "deloitte", "haltérophilie", "cdi", "profil", "cloud", "systèmes complexes", "serverless", "pipelines"],
+        "title": "Professional Profile",
+        "content": "Marco Pyré is a technically oriented fullstack developer with a strong focus on cloud architecture and complex systems. He stands out for his versatility — cloud, back-end, front-end, firmware — and his constant curiosity for cutting-edge technologies. Through his apprenticeship at Deloitte, he tackled complex challenges from serverless architectures to low-level code analysis and cloud pipeline optimization. In parallel, he leads ambitious personal and open-source projects. His rigorous discipline, reinforced by daily weight training since 2022, reflects his long-term commitment and consistency. He is now looking for a full-time position to grow into technical or architecture-focused roles.",
+        "keywords": ["fullstack", "architecture", "versatile", "deloitte", "weightlifting", "full-time", "profile", "cloud", "complex systems", "serverless", "pipelines"],
         "priority": 1
     },
     {
         "id": "motivation_passion",
         "category": "rh",
-        "title": "Motivation et Passion",
-        "content": "Pourquoi ce domaine ? J'ai choisi ce domaine par passion, car depuis toujours je touche à un PC. Par souci d'apprendre, je me suis intéressé à comment il fonctionnait, puis une passion pour l'informatique en a découlé.\nQu'est-ce qui me motive ? Ce qui me motive le plus, c'est de faire ce qui me plaît. Si ce ne serait pas mon travail, je développerais quand même. En fait, je passe la plupart de mon temps à développer. Je passe mon temps libre en salle de sport ou devant mon ordinateur, à imaginer et construire de nouvelles choses.",
-        "keywords": ["motivation", "passion", "pc", "informatique", "développement", "sport", "haltérophilie", "construire"],
+        "title": "Motivation and Passion",
+        "content": "Why this field? I chose this field out of passion. I've always been hands-on with computers. Driven by a thirst for knowledge, I started exploring how they work, and naturally developed a love for IT.\nWhat motivates me? What motivates me most is doing what I love. Even if it weren’t my job, I would still be coding. I spend most of my time developing, either at the gym or in front of my computer, imagining and building new things.",
+        "keywords": ["motivation", "passion", "computer", "IT", "development", "gym", "weightlifting", "building"],
         "priority": 2
     },
     {
         "id": "evolution_carriere",
         "category": "rh",
-        "title": "Évolution de Carrière",
-        "content": "Où vous voyez-vous dans 5 ans ? J'aimerais évoluer vers un poste Senior dans le même domaine, ou m'orienter vers un poste d'architecte Cloud, afin d'évoluer et de voir plus de choses.",
-        "keywords": ["évolution", "carrière", "senior", "architecte", "cloud", "5 ans"],
+        "title": "Career Growth",
+        "content": "Where do you see yourself in 5 years? I hope to evolve into a Senior role in the same field or move toward a Cloud Architect position to broaden my horizons.",
+        "keywords": ["career", "growth", "senior", "architect", "cloud", "5 years"],
         "priority": 2
     },
     {
         "id": "projet_fier",
         "category": "rh",
-        "title": "Projet Dont Je Suis Fier",
-        "content": "Pouvez-vous me décrire un projet dont vous êtes particulièrement fier ? Cette question est difficile, c'est comme me demander de choisir un enfant favori. J'ai cependant une préférence pour la complexité technique et le challenge. Je dirais donc que mon projet favori serait le projet AirF, qui m'a énormément challengé et sur lequel j'ai beaucoup appris.",
-        "keywords": ["projet", "fier", "complexité", "challenge", "airf", "apprentissage"],
+        "title": "Proud Project",
+        "content": "Can you describe a project you're particularly proud of? That’s a tough one — like picking a favorite child. However, I lean towards technically complex and challenging projects. I’d say the AirF project, which pushed me to my limits and taught me a lot, is the one I’m most proud of.",
+        "keywords": ["project", "proud", "complexity", "challenge", "airf", "learning"],
         "priority": 3
     },
     {
         "id": "defi_professionnel",
         "category": "rh",
-        "title": "Plus Grand Défi Professionnel",
-        "content": "Quel a été votre plus grand défi professionnel et comment l'avez-vous surmonté ? Mon plus grand défi professionnel était sûrement ma certification Azure, que j'ai obtenue après beaucoup d'apprentissage et de persévérance.",
-        "keywords": ["défi", "professionnel", "certification", "azure", "apprentissage", "persévérance"],
+        "title": "Greatest Professional Challenge",
+        "content": "What was your biggest professional challenge and how did you overcome it? My greatest professional challenge was likely earning my Azure certification, which I achieved through dedication and persistence.",
+        "keywords": ["challenge", "professional", "certification", "azure", "learning", "perseverance"],
         "priority": 3
     },
     {
         "id": "resultats_concrets",
         "category": "rh",
-        "title": "Résultats Concrets",
-        "content": "Quels résultats concrets avez-vous obtenus dans vos précédents postes ? Lors de déploiement d'applications auprès de clients, leur satisfaction est pour moi le meilleur retour que l'on puisse avoir.",
-        "keywords": ["résultats", "concrets", "déploiement", "clients", "satisfaction"],
+        "title": "Tangible Results",
+        "content": "What concrete results have you achieved in your past roles? During app deployments for clients, their satisfaction has always been the most rewarding result for me.",
+        "keywords": ["results", "concrete", "deployment", "clients", "satisfaction"],
         "priority": 3
     },
     {
         "id": "travail_equipe",
         "category": "rh",
-        "title": "Travail en Équipe",
-        "content": "Comment travaillez-vous en équipe ? J'ai pour habitude de mettre en place les méthodes agiles.",
-        "keywords": ["équipe", "travail", "méthodes", "agiles", "collaboration"],
+        "title": "Teamwork",
+        "content": "How do you work in a team? I usually implement agile methodologies.",
+        "keywords": ["team", "work", "methods", "agile", "collaboration"],
         "priority": 3
     },
     {
         "id": "gestion_stress",
         "category": "rh",
-        "title": "Gestion du Stress",
-        "content": "Comment gérez-vous le stress et les deadlines ? De mon point de vue, je les gère très bien. Je ne suis pas de nature stressée, je garde la tête froide et je me concentre sur mon objectif.",
-        "keywords": ["stress", "deadlines", "gestion", "tête froide", "concentration", "objectif"],
+        "title": "Stress Management",
+        "content": "How do you handle stress and deadlines? I handle them well. I’m not naturally stressed, I stay calm and focused on my goals.",
+        "keywords": ["stress", "deadlines", "management", "calm", "focus", "goal"],
         "priority": 3
     }
 ]
 
 
 def create_dataset():
-    df = pd.DataFrame(knowledge_base_data)
-    return Dataset.from_pandas(df)
+    # Crée directement depuis une liste de dictionnaires, pas besoin de pandas
+    return Dataset.from_list(knowledge_base_data)
 
 def upload_to_huggingface(dataset):
     dataset.push_to_hub(

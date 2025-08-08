@@ -44,7 +44,7 @@ export default function QuickQuestions({
   const titleTransition = useContentTransition(
     translation("quick_questions_title"),
     {
-      type: "swap",
+      type: "default",
       duration: 400,
       key: "title-quickquestions",
     }

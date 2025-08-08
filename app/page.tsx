@@ -47,9 +47,6 @@ export default function Portfolio() {
     link?: string;
   }>({ open: false, question: "", onConfirm: null });
 
-  const [animatedText, setAnimatedText] = useState("");
-  const [animatingId, setAnimatingId] = useState<string | null>(null);
-
   const { language } = useContext(LanguageContext);
 
   const titleTransition = useContentTransition(translation("chat_title"), {
@@ -82,32 +79,6 @@ export default function Portfolio() {
 
   const hasRealMessages = useMemo(() => {
     return messages.some((msg) => !msg.isWelcome);
-  }, [messages]);
-
-  useEffect(() => {
-    if (messages.length === 0) return;
-    const lastMsg = messages[messages.length - 1];
-    if (lastMsg.role !== "assistant" || !lastMsg.content || lastMsg.isWelcome) {
-      setAnimatedText("");
-      setAnimatingId(null);
-      return;
-    }
-    setAnimatedText("");
-    setAnimatingId(lastMsg.id);
-    let i = 0;
-    const interval = setInterval(() => {
-      setAnimatedText(() => {
-        if (i >= lastMsg.content.length) {
-          clearInterval(interval);
-          setAnimatingId(null);
-          return lastMsg.content;
-        }
-        const next = lastMsg.content.slice(0, i + 1);
-        i++;
-        return next;
-      });
-    }, 1);
-    return () => clearInterval(interval);
   }, [messages]);
 
   const handleSubmit = async (e: React.FormEvent | React.MouseEvent) => {
@@ -238,9 +209,6 @@ export default function Portfolio() {
     }
   }, [messages]);
 
-  const formatTime = (date: Date) =>
-    isClient ? date.toLocaleTimeString() : "";
-
   const quickQuestions = useMemo(() => {
     return quickQuestionsKeys.map((key) => translation(key));
   }, [translation]);
@@ -248,44 +216,40 @@ export default function Portfolio() {
   return (
     <div className="min-h-screen bg-[#2b2928] relative overflow-hidden flex flex-col">
       {showChatArea && (
-        <div className="flex-1 p-4 sm:p-6 animate-[slideUp_0.6s_ease-out_forwards]">
-          <div className="w-full max-w-4xl mx-auto h-full flex flex-col">
-            <div className="flex-1 mb-6 rounded-2xl overflow-hidden">
-              <ScrollArea className="h-full">
-                <div
-                  ref={scrollAreaRef}
-                  className="p-4 md:p-6 space-y-6 scrollbar-thin scrollbar-track-[#2b2928] scrollbar-thumb-[#948f8c] scrollbar-thumb-rounded-full hover:scrollbar-thumb-[#a8a3a0]"
-                >
-                  {messages.map((message, index) => {
-                    const isLastAssistant =
-                      index === messages.length - 1 &&
-                      message.role === "assistant" &&
-                      !message.isWelcome;
-                    return (
-                      <ChatMessage
-                        key={message.id}
-                        message={{
-                          ...message,
-                          content:
-                            isLastAssistant && animatingId === message.id
-                              ? animatedText
-                              : message.content,
-                          index,
-                          tWelcome: translation("welcome_assistant"),
-                        }}
-                        formatTime={formatTime}
-                        isClient={isClient}
-                      />
-                    );
-                  })}
-                  {isTyping && (
-                    <TypingIndicator phrase={translation("typing_1")} />
-                  )}
-                </div>
-              </ScrollArea>
+        <>
+          <div className="flex-1 p-4 sm:p-6 animate-[slideUp_0.6s_ease-out_forwards] pb-0">
+            <div className="w-full max-w-4xl mx-auto h-full flex flex-col">
+              <div className="flex-1 mb-6 rounded-2xl overflow-hidden">
+                <ScrollArea className="h-full">
+                  <div
+                    ref={scrollAreaRef}
+                    className="p-4 md:p-6 space-y-6 scrollbar-thin scrollbar-track-[#2b2928] scrollbar-thumb-[#948f8c] scrollbar-thumb-rounded-full hover:scrollbar-thumb-[#a8a3a0] pb-6"
+                  >
+                    {messages.map((message, index) => {
+                      return (
+                        <ChatMessage
+                          key={message.id}
+                          message={{
+                            ...message,
+                            content: message.content,
+                            index,
+                            tWelcome: translation("welcome_assistant"),
+                          }}
+                          isClient={isClient}
+                        />
+                      );
+                    })}
+                    {isTyping && (
+                      <TypingIndicator phrase={translation("typing_1")} />
+                    )}
+                  </div>
+                </ScrollArea>
+              </div>
             </div>
+          </div>
 
-            <div className="relative w-full">
+          <div className="sticky bottom-0 w-full bg-[#2b2928] p-4 sm:p-6 pt-4">
+            <div className="w-full max-w-4xl mx-auto">
               <div className="p-2 pb-10 gap-4 w-full rounded-2xl bg-[#4c4947] relative border border-white/10 shadow-lg">
                 <textarea
                   value={input}
@@ -318,7 +282,7 @@ export default function Portfolio() {
               </div>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {!showChatArea && (
