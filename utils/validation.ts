@@ -1,6 +1,6 @@
 import { logger } from "./logger";
 
-export function validateMessages(messages: unknown): {
+export function validateMessages(messages: any): {
   valid: boolean;
   error?: string;
 } {
@@ -17,7 +17,7 @@ export function validateMessages(messages: unknown): {
   }
 
   for (let i = 0; i < messages.length; i++) {
-    const message = messages[i] as { role?: unknown; content?: unknown };
+    const message = messages[i];
     if (!message.role || !message.content) {
       logger.warn("Messages validation failed: invalid message structure", {
         index: i,

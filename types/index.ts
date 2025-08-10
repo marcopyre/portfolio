@@ -24,3 +24,30 @@ export interface APIResponse {
   };
   images?: string[];
 }
+
+export interface RAGConfig {
+  minScore: number;
+  maxChunks: number;
+  minChunks: number;
+  scoreThreshold: number;
+  maxTokens?: number;
+}
+
+export interface RelevantChunk {
+  text: string;
+  score: number;
+  chunkIndex: number;
+  tokenCount?: number;
+  category?: string;
+  type?: string;
+  name?: string;
+}
+
+export interface RAGQueryResult {
+  question: string;
+  answer: string;
+  sources: Array<{
+    score: number;
+    preview: string;
+  }>;
+}

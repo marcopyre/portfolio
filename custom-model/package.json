@@ -1,0 +1,28 @@
+{
+  "name": "portfolio-uploader",
+  "version": "1.0.0",
+  "description": "Portfolio data uploader for vector database indexing",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "upload": "node index.js",
+    "dev": "node index.js"
+  },
+  "keywords": [
+    "portfolio",
+    "vector",
+    "database",
+    "embedding",
+    "pinecone"
+  ],
+  "author": "Marco Pyré",
+  "license": "MIT",
+  "dependencies": {
+    "@huggingface/inference": "^4.6.1",
+    "@pinecone-database/pinecone": "^2.2.0",
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

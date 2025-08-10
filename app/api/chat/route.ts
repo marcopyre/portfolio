@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { messages, useRAG = true } = await request.json();
+    const { messages, useRAG = false } = await request.json();
     logger.info("Request parsed", {
       requestId,
       useRAG,
@@ -60,14 +60,8 @@ export async function POST(request: NextRequest) {
       messageLength: lastUserMessage.length,
     });
 
-    
-    const chatMessages = messages;
-    logger.debug("Chat messages prepared", {
-      requestId,
-      totalMessages: chatMessages.length,
-    });
+    const response = await chatService.generateResponse(messages);
 
-    const response = await chatService.generateResponse(chatMessages);
     const images = chatService.extractImagesFromResponse(response);
 
     if (
@@ -131,7 +125,7 @@ export async function POST(request: NextRequest) {
       response: cleanResponse,
       metadata: {
         useRAG,
-        knowledgeBaseSource: "RAG",
+        knowledgeBaseSource: useRAG ? "RAG" : "Full KB",
         timestamp: new Date().toISOString(),
       },
       images,

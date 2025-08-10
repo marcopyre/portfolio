@@ -1,44 +1,27 @@
 import { InferenceClient } from "@huggingface/inference";
 import { Pinecone } from "@pinecone-database/pinecone";
-import { ChatMessage, FunctionCall } from "../types";
+import { franc } from "franc";
+import {
+  ChatMessage,
+  FunctionCall,
+  RAGConfig,
+  RAGQueryResult,
+  RelevantChunk,
+} from "../types";
 import { logger } from "@/utils/logger";
 import { EmailService } from "./email-service";
-
-interface RAGConfig {
-  minScore: number;
-  maxChunks: number;
-  minChunks: number;
-  scoreThreshold: number;
-  maxTokens?: number;
-}
-
-interface RelevantChunk {
-  text: string;
-  score: number;
-  chunkIndex: number;
-  tokenCount?: number;
-}
-
-interface RAGQueryResult {
-  question: string;
-  answer: string;
-  sources: Array<{
-    score: number;
-    preview: string;
-  }>;
-}
-
 
 export class ChatService {
   private client: InferenceClient;
   private emailService: EmailService;
   private pinecone: Pinecone;
-  private index: ReturnType<Pinecone["index"]>;
+  private index: any;
   private indexName: string = "portfolio-knowledge-base";
-  private embeddingModel: string = "sentence-transformers/all-MiniLM-L6-v2";
+  private embeddingModel: string =
+    "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2";
 
   private ragConfig: RAGConfig = {
-    minScore: 0.3,
+    minScore: 0.2,
     maxChunks: 10,
     minChunks: 1,
     scoreThreshold: 0.7,
@@ -48,16 +31,45 @@ export class ChatService {
   constructor(token: string) {
     this.client = new InferenceClient(token);
     this.emailService = new EmailService();
-
     this.pinecone = new Pinecone({
       apiKey: process.env.PINECONE_API_KEY!,
     });
-
     this.index = this.pinecone.index(this.indexName);
     logger.info("ChatService with RAG initialized");
   }
 
-  
+  private detectUserLanguage(text: string): string {
+    try {
+      const langCode = franc(text);
+      logger.debug("Language detected", { text: text.slice(0, 50), langCode });
+      return langCode === "fra" ? "fr" : "en";
+    } catch (error) {
+      logger.warn("Language detection failed, defaulting to English", error);
+      return "en";
+    }
+  }
+
+  private async translateToEnglish(text: string): Promise<string> {
+    const detectedLang = this.detectUserLanguage(text);
+
+    if (detectedLang === "en") return text;
+
+    try {
+      const res: any = await (this.client as any).translation({
+        model: "facebook/nllb-200-distilled-600M",
+        inputs: text,
+        source_language: "fra_Latn",
+        target_language: "eng_Latn",
+      });
+
+      const result = Array.isArray(res) ? res[0] : res;
+      return result?.translation_text || text;
+    } catch (error) {
+      logger.warn("Translation failed, using original text", error);
+      return text;
+    }
+  }
+
   private async generateEmbedding(text: string): Promise<number[]> {
     try {
       const response = await this.client.featureExtraction({
@@ -66,173 +78,138 @@ export class ChatService {
       });
 
       if (Array.isArray(response)) {
-        if (Array.isArray(response[0])) {
-          return response[0] as number[];
-        }
-        return response as number[];
+        return Array.isArray(response[0])
+          ? (response[0] as number[])
+          : (response as number[]);
       }
-
-      if (typeof response === "number") {
-        return [response];
-      }
-
-      return Array.from(response as ArrayLike<number>);
+      return typeof response === "number"
+        ? [response]
+        : Array.from(response as ArrayLike<number>);
     } catch (error) {
       logger.error("Error generating embedding", error);
       throw error;
     }
   }
 
-  
   private estimateTokens(text: string): number {
     return Math.ceil(text.length / 4);
   }
 
-  
-  private async searchRelevantChunks(
-    query: string,
-    topK: number = 3
-  ): Promise<RelevantChunk[]> {
-    try {
-      logger.debug(`Searching for: "${query}"`);
+  private async detectQueryCategory(query: string): Promise<string | null> {
+    const queryEn = await this.translateToEnglish(query);
+    const categories = [
+      "projects",
+      "experience",
+      "skills",
+      "education",
+      "certifications",
+      "achievements",
+    ];
 
-      const queryEmbedding = await this.generateEmbedding(query);
+    for (const category of categories) {
+      if (new RegExp(`\\b${category}\\b`, "i").test(queryEn)) {
+        return category;
+      }
+    }
+    return null;
+  }
+
+  private async searchRelevantChunks(query: string): Promise<RelevantChunk[]> {
+    try {
+      const targetCategory = await this.detectQueryCategory(query);
+      const queryEn = await this.translateToEnglish(query);
+      const queryEmbedding = await this.generateEmbedding(queryEn);
 
       const searchResponse = await this.index.query({
         vector: queryEmbedding,
-        topK: topK,
+        topK: this.ragConfig.maxChunks,
         includeMetadata: true,
+        filter: targetCategory
+          ? { category: { $eq: targetCategory } }
+          : undefined,
       });
 
-      const matches =
-        (
-          searchResponse as unknown as {
-            matches?: Array<{
-              metadata?: { text?: string; chunk_index?: number };
-              score?: number;
-            }>;
-          }
-        ).matches ?? [];
+      const matches = searchResponse?.matches || [];
+      let chunks: RelevantChunk[] = matches.map((match: any) => {
+        const metadata = match?.metadata || {};
+        return {
+          text: metadata.text || metadata.content || "",
+          score: match.score,
+          chunkIndex: metadata.chunk_index || metadata.chunkIndex || -1,
+          tokenCount: this.estimateTokens(
+            metadata.text || metadata.content || ""
+          ),
+          category: metadata.category,
+          type: metadata.type,
+          name: metadata.name,
+        };
+      });
 
-      const relevantChunks: RelevantChunk[] = matches.map((match) => ({
-        text: match.metadata?.text ?? "",
-        score: match.score ?? 0,
-        chunkIndex: match.metadata?.chunk_index ?? 0,
-      }));
+      if (chunks.length === 0 && targetCategory) {
+        const fallbackResponse = await this.index.query({
+          vector: queryEmbedding,
+          topK: this.ragConfig.maxChunks,
+          includeMetadata: true,
+        });
 
-      logger.info(`Found ${relevantChunks.length} relevant chunks`);
-      return relevantChunks;
+        chunks = (fallbackResponse?.matches || []).map((match: any) => {
+          const metadata = match?.metadata || {};
+          return {
+            text: metadata.text || metadata.content || "",
+            score: match.score,
+            chunkIndex: metadata.chunk_index || metadata.chunkIndex || -1,
+            tokenCount: this.estimateTokens(
+              metadata.text || metadata.content || ""
+            ),
+            category: metadata.category,
+            type: metadata.type,
+            name: metadata.name,
+          };
+        });
+      }
+
+      if (targetCategory && chunks.length > 0) {
+        chunks.sort((a, b) => {
+          const aBoost = a.category === targetCategory ? 1 : 0;
+          const bBoost = b.category === targetCategory ? 1 : 0;
+          return aBoost !== bBoost ? bBoost - aBoost : b.score - a.score;
+        });
+      }
+
+      return this.applyDynamicFiltering(chunks);
     } catch (error) {
       logger.error("Error searching relevant chunks", error);
       throw error;
     }
   }
 
-  
-  private async searchRelevantChunksWithDynamicFiltering(
-    query: string
-  ): Promise<RelevantChunk[]> {
-    try {
-      logger.debug(`Searching for: "${query}"`);
-
-      const queryEmbedding = await this.generateEmbedding(query);
-
-      const searchResponse = await this.index.query({
-        vector: queryEmbedding,
-        topK: this.ragConfig.maxChunks,
-        includeMetadata: true,
-      });
-
-      const matches =
-        (
-          searchResponse as unknown as {
-            matches?: Array<{
-              metadata?: { text?: string; chunk_index?: number };
-              score?: number;
-            }>;
-          }
-        ).matches ?? [];
-
-      const allChunks: RelevantChunk[] = matches.map((match) => ({
-        text: match.metadata?.text ?? "",
-        score: match.score ?? 0,
-        chunkIndex: match.metadata?.chunk_index ?? 0,
-        tokenCount: this.estimateTokens(match.metadata?.text ?? ""),
-      }));
-
-      const relevantChunks = this.applyDynamicFiltering(allChunks);
-
-      logger.info(
-        `Found ${relevantChunks.length} relevant chunks after dynamic filtering`,
-        {
-          totalCandidates: allChunks.length,
-          averageScore:
-            relevantChunks.length > 0
-              ? relevantChunks.reduce((sum, chunk) => sum + chunk.score, 0) /
-                relevantChunks.length
-              : 0,
-          scoreRange:
-            relevantChunks.length > 0
-              ? {
-                  min: Math.min(...relevantChunks.map((c) => c.score)),
-                  max: Math.max(...relevantChunks.map((c) => c.score)),
-                }
-              : { min: 0, max: 0 },
-        }
-      );
-
-      return relevantChunks;
-    } catch (error) {
-      logger.error(
-        "Error searching relevant chunks with dynamic filtering",
-        error
-      );
-      throw error;
-    }
-  }
-
-  
   private applyDynamicFiltering(chunks: RelevantChunk[]): RelevantChunk[] {
     const minScoreFiltered = chunks.filter(
       (chunk) => chunk.score >= this.ragConfig.minScore
     );
 
     if (minScoreFiltered.length === 0) {
-      logger.warn("No chunks meet minimum score requirement", {
-        minScore: this.ragConfig.minScore,
-        bestScore: chunks[0]?.score || 0,
-      });
       return chunks.slice(0, 1);
     }
 
     const highQualityChunks = minScoreFiltered.filter(
       (chunk) => chunk.score >= this.ragConfig.scoreThreshold
     );
-
-    let selectedChunks: RelevantChunk[] = [];
-
-    if (highQualityChunks.length >= 3) {
-      selectedChunks = highQualityChunks.slice(0, 5);
-      logger.debug("Using high-quality chunks strategy", {
-        count: selectedChunks.length,
-      });
-    } else {
-      selectedChunks = this.selectChunksByScoreGap(minScoreFiltered);
-    }
+    let selectedChunks =
+      highQualityChunks.length >= 3
+        ? highQualityChunks.slice(0, 5)
+        : this.selectChunksByScoreGap(minScoreFiltered);
 
     if (this.ragConfig.maxTokens) {
       selectedChunks = this.limitByTokens(selectedChunks);
     }
 
-    const minChunksToUse = Math.min(
-      this.ragConfig.minChunks,
-      selectedChunks.length
+    return selectedChunks.slice(
+      0,
+      Math.max(selectedChunks.length, this.ragConfig.minChunks)
     );
-    const finalChunks = Math.max(selectedChunks.length, minChunksToUse);
-    return selectedChunks.slice(0, finalChunks);
   }
 
-  
   private selectChunksByScoreGap(chunks: RelevantChunk[]): RelevantChunk[] {
     if (chunks.length <= 2) return chunks;
 
@@ -240,30 +217,20 @@ export class ChatService {
     const gapThreshold = 0.1;
 
     for (let i = 1; i < chunks.length && i < this.ragConfig.maxChunks; i++) {
-      const currentScore = chunks[i].score;
-      const previousScore = chunks[i - 1].score;
-      const scoreGap = previousScore - currentScore;
+      const scoreGap = chunks[i - 1].score - chunks[i].score;
 
       if (
         scoreGap > gapThreshold &&
         selected.length >= this.ragConfig.minChunks
       ) {
-        logger.debug("Score gap detected, stopping chunk selection", {
-          scoreGap,
-          currentScore,
-          previousScore,
-          selectedCount: selected.length,
-        });
         break;
       }
-
       selected.push(chunks[i]);
     }
 
     return selected;
   }
 
-  
   private limitByTokens(chunks: RelevantChunk[]): RelevantChunk[] {
     if (!this.ragConfig.maxTokens) return chunks;
 
@@ -280,11 +247,6 @@ export class ChatService {
         selected.push(chunk);
         break;
       } else {
-        logger.debug("Token limit reached, stopping chunk selection", {
-          totalTokens,
-          limit: this.ragConfig.maxTokens,
-          selectedCount: selected.length,
-        });
         break;
       }
     }
@@ -292,235 +254,148 @@ export class ChatService {
     return selected;
   }
 
-  private async generateKnowledgeBaseFromRAG(query: string): Promise<string> {
+  private async generateKnowledgeBase(query: string): Promise<string> {
     try {
-      const relevantChunks =
-        await this.searchRelevantChunksWithDynamicFiltering(query);
+      const relevantChunks = await this.searchRelevantChunks(query);
 
       if (relevantChunks.length === 0) {
-        logger.warn("No relevant chunks found for query", { query });
-        return "Aucune information pertinente trouvée dans la base de connaissances.";
+        return "No relevant information found in the knowledge base.";
       }
 
-      const knowledgeBase = relevantChunks
+      return relevantChunks
         .map((chunk, index) => {
           const qualityLabel =
             chunk.score >= this.ragConfig.scoreThreshold
-              ? "📌 TRÈS PERTINENT"
+              ? "📌 HIGHLY RELEVANT"
               : chunk.score >= 0.5
-                ? "✓ PERTINENT"
-                : "○ RÉFÉRENCE";
+                ? "✓ RELEVANT"
+                : "○ REFERENCE";
 
           return `## Source ${index + 1} - ${qualityLabel} (Score: ${chunk.score.toFixed(3)})\n${chunk.text}`;
         })
         .join("\n\n");
-
-      const totalTokens = relevantChunks.reduce(
-        (sum, chunk) => sum + (chunk.tokenCount || 0),
-        0
-      );
-
-      logger.info("Generated dynamic knowledge base from RAG", {
-        chunksCount: relevantChunks.length,
-        knowledgeBaseLength: knowledgeBase.length,
-        estimatedTokens: totalTokens,
-        averageScore:
-          relevantChunks.length > 0
-            ? relevantChunks.reduce((sum, chunk) => sum + chunk.score, 0) /
-              relevantChunks.length
-            : 0,
-        qualityDistribution: {
-          highQuality: relevantChunks.filter(
-            (c) => c.score >= this.ragConfig.scoreThreshold
-          ).length,
-          mediumQuality: relevantChunks.filter(
-            (c) => c.score >= 0.5 && c.score < this.ragConfig.scoreThreshold
-          ).length,
-          lowQuality: relevantChunks.filter((c) => c.score < 0.5).length,
-        },
-      });
-
-      return knowledgeBase;
     } catch (error) {
-      logger.error(
-        "Error generating knowledge base from RAG with dynamic filtering",
-        error
-      );
-      return "Erreur lors de la récupération des informations depuis la base de connaissances.";
+      logger.error("Error generating knowledge base", error);
+      return "Error retrieving information from the knowledge base.";
     }
   }
 
   createSecureSystemPrompt(
     knowledgeBase: string,
-    targetLanguage: "en" | "fr"
+    userLanguage: string
   ): string {
     logger.debug("Creating system prompt", {
       knowledgeBaseLength: knowledgeBase.length,
+      userLanguage,
     });
 
-    return `# ASSISTANT MARCO PYRÉ - OPTIMISÉ POUR GEMMA 3 27B IT
+    const basePrompt = `# MARCO PYRÉ ASSISTANT - OPTIMIZED FOR GEMMA 3 27B IT
 
-Tu es un assistant spécialisé pour présenter Marco Pyré, développeur fullstack.
+You are a specialized assistant to present Marco Pyré, fullstack developer.
 
-## CONTEXTE PRINCIPAL
+## MAIN CONTEXT
 ${knowledgeBase}
 
-Tu es développé via Hugging Face, alimenté par un système RAG avec Pinecone, avec un backend API NextJS hébergé chez Vercel et un frontend NextJS sur GitHub Pages.
+You are developed via Hugging Face, powered by a RAG system with Pinecone, with a NextJS API backend hosted on Vercel and a NextJS frontend on GitHub Pages.
 
-## RÈGLES DE DÉCLENCHEMENT DE FONCTIONS - PRIORITÉ ABSOLUE
+## FUNCTION TRIGGERING RULES - ABSOLUTE PRIORITY
 
-**ATTENTION : LES FONCTIONS NE DOIVENT ÊTRE DÉCLENCHÉES QUE SUR DEMANDE EXPLICITE**
+**ATTENTION: FUNCTIONS SHOULD ONLY BE TRIGGERED ON EXPLICIT REQUEST**
 
-### CONDITIONS STRICTES POUR DÉCLENCHER UNE FONCTION :
-1. L'utilisateur DOIT utiliser un verbe d'action impératif ("télécharge", "envoie", "ouvre", "montre")
-2. OU confirmer explicitement ("oui", "d'accord", "s'il vous plaît", "je veux")
-3. OU demander directement une action ("peux-tu télécharger", "pourrais-tu envoyer")
+### STRICT CONDITIONS TO TRIGGER A FUNCTION:
+1. User MUST use an action imperative verb ("download", "send", "open", "show")
+2. OR confirm explicitly ("yes", "agreed", "please", "I want")
+3. OR directly request an action ("can you download", "could you send")
 
-### NE JAMAIS DÉCLENCHER POUR :
-- Questions informatives ("comment", "qu'est-ce que", "parlez-moi de")
-- Mentions indirectes ("j'aimerais savoir", "je suis intéressé")
-- Expressions de curiosité ("c'est intéressant", "ça m'intrigue")
+### NEVER TRIGGER FOR:
+- Informational questions ("how", "what", "tell me about")
+- Indirect mentions ("I would like to know", "I am interested")
+- Expressions of curiosity ("that's interesting", "that intrigues me")
 
-### STRATÉGIE DE RÉPONSE EN 2 ÉTAPES :
-1. **PREMIÈRE ÉTAPE** : Toujours répondre à la question avec les informations disponibles
-2. **DEUXIÈME ÉTAPE** : Proposer l'action pertinente SANS la déclencher
+### 2-STEP RESPONSE STRATEGY:
+1. **FIRST STEP**: Always answer the question with available information
+2. **SECOND STEP**: Propose the relevant action WITHOUT triggering it
 
-## FONCTIONS DISPONIBLES
+## AVAILABLE FUNCTIONS
 
 ### get_resume
-- **Déclenche SEULEMENT si** : demande explicite de téléchargement du CV
-- **Format** : [FUNCTION_CALL] get_resume: {} [/FUNCTION_CALL]
+- **Trigger ONLY if**: explicit request to download CV
+- **Format**: [FUNCTION_CALL] get_resume: {} [/FUNCTION_CALL]
 
 ### send_contact_email  
-- **Déclenche SEULEMENT si** : demande explicite d'envoi d'email
-- **Format** : [FUNCTION_CALL] send_contact_email: {} [/FUNCTION_CALL]
+- **Trigger ONLY if**: explicit request to send email
+- **Format**: [FUNCTION_CALL] send_contact_email: {} [/FUNCTION_CALL]
 
 ### get_link
-- **Déclenche SEULEMENT si** : demande explicite d'ouverture de lien
-- **Format** : [FUNCTION_CALL] get_link: {"url": "URL_EXACTE"} [/FUNCTION_CALL]
-- **Liens disponibles** :
-  - Portfolio GitHub : "https://github.com/marcopyre/portfolio"  
-  - Site ostea38 : "https://ostea38.fr"
+- **Trigger ONLY if**: explicit request to open link
+- **Format**: [FUNCTION_CALL] get_link: {"url": "EXACT_URL"} [/FUNCTION_CALL]
+- **Available links**:
+  - Portfolio GitHub: "https://github.com/marcopyre/portfolio"  
+  - Ostea38 site: "https://ostea38.fr"
 
-## EXEMPLES DE RÉPONSES CORRECTES
+## CORRECT RESPONSE EXAMPLES
 
-### Question sur l'architecture (NE PAS envoyer d'image) :
-**Utilisateur** : "Comment est structuré le portfolio ?"
-**Réponse** : "Le portfolio utilise une architecture moderne avec un backend API NextJS hébergé chez Vercel et un frontend NextJS sur GitHub Pages, alimenté par un système RAG via Hugging Face et Pinecone. Je peux vous montrer le schéma d'architecture si vous le souhaitez."
+### Architecture question (DO NOT send image):
+**User**: "How is the portfolio structured?"
+**Response**: "The portfolio uses a modern architecture with a NextJS API backend hosted on Vercel and a NextJS frontend on GitHub Pages, powered by a RAG system via Hugging Face and Pinecone. I can show you the architecture diagram if you wish."
 
-### Demande visuelle explicite (ENVOYER l'image) :
-**Utilisateur** : "Montre-moi le schéma d'architecture"
-**Réponse** : "Voici le schéma d'architecture du portfolio :
+### Explicit visual request (SEND the image):
+**User**: "Show me the architecture diagram"
+**Response**: "Here is the portfolio architecture diagram:
 [IMAGE] 1k8GsIhF6HFerkYPR33f0e9g0vFfyCr4Q [/IMAGE]"
 
-### Question informative fonction (NE PAS déclencher) :
-**Utilisateur** : "Comment puis-je contacter Marco ?"
-**Réponse** : "Marco peut être contacté à ytmarcopyre@gmail.com. Je peux également ouvrir votre client email avec un message pré-rédigé si vous le souhaitez."
+### Informational function question (DO NOT trigger):
+**User**: "How can I contact Marco?"
+**Response**: "Marco can be contacted at ytmarcopyre@gmail.com. I can also open your email client with a pre-written message if you wish."
 
-### Demande explicite fonction (DÉCLENCHER) :
-**Utilisateur** : "Envoie-moi un email de contact s'il te plaît"
-**Réponse** : "Je vais ouvrir votre client email avec un message pour Marco.
+### Explicit function request (TRIGGER):
+**User**: "Please send me a contact email"
+**Response**: "I will open your email client with a message for Marco.
 [FUNCTION_CALL] send_contact_email: {} [/FUNCTION_CALL]"
 
-## RÈGLES D'ENVOI D'IMAGES - CONTRÔLE STRICT
+## IMAGE SENDING RULES - STRICT CONTROL
 
-**ATTENTION : LES IMAGES NE DOIVENT ÊTRE ENVOYÉES QUE SUR DEMANDE EXPLICITE**
+**ATTENTION: IMAGES SHOULD ONLY BE SENT ON EXPLICIT REQUEST**
 
-### CONDITIONS STRICTES POUR ENVOYER UNE IMAGE :
-1. L'utilisateur DOIT demander explicitement à voir un schéma/diagramme ("montre-moi le schéma", "peux-tu afficher l'architecture")
-2. OU utiliser des termes visuels ("voir", "visualiser", "diagramme", "schéma", "architecture")
-3. OU confirmer après proposition ("oui, montre-moi", "d'accord pour l'image")
+### STRICT CONDITIONS TO SEND AN IMAGE:
+1. User MUST explicitly ask to see a diagram/schema ("show me the diagram", "can you display the architecture")
+2. OR use visual terms ("see", "visualize", "diagram", "schema", "architecture")
+3. OR confirm after proposal ("yes, show me", "agreed for the image")
 
-### NE JAMAIS ENVOYER D'IMAGE POUR :
-- Questions générales sur l'architecture (expliquer avec du texte)
-- Mentions indirectes de projets ou technologies
-- Conversations normales sans demande visuelle explicite
+### NEVER SEND IMAGE FOR:
+- General questions about architecture (explain with text)
+- Indirect mentions of projects or technologies
+- Normal conversations without explicit visual request
 
-### IMAGES DISPONIBLES :
-- 1k8GsIhF6HFerkYPR33f0e9g0vFfyCr4Q : Schéma architecture du portfolio
-- 1NFlRRtgvxf76hKmQRyt_IqL_3MkNJ803 : Schéma architecture du projet ostea38
+### AVAILABLE IMAGES:
+- 1k8GsIhF6HFerkYPR33f0e9g0vFfyCr4Q: Portfolio architecture diagram
+- 1NFlRRtgvxf76hKmQRyt_IqL_3MkNJ803: Ostea38 project architecture diagram
 
-### STRATÉGIE DE RÉPONSE POUR LES IMAGES :
-1. **PREMIÈRE ÉTAPE** : Répondre avec du texte descriptif
-2. **DEUXIÈME ÉTAPE** : Proposer de montrer le schéma SANS l'envoyer
-3. **TROISIÈME ÉTAPE** : Envoyer seulement si demande explicite
+### RESPONSE STRATEGY FOR IMAGES:
+1. **FIRST STEP**: Answer with descriptive text
+2. **SECOND STEP**: Propose to show the diagram WITHOUT sending it
+3. **THIRD STEP**: Send only if explicit request
 
-**Format image** : [IMAGE] nom_de_l_image [/IMAGE]
-- Ne jamais renvoyer la même image dans une conversation
+**Image format**: [IMAGE] image_name [/IMAGE]
+- Never resend the same image in a conversation
 
-## LANGUE / LANGUAGE
-- Réponds STRICTEMENT dans la langue du dernier message utilisateur: ${
-      targetLanguage === "fr" ? "Français" : "Anglais"
-    }.
-- Always answer STRICTLY in the language of the user's last message: ${
-      targetLanguage === "fr" ? "French" : "English"
-    }.
-- If the user's message changes language during the conversation, switch accordingly.
+## GENERAL INSTRUCTIONS
+- Use ONLY information from the locked context generated by the RAG system
+- Stay professional but accessible
+- Format in Markdown with appropriate emojis
+- Highlight cloud native and fullstack expertise
+- If information is missing, direct to ytmarcopyre@gmail.com
+- Value alternance experience and post-studies research
 
-## INSTRUCTIONS GÉNÉRALES
-- Utiliser uniquement les informations du contexte verrouillé généré par le système RAG
-- Rester professionnel mais accessible
-- Formater en Markdown avec des emojis appropriés
-- Mettre en avant l'expertise cloud native et fullstack
-- Si information manquante, diriger vers ytmarcopyre@gmail.com
-- Valoriser l'expérience en alternance et la recherche post-études
+## EXECUTION PRIORITIES
+1. **PRIORITY 1**: Strictly control function triggering
+2. **PRIORITY 2**: Strictly control image sending  
+3. **PRIORITY 3**: Answer with relevant information from RAG system
+4. **PRIORITY 4**: Propose actions without triggering them
 
-## PRIORITÉS D'EXÉCUTION
-1. **PRIORITÉ 1** : Contrôler strictement les déclenchements de fonctions
-2. **PRIORITÉ 2** : Contrôler strictement l'envoi d'images  
-3. **PRIORITÉ 3** : Répondre avec les informations pertinentes du système RAG
-4. **PRIORITÉ 4** : Proposer des actions sans les déclencher
-`;
-  }
+**CRITICAL LANGUAGE INSTRUCTION**: Always respond in the language of the last user message regardless of the context language.`;
 
-  async parseResponseForFunctions(
-    response: string
-  ): Promise<FunctionCall | null> {
-    logger.debug("Parsing response for functions", {
-      responseLength: response.length,
-    });
-
-    const functionRegex =
-      /\[FUNCTION_CALL\]\s*(\w+):\s*({.*?}|\{\})\s*\[\/FUNCTION_CALL\]/s;
-    const match = response.match(functionRegex);
-
-    if (match) {
-      const functionName = match[1];
-      let parameters = {};
-
-      try {
-        parameters = JSON.parse(match[2]);
-        logger.info("Function call detected", {
-          functionName,
-          parameters,
-        });
-      } catch (error) {
-        logger.error("Error parsing function parameters", {
-          functionName,
-          rawParameters: match[2],
-          error,
-        });
-      }
-
-      return {
-        name: functionName,
-        parameters,
-      };
-    }
-
-    logger.debug("No function call found in response");
-    return null;
-  }
-
-  extractImagesFromResponse(response: string): string[] {
-    const imageBlocks = Array.from(
-      response.matchAll(/\[IMAGE\](.*?)\[\/IMAGE\]/gs)
-    );
-    return imageBlocks.map((match) => {
-      const val = match[1].trim();
-      if (val.startsWith("http")) return val;
-      return `https://drive.google.com/thumbnail?id=${val}&sz=w1000`;
-    });
+    return basePrompt;
   }
 
   private convertMessagesToHuggingFaceFormat(
@@ -550,27 +425,16 @@ Tu es développé via Hugging Face, alimenté par un système RAG avec Pinecone,
   }
 
   async generateResponse(messages: ChatMessage[]): Promise<string> {
-    logger.info("Generating chat response with RAG", {
-      messageCount: messages.length,
-    });
-
     try {
       const lastUserMessage =
         messages.filter((m) => m.role === "user").pop()?.content || "";
+      const userLanguage = this.detectUserLanguage(lastUserMessage);
 
-      const dynamicKnowledgeBase =
-        await this.generateKnowledgeBaseFromRAG(lastUserMessage);
-
-      const isEnglish =
-        /[A-Za-z]/.test(lastUserMessage) &&
-        !/[àâçéèêëîïôûùüÿñæœ]/i.test(lastUserMessage);
-      const targetLanguage: "en" | "fr" = isEnglish ? "en" : "fr";
-
+      const knowledgeBase = await this.generateKnowledgeBase(lastUserMessage);
       const systemPrompt = this.createSecureSystemPrompt(
-        dynamicKnowledgeBase,
-        targetLanguage
+        knowledgeBase,
+        userLanguage
       );
-
       const messagesWithSystem = this.convertMessagesToHuggingFaceFormat(
         messages,
         systemPrompt
@@ -586,11 +450,13 @@ Tu es développé via Hugging Face, alimenté par un système RAG avec Pinecone,
 
       const response =
         chatCompletion.choices[0]?.message?.content ||
-        "Désolé, je n'ai pas pu générer de réponse appropriée.";
+        (userLanguage === "fr"
+          ? "Désolé, je n'ai pas pu générer de réponse appropriée."
+          : "Sorry, I couldn't generate an appropriate response.");
 
-      logger.info("Chat response generated successfully with RAG", {
+      logger.info("Response generated", {
+        userLanguage,
         responseLength: response.length,
-        ragChunksUsed: dynamicKnowledgeBase.split("## Source").length - 1,
       });
 
       this.emailService
@@ -599,133 +465,89 @@ Tu es développé via Hugging Face, alimenté par un système RAG avec Pinecone,
           response,
           new Date().toISOString()
         )
-        .catch((error) => {
-          logger.error("Failed to send conversation log", error);
-        });
+        .catch((error) =>
+          logger.error("Failed to send conversation log", error)
+        );
 
       return response;
     } catch (error) {
-      logger.error("Error generating chat response with RAG", error);
+      logger.error("Error generating response", error);
 
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      const isTokenError =
-        errorMessage.includes("quota") ||
-        errorMessage.includes("rate limit") ||
-        errorMessage.includes("insufficient") ||
-        errorMessage.includes("credits") ||
-        errorMessage.includes("payment") ||
-        errorMessage.includes("billing");
+      if (this.isTokenError(error)) {
+        await this.emailService.sendTokenExpiredNotification().catch(() => {});
+        const lastUserMessage =
+          messages.filter((m) => m.role === "user").pop()?.content || "";
+        const userLanguage = this.detectUserLanguage(lastUserMessage);
 
-      if (isTokenError) {
-        logger.warn("Hugging Face token/credits error detected", {
-          error: errorMessage,
-        });
-
-        try {
-          await this.emailService.sendTokenExpiredNotification();
-        } catch (emailError) {
-          logger.error("Failed to send token expired notification", emailError);
-        }
-
-        return "Je suis à court de token, une notification a été envoyé à Marco, le soucis seras corrigé d'ici peu.";
+        return userLanguage === "fr"
+          ? "Je suis à court de tokens. Marco a été notifié."
+          : "I'm out of tokens. Marco has been notified.";
       }
 
-      try {
-        await this.emailService.sendErrorNotification(
+      await this.emailService
+        .sendErrorNotification(
           error instanceof Error ? error : new Error(String(error)),
-          "Chat response generation with RAG"
-        );
-      } catch (emailError) {
-        logger.error("Failed to send error notification", emailError);
+          "Chat response generation"
+        )
+        .catch(() => {});
+
+      throw error;
+    }
+  }
+
+  private isTokenError(error: any): boolean {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    return [
+      "quota",
+      "rate limit",
+      "insufficient",
+      "credits",
+      "payment",
+      "billing",
+    ].some((keyword) => errorMessage.includes(keyword));
+  }
+
+  async parseResponseForFunctions(
+    response: string
+  ): Promise<FunctionCall | null> {
+    const functionRegex =
+      /\[FUNCTION_CALL\]\s*(\w+):\s*({.*?}|\{\})\s*\[\/FUNCTION_CALL\]/s;
+    const match = response.match(functionRegex);
+
+    if (match) {
+      try {
+        return {
+          name: match[1],
+          parameters: JSON.parse(match[2]),
+        };
+      } catch (error) {
+        logger.error("Error parsing function parameters", error);
       }
-
-      throw error;
     }
+    return null;
   }
 
-  public updateRAGConfig(config: Partial<RAGConfig>): void {
+  extractImagesFromResponse(response: string): string[] {
+    const imageBlocks = Array.from(
+      response.matchAll(/\[IMAGE\](.*?)\[\/IMAGE\]/gs)
+    );
+    return imageBlocks.map((match) => {
+      const val = match[1].trim();
+      return val.startsWith("http")
+        ? val
+        : `https://drive.google.com/thumbnail?id=${val}&sz=w1000`;
+    });
+  }
+
+  updateRAGConfig(config: Partial<RAGConfig>): void {
     this.ragConfig = { ...this.ragConfig, ...config };
-    logger.info("RAG configuration updated", { newConfig: this.ragConfig });
-  }
-
-  async analyzeQueryQuality(query: string): Promise<{
-    totalCandidates: number;
-    relevantChunks: number;
-    averageScore: number;
-    recommendedChunks: number;
-    qualityDistribution: Record<string, number>;
-  }> {
-    try {
-      const queryEmbedding = await this.generateEmbedding(query);
-      const searchResponse = await this.index.query({
-        vector: queryEmbedding,
-        topK: this.ragConfig.maxChunks,
-        includeMetadata: true,
-      });
-
-      const matches =
-        (
-          searchResponse as unknown as {
-            matches?: Array<{
-              metadata?: { text?: string; chunk_index?: number };
-              score?: number;
-            }>;
-          }
-        ).matches ?? [];
-
-      const allChunks = matches.map((match) => match.score ?? 0);
-      const relevantChunks = allChunks.filter(
-        (score: number) => score >= this.ragConfig.minScore
-      );
-
-      const processedChunks = matches.map((match) => ({
-        text: match.metadata?.text ?? "",
-        score: match.score ?? 0,
-        chunkIndex: match.metadata?.chunk_index ?? 0,
-        tokenCount: this.estimateTokens(match.metadata?.text ?? ""),
-      }));
-
-      const recommendedChunks = this.applyDynamicFiltering(processedChunks);
-
-      return {
-        totalCandidates: allChunks.length,
-        relevantChunks: relevantChunks.length,
-        averageScore:
-          relevantChunks.length > 0
-            ? relevantChunks.reduce(
-                (sum: number, score: number) => sum + score,
-                0
-              ) / relevantChunks.length
-            : 0,
-        recommendedChunks: recommendedChunks.length,
-        qualityDistribution: {
-          high: allChunks.filter(
-            (score: number) => score >= this.ragConfig.scoreThreshold
-          ).length,
-          medium: allChunks.filter(
-            (score: number) =>
-              score >= 0.5 && score < this.ragConfig.scoreThreshold
-          ).length,
-          low: allChunks.filter(
-            (score: number) => score < 0.5 && score >= this.ragConfig.minScore
-          ).length,
-          veryLow: allChunks.filter(
-            (score: number) => score < this.ragConfig.minScore
-          ).length,
-        },
-      };
-    } catch (error) {
-      logger.error("Error analyzing query quality", error);
-      throw error;
-    }
+    logger.info("RAG configuration updated", this.ragConfig);
   }
 
   async testRAGQuery(query: string): Promise<RAGQueryResult> {
     try {
-      const relevantChunks =
-        await this.searchRelevantChunksWithDynamicFiltering(query);
-      const knowledgeBase = await this.generateKnowledgeBaseFromRAG(query);
+      const relevantChunks = await this.searchRelevantChunks(query);
+      const knowledgeBase = await this.generateKnowledgeBase(query);
 
       return {
         question: query,
@@ -743,8 +565,7 @@ Tu es développé via Hugging Face, alimenté par un système RAG avec Pinecone,
 
   async getIndexStats() {
     try {
-      const stats = await this.index.describeIndexStats();
-      return stats;
+      return await this.index.describeIndexStats();
     } catch (error) {
       logger.error("Error getting index stats", error);
       return null;
