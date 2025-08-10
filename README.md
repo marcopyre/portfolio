@@ -167,6 +167,12 @@ npm run dev
 # Hugging Face API
 HF_TOKEN=your_huggingface_token
 
+# Pinecone API
+PINECONE_API_KEY=your_pinecone_token
+
+# Resend API
+RESEND_API_KEY=your_resend_token
+
 # Resend Email Service (pour les notifications)
 RESEND_API_KEY=your_resend_api_key
 ```
