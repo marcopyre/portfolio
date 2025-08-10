@@ -324,7 +324,7 @@ export default function Portfolio() {
 
       {!showChatArea && (
         <div className="flex-1 flex items-center justify-center animate-[fadeIn_0.6s_ease-out] px-4 sm:px-6">
-          <div className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto flex flex-col  md:space-y-12 -translate-y-[60px] sm:-translate-y-[100px]">
+          <div className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto flex flex-col  md:space-y-12 -translate-y-[0px] md:-translate-y-[100px]">
             <div
               className={`order-1 transition-transform duration-500 ease-out ${
                 language === "en"
