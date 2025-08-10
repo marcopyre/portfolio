@@ -51,7 +51,7 @@ export default function Portfolio() {
 
   const { language } = useContext(LanguageContext);
 
-  const isSimulated = true;
+  const isSimulated = false;
 
   const titleTransition = useContentTransition(translation("chat_title"), {
     type: "swap",

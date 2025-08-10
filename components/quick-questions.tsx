@@ -67,7 +67,7 @@ export default function QuickQuestions({
           {titleTransition.displayContent}
         </h2>
 
-        {/* Mobile: vertical stack of full-width buttons */}
+        {}
         <div className="md:hidden space-y-3">
           {questions.map((question, index) => (
             <QuestionButton
@@ -80,7 +80,7 @@ export default function QuickQuestions({
           ))}
         </div>
 
-        {/* Desktop: grid of cards */}
+        {}
         <div className="hidden md:grid grid-cols-2 gap-4 w-full">
           {questions.map((question, index) => (
             <QuestionButton

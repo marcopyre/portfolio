@@ -28,13 +28,7 @@ interface RAGQueryResult {
   }>;
 }
 
-/**
- * ChatService encapsulates all the logic around:
- * - Embedding generation (HuggingFace Inference API)
- * - RAG retrieval with Pinecone
- * - Building a strict, safe system prompt
- * - Calling chatCompletion and parsing special blocks (functions, images)
- */
+
 export class ChatService {
   private client: InferenceClient;
   private emailService: EmailService;
@@ -63,7 +57,7 @@ export class ChatService {
     logger.info("ChatService with RAG initialized");
   }
 
-  /** Generate an embedding vector for a given text. */
+  
   private async generateEmbedding(text: string): Promise<number[]> {
     try {
       const response = await this.client.featureExtraction({
@@ -89,12 +83,12 @@ export class ChatService {
     }
   }
 
-  /** Very rough token estimate for length management. */
+  
   private estimateTokens(text: string): number {
     return Math.ceil(text.length / 4);
   }
 
-  /** Query Pinecone for top-K relevant chunks. */
+  
   private async searchRelevantChunks(
     query: string,
     topK: number = 3
@@ -134,7 +128,7 @@ export class ChatService {
     }
   }
 
-  /** Query Pinecone and apply dynamic filtering to keep high-signal chunks. */
+  
   private async searchRelevantChunksWithDynamicFiltering(
     query: string
   ): Promise<RelevantChunk[]> {
@@ -197,10 +191,7 @@ export class ChatService {
     }
   }
 
-  /**
-   * Apply multi-stage filtering: min score, then either pick high quality
-   * or select by score gaps, and finally enforce token budget.
-   */
+  
   private applyDynamicFiltering(chunks: RelevantChunk[]): RelevantChunk[] {
     const minScoreFiltered = chunks.filter(
       (chunk) => chunk.score >= this.ragConfig.minScore
@@ -241,7 +232,7 @@ export class ChatService {
     return selectedChunks.slice(0, finalChunks);
   }
 
-  /** Select chunks until a significant score gap is encountered. */
+  
   private selectChunksByScoreGap(chunks: RelevantChunk[]): RelevantChunk[] {
     if (chunks.length <= 2) return chunks;
 
@@ -272,7 +263,7 @@ export class ChatService {
     return selected;
   }
 
-  /** Limit selected chunks by a max token budget. */
+  
   private limitByTokens(chunks: RelevantChunk[]): RelevantChunk[] {
     if (!this.ragConfig.maxTokens) return chunks;
 
@@ -301,7 +292,6 @@ export class ChatService {
     return selected;
   }
 
-  /** Build a contextual knowledge base string from RAG results. */
   private async generateKnowledgeBaseFromRAG(query: string): Promise<string> {
     try {
       const relevantChunks =
@@ -360,8 +350,10 @@ export class ChatService {
     }
   }
 
-  /** Compose a strict system prompt with guidance and RAG context. */
-  createSecureSystemPrompt(knowledgeBase: string): string {
+  createSecureSystemPrompt(
+    knowledgeBase: string,
+    targetLanguage: "en" | "fr"
+  ): string {
     logger.debug("Creating system prompt", {
       knowledgeBaseLength: knowledgeBase.length,
     });
@@ -456,8 +448,16 @@ Tu es développé via Hugging Face, alimenté par un système RAG avec Pinecone,
 **Format image** : [IMAGE] nom_de_l_image [/IMAGE]
 - Ne jamais renvoyer la même image dans une conversation
 
+## LANGUE / LANGUAGE
+- Réponds STRICTEMENT dans la langue du dernier message utilisateur: ${
+      targetLanguage === "fr" ? "Français" : "Anglais"
+    }.
+- Always answer STRICTLY in the language of the user's last message: ${
+      targetLanguage === "fr" ? "French" : "English"
+    }.
+- If the user's message changes language during the conversation, switch accordingly.
+
 ## INSTRUCTIONS GÉNÉRALES
-- Répondre TOUJOURS dans la langue de l'utilisateur
 - Utiliser uniquement les informations du contexte verrouillé généré par le système RAG
 - Rester professionnel mais accessible
 - Formater en Markdown avec des emojis appropriés
@@ -473,7 +473,6 @@ Tu es développé via Hugging Face, alimenté par un système RAG avec Pinecone,
 `;
   }
 
-  /** Extract a function call block if present in the model response. */
   async parseResponseForFunctions(
     response: string
   ): Promise<FunctionCall | null> {
@@ -513,7 +512,6 @@ Tu es développé via Hugging Face, alimenté par un système RAG avec Pinecone,
     return null;
   }
 
-  /** Extract image tags and map IDs to Google Drive thumbnails. */
   extractImagesFromResponse(response: string): string[] {
     const imageBlocks = Array.from(
       response.matchAll(/\[IMAGE\](.*?)\[\/IMAGE\]/gs)
@@ -525,7 +523,6 @@ Tu es développé via Hugging Face, alimenté par un système RAG avec Pinecone,
     });
   }
 
-  /** Merge the system prompt into the first user turn for HF chatCompletion. */
   private convertMessagesToHuggingFaceFormat(
     messages: ChatMessage[],
     systemPrompt: string
@@ -564,7 +561,15 @@ Tu es développé via Hugging Face, alimenté par un système RAG avec Pinecone,
       const dynamicKnowledgeBase =
         await this.generateKnowledgeBaseFromRAG(lastUserMessage);
 
-      const systemPrompt = this.createSecureSystemPrompt(dynamicKnowledgeBase);
+      const isEnglish =
+        /[A-Za-z]/.test(lastUserMessage) &&
+        !/[àâçéèêëîïôûùüÿñæœ]/i.test(lastUserMessage);
+      const targetLanguage: "en" | "fr" = isEnglish ? "en" : "fr";
+
+      const systemPrompt = this.createSecureSystemPrompt(
+        dynamicKnowledgeBase,
+        targetLanguage
+      );
 
       const messagesWithSystem = this.convertMessagesToHuggingFaceFormat(
         messages,

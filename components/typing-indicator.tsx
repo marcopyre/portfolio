@@ -94,7 +94,7 @@ export default function TypingIndicator({ phrase }: { phrase: string }) {
           }
         }
 
-        /* Bounce animation similar to Tailwind's */
+        
         @keyframes bounce {
           0%,
           100% {

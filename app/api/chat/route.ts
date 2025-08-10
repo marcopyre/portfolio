@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
       messageLength: lastUserMessage.length,
     });
 
-    // Let the ChatService manage RAG and system prompt creation internally.
+    
     const chatMessages = messages;
     logger.debug("Chat messages prepared", {
       requestId,

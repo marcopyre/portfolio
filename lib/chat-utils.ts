@@ -20,7 +20,7 @@ export const getApiUrl = () => {
   }
 };
 
-// Opens a new tab to download the resume
+
 export const downloadResume = () => {
   const googleDriveLink =
     "https://drive.google.com/uc?export=download&id=1Wjp02VjqKPbGkk9vReIHe6JNk0mlKfpv";
@@ -30,7 +30,7 @@ export const downloadResume = () => {
   link.click();
 };
 
-// Opens the user's mail client with a prefilled message
+
 export const openContactEmail = (sujet: string, message: string) => {
   const email = "ytmarcopyre@gmail.com";
   const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(
@@ -39,7 +39,7 @@ export const openContactEmail = (sujet: string, message: string) => {
   window.open(mailtoLink, "_blank");
 };
 
-// Opens an external link in a new tab
+
 export const openLink = (url: string) => {
   window.open(url, "_blank");
 };
