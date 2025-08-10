@@ -56,12 +56,7 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
     return formatted;
   };
 
-  return (
-    <div
-      className="prose prose-invert max-w-none"
-      dangerouslySetInnerHTML={{ __html: formatMarkdown(content) }}
-    />
-  );
+  return <div dangerouslySetInnerHTML={{ __html: formatMarkdown(content) }} />;
 };
 
 export default MarkdownRenderer;

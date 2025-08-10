@@ -6,10 +6,10 @@
 ![React](https://img.shields.io/badge/React-19.0.0-blue?style=for-the-badge&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)
-![Hugging Face](https://img.shields.io/badge/Hugging_Face-Transformers-orange?style=for-the-badge&logo=huggingface)
+![Hugging Face](https://img.shields.io/badge/Hugging_Face-Inference-orange?style=for-the-badge&logo=huggingface)
 
-[![Frontend](https://img.shields.io/badge/Frontend-GitHub%20Pages-brightgreen?style=for-the-badge&logo=github)](https://marcopyre.github.io/portfolio)
-[![Backend](https://img.shields.io/badge/Backend-Vercel-blue?style=for-the-badge&logo=vercel)](https://vercel.com)
+[![Frontend](https://img.shields.io/badge/Frontend-Next.js%20App-blue?style=for-the-badge&logo=next.js)](https://nextjs.org)
+[![Backend](https://img.shields.io/badge/Backend-Next.js%20API%20Routes-black?style=for-the-badge&logo=vercel)](https://vercel.com)
 [![AI Model](https://img.shields.io/badge/AI%20Model-Hugging%20Face-yellow?style=for-the-badge&logo=huggingface)](https://huggingface.co)
 
 </div>
@@ -32,10 +32,10 @@
 
 Portfolio interactif de **Marco Pyré**, développeur fullstack spécialisé en cloud native. Ce projet démontre une expertise technique moderne combinant :
 
-- **Frontend** : Interface utilisateur moderne avec Next.js 15 et React 19
-- **Backend** : API serverless sur Vercel
-- **IA** : Assistant conversationnel alimenté par Hugging Face
-- **RAG** : Base de connaissances vectorisée pour des réponses précises
+- **Frontend** : Interface Next.js 15 + React 19
+- **Backend** : API Routes Next.js (déployable sur Vercel)
+- **IA** : Assistant conversationnel via Hugging Face Inference
+- **RAG** : Pinecone pour l’index sémantique
 
 ## ✨ Fonctionnalités
 
@@ -43,15 +43,14 @@ Portfolio interactif de **Marco Pyré**, développeur fullstack spécialisé en 
 
 - **Chat en temps réel** avec l'assistant IA
 - **Questions rapides** prédéfinies pour faciliter l'interaction
-- **Support multilingue** (français, anglais, espagnol)
+- **Support multilingue** (français, anglais)
 - **Actions contextuelles** (téléchargement CV, envoi d'email)
 
 ### 🎨 Interface Moderne
 
 - **Design responsive** adapté à tous les écrans
 - **Animations fluides** et effets visuels
-- **Mode sombre** par défaut avec thème cyberpunk
-- **Particules animées** en arrière-plan
+- **Mode sombre** par défaut
 
 ### 🔧 Fonctionnalités Techniques
 
@@ -65,9 +64,9 @@ Portfolio interactif de **Marco Pyré**, développeur fullstack spécialisé en 
 
 ```mermaid
 graph TB
-    A[Frontend - GitHub Pages] --> B[API - Vercel]
+    A[Frontend - Next.js App] --> B[API - Vercel]
     B --> C[LLM - Hugging Face]
-    D[RAG Database - Hugging Face] --> C
+    D[RAG Index - Pinecone] --> C
     B --> E[Email Service - Resend]
 
     G[Google Gemma] --> C
@@ -78,21 +77,19 @@ graph TB
 
 | Composant         | Technologie           | Hébergement  |
 | ----------------- | --------------------- | ------------ |
-| **Frontend**      | Next.js 15 + React 19 | GitHub Pages |
+| **Frontend**      | Next.js 15 + React 19 | Vercel/Node  |
 | **Backend**       | Next.js API Routes    | Vercel       |
-| **IA Model**      | Google Gemma-2B-IT    | Hugging Face |
-| **RAG Database**  | Vector Database       | Hugging Face |
+| **IA Model**      | Google Gemma-3-27B-IT | Hugging Face |
+| **RAG Database**  | Pinecone              | Pinecone     |
 | **Styling**       | Tailwind CSS 4        | -            |
 | **Language**      | TypeScript            | -            |
 | **Email Service** | Resend                | -            |
 
 ## 🚀 Déploiement
 
-### 🌐 Frontend (GitHub Pages)
+### 🌐 Frontend
 
-- **URL** : [https://marcopyre.github.io/portfolio](https://marcopyre.github.io/portfolio)
-- **Build** : Automatique via GitHub Actions
-- **CDN** : Global avec GitHub Pages
+- **Framework** : Next.js App Router
 
 ### ⚡ Backend (Vercel)
 
@@ -100,11 +97,11 @@ graph TB
 - **Performance** : Edge functions pour latence minimale
 - **Scalabilité** : Auto-scaling selon la charge
 
-### 🤖 IA & RAG (Hugging Face)
+### 🤖 IA & RAG (Hugging Face + Pinecone)
 
-- **Model** : Google Gemma-2B-IT
-- **Knowledge Base** : Dataset vectorisé personnalisé
-- **Inference** : API Hugging Face avec token d'accès
+- **Model** : Google Gemma-3-27B-IT
+- **Knowledge Base** : Index Pinecone
+- **Inference** : API Hugging Face (Inference Client)
 
 ### 📧 Email Service (Resend)
 
@@ -133,7 +130,7 @@ graph TB
 {
   "@huggingface/inference": "^4.3.2",
   "resend": "^3.0.0",
-  "radix-ui": "^1.0.5",
+  "@radix-ui/react-scroll-area": "^1.0.5",
   "class-variance-authority": "^0.7.1"
 }
 ```
@@ -179,14 +176,13 @@ RESEND_API_KEY=your_resend_api_key
 ### Design System
 
 - **Couleurs** : Palette cyberpunk (noir, violet, cyan)
-- **Typographie** : Inter pour la lisibilité
-- **Animations** : Framer Motion pour les transitions
+- **Typographie** : Système par défaut
+- **Animations** : `tw-animate-css` + CSS keyframes
 - **Icons** : Lucide React pour la cohérence
 
 ### Composants UI
 
 - `Button` : Boutons avec variants (primary, secondary, ghost)
-- `Input` : Champs de saisie stylisés
 - `ScrollArea` : Zone de défilement personnalisée
 - `ChatMessage` : Messages de chat avec markdown
 - `TypingIndicator` : Indicateur de frappe animé
@@ -195,7 +191,7 @@ RESEND_API_KEY=your_resend_api_key
 
 ### Assistant Conversationnel
 
-- **Model** : Google Gemma-2B-IT via Hugging Face
+- **Model** : Google Gemma-3-27B-IT via Hugging Face
 - **Context** : 4096 tokens maximum
 - **Temperature** : 0.7 pour créativité équilibrée
 - **Functions** : Actions contextuelles (CV, email)
@@ -211,10 +207,8 @@ RESEND_API_KEY=your_resend_api_key
 
 ### Base de Connaissances
 
-- **Format** : Dataset structuré avec métadonnées
-- **Catégories** : Expérience, compétences, projets, contact
-- **Priorité** : Système de scoring pour pertinence
-- **Mise à jour** : Script automatisé `kbupdate.py`
+- **Stockage** : Index vectoriel Pinecone
+- **Stratégie** : Filtrage dynamique par score/écarts et budget de tokens
 
 ### Fonctions Disponibles
 
@@ -260,7 +254,7 @@ i18n/
 ### Optimisations
 
 - **Images** : Lazy loading et formats optimisés
-- **Fonts** : Preload des polices critiques
+- **Fonts** : Système
 - **Performance** : Code splitting automatique
 
 ## 📄 API Endpoints

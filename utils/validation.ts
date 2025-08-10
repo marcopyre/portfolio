@@ -1,7 +1,6 @@
-import { MAX_MESSAGES } from "@/config/constants";
 import { logger } from "./logger";
 
-export function validateMessages(messages: any): {
+export function validateMessages(messages: unknown): {
   valid: boolean;
   error?: string;
 } {
@@ -17,16 +16,8 @@ export function validateMessages(messages: any): {
     return { valid: false, error: "Messages array cannot be empty" };
   }
 
-  if (messages.length > MAX_MESSAGES) {
-    logger.warn("Messages validation failed: too many messages", {
-      count: messages.length,
-      max: MAX_MESSAGES,
-    });
-    return { valid: false, error: `Too many messages (max: ${MAX_MESSAGES})` };
-  }
-
   for (let i = 0; i < messages.length; i++) {
-    const message = messages[i];
+    const message = messages[i] as { role?: unknown; content?: unknown };
     if (!message.role || !message.content) {
       logger.warn("Messages validation failed: invalid message structure", {
         index: i,

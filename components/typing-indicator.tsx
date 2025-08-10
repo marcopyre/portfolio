@@ -5,13 +5,13 @@ export default function TypingIndicator({ phrase }: { phrase: string }) {
     <div className="flex items-start space-x-4 animate-fade-in">
       <div className="flex items-center space-x-3">
         <div className="flex space-x-1">
-          <div className="w-2 h-2 rounded-full animate-bounce dot-1"></div>
+          <div className="w-2 h-2 rounded-full dot-1"></div>
           <div
-            className="w-2 h-2 rounded-full animate-bounce dot-2"
+            className="w-2 h-2 rounded-full dot-2"
             style={{ animationDelay: "0.1s" }}
           ></div>
           <div
-            className="w-2 h-2 rounded-full animate-bounce dot-3"
+            className="w-2 h-2 rounded-full dot-3"
             style={{ animationDelay: "0.2s" }}
           ></div>
         </div>
@@ -94,7 +94,7 @@ export default function TypingIndicator({ phrase }: { phrase: string }) {
           }
         }
 
-        /* Réplication de l'animation bounce de Tailwind */
+        /* Bounce animation similar to Tailwind's */
         @keyframes bounce {
           0%,
           100% {

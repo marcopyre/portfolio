@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 
 export default function ConfirmModal({
   open,
@@ -19,75 +18,30 @@ export default function ConfirmModal({
   link?: string;
 }) {
   if (!open) return null;
+
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.7)",
-        zIndex: 10000,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <div
-        style={{
-          background: "#18181b",
-          color: "#fff",
-          borderRadius: 12,
-          padding: 32,
-          minWidth: 320,
-          boxShadow: "0 8px 32px #0008",
-        }}
-      >
-        <div style={{ marginBottom: 24, fontSize: 18, fontWeight: 500 }}>
+    <div className="fixed inset-0 bg-black/70 z-[10000] flex items-center justify-center p-4">
+      <div className="bg-[#18181b] text-white rounded-xl p-6 sm:p-8 w-full max-w-sm sm:max-w-md shadow-2xl">
+        <div className="mb-6 text-base sm:text-lg font-medium leading-relaxed">
           {question}
         </div>
         {link && (
-          <div
-            style={{
-              marginBottom: 16,
-              fontSize: 14,
-              color: "#ffd6b9",
-              wordBreak: "break-all",
-              padding: "8px 12px",
-              background: "#c8810b",
-              borderRadius: "6px",
-              border: "1px solid #ffd6b9",
-            }}
-          >
+          <div className="mb-4 text-xs sm:text-sm text-[#ffd6b9] break-all p-3 bg-[#c8810b] rounded-lg">
             {link}
           </div>
         )}
-        <div style={{ display: "flex", gap: 16, justifyContent: "flex-end" }}>
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:justify-end">
           <button
             onClick={onCancel}
-            style={{
-              background: "#222",
-              color: "#fff",
-              border: "none",
-              borderRadius: 6,
-              padding: "8px 20px",
-              cursor: "pointer",
-            }}
+            className="w-full sm:w-auto bg-[#222] text-white rounded-lg px-5 py-2.5 hover:bg-[#333] transition-colors duration-200 text-sm font-medium"
           >
-            {" "}
-            {noLabel}{" "}
+            {noLabel}
           </button>
           <button
             onClick={onConfirm}
-            style={{
-              background: "#FCA311",
-              color: "#fff",
-              border: "none",
-              borderRadius: 6,
-              padding: "8px 20px",
-              cursor: "pointer",
-            }}
+            className="w-full sm:w-auto bg-[#FCA311] text-white rounded-lg px-5 py-2.5 hover:bg-[#FCA311]/90 transition-colors duration-200 text-sm font-medium"
           >
-            {" "}
-            {yesLabel}{" "}
+            {yesLabel}
           </button>
         </div>
       </div>

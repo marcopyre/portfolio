@@ -28,11 +28,18 @@ interface RAGQueryResult {
   }>;
 }
 
+/**
+ * ChatService encapsulates all the logic around:
+ * - Embedding generation (HuggingFace Inference API)
+ * - RAG retrieval with Pinecone
+ * - Building a strict, safe system prompt
+ * - Calling chatCompletion and parsing special blocks (functions, images)
+ */
 export class ChatService {
   private client: InferenceClient;
   private emailService: EmailService;
   private pinecone: Pinecone;
-  private index: any;
+  private index: ReturnType<Pinecone["index"]>;
   private indexName: string = "portfolio-knowledge-base";
   private embeddingModel: string = "sentence-transformers/all-MiniLM-L6-v2";
 
@@ -56,6 +63,7 @@ export class ChatService {
     logger.info("ChatService with RAG initialized");
   }
 
+  /** Generate an embedding vector for a given text. */
   private async generateEmbedding(text: string): Promise<number[]> {
     try {
       const response = await this.client.featureExtraction({
@@ -81,10 +89,12 @@ export class ChatService {
     }
   }
 
+  /** Very rough token estimate for length management. */
   private estimateTokens(text: string): number {
     return Math.ceil(text.length / 4);
   }
 
+  /** Query Pinecone for top-K relevant chunks. */
   private async searchRelevantChunks(
     query: string,
     topK: number = 3
@@ -100,13 +110,21 @@ export class ChatService {
         includeMetadata: true,
       });
 
-      const relevantChunks: RelevantChunk[] = searchResponse.matches.map(
-        (match: any) => ({
-          text: match.metadata.text,
-          score: match.score,
-          chunkIndex: match.metadata.chunk_index,
-        })
-      );
+      const matches =
+        (
+          searchResponse as unknown as {
+            matches?: Array<{
+              metadata?: { text?: string; chunk_index?: number };
+              score?: number;
+            }>;
+          }
+        ).matches ?? [];
+
+      const relevantChunks: RelevantChunk[] = matches.map((match) => ({
+        text: match.metadata?.text ?? "",
+        score: match.score ?? 0,
+        chunkIndex: match.metadata?.chunk_index ?? 0,
+      }));
 
       logger.info(`Found ${relevantChunks.length} relevant chunks`);
       return relevantChunks;
@@ -116,6 +134,7 @@ export class ChatService {
     }
   }
 
+  /** Query Pinecone and apply dynamic filtering to keep high-signal chunks. */
   private async searchRelevantChunksWithDynamicFiltering(
     query: string
   ): Promise<RelevantChunk[]> {
@@ -130,14 +149,22 @@ export class ChatService {
         includeMetadata: true,
       });
 
-      const allChunks: RelevantChunk[] = searchResponse.matches.map(
-        (match: any) => ({
-          text: match.metadata.text,
-          score: match.score,
-          chunkIndex: match.metadata.chunk_index,
-          tokenCount: this.estimateTokens(match.metadata.text),
-        })
-      );
+      const matches =
+        (
+          searchResponse as unknown as {
+            matches?: Array<{
+              metadata?: { text?: string; chunk_index?: number };
+              score?: number;
+            }>;
+          }
+        ).matches ?? [];
+
+      const allChunks: RelevantChunk[] = matches.map((match) => ({
+        text: match.metadata?.text ?? "",
+        score: match.score ?? 0,
+        chunkIndex: match.metadata?.chunk_index ?? 0,
+        tokenCount: this.estimateTokens(match.metadata?.text ?? ""),
+      }));
 
       const relevantChunks = this.applyDynamicFiltering(allChunks);
 
@@ -170,6 +197,10 @@ export class ChatService {
     }
   }
 
+  /**
+   * Apply multi-stage filtering: min score, then either pick high quality
+   * or select by score gaps, and finally enforce token budget.
+   */
   private applyDynamicFiltering(chunks: RelevantChunk[]): RelevantChunk[] {
     const minScoreFiltered = chunks.filter(
       (chunk) => chunk.score >= this.ragConfig.minScore
@@ -210,6 +241,7 @@ export class ChatService {
     return selectedChunks.slice(0, finalChunks);
   }
 
+  /** Select chunks until a significant score gap is encountered. */
   private selectChunksByScoreGap(chunks: RelevantChunk[]): RelevantChunk[] {
     if (chunks.length <= 2) return chunks;
 
@@ -240,6 +272,7 @@ export class ChatService {
     return selected;
   }
 
+  /** Limit selected chunks by a max token budget. */
   private limitByTokens(chunks: RelevantChunk[]): RelevantChunk[] {
     if (!this.ragConfig.maxTokens) return chunks;
 
@@ -268,6 +301,7 @@ export class ChatService {
     return selected;
   }
 
+  /** Build a contextual knowledge base string from RAG results. */
   private async generateKnowledgeBaseFromRAG(query: string): Promise<string> {
     try {
       const relevantChunks =
@@ -326,6 +360,7 @@ export class ChatService {
     }
   }
 
+  /** Compose a strict system prompt with guidance and RAG context. */
   createSecureSystemPrompt(knowledgeBase: string): string {
     logger.debug("Creating system prompt", {
       knowledgeBaseLength: knowledgeBase.length,
@@ -438,6 +473,7 @@ Tu es développé via Hugging Face, alimenté par un système RAG avec Pinecone,
 `;
   }
 
+  /** Extract a function call block if present in the model response. */
   async parseResponseForFunctions(
     response: string
   ): Promise<FunctionCall | null> {
@@ -477,6 +513,7 @@ Tu es développé via Hugging Face, alimenté par un système RAG avec Pinecone,
     return null;
   }
 
+  /** Extract image tags and map IDs to Google Drive thumbnails. */
   extractImagesFromResponse(response: string): string[] {
     const imageBlocks = Array.from(
       response.matchAll(/\[IMAGE\](.*?)\[\/IMAGE\]/gs)
@@ -488,6 +525,7 @@ Tu es développé via Hugging Face, alimenté par un système RAG avec Pinecone,
     });
   }
 
+  /** Merge the system prompt into the first user turn for HF chatCompletion. */
   private convertMessagesToHuggingFaceFormat(
     messages: ChatMessage[],
     systemPrompt: string
@@ -621,16 +659,26 @@ Tu es développé via Hugging Face, alimenté par un système RAG avec Pinecone,
         includeMetadata: true,
       });
 
-      const allChunks = searchResponse.matches.map((match: any) => match.score);
+      const matches =
+        (
+          searchResponse as unknown as {
+            matches?: Array<{
+              metadata?: { text?: string; chunk_index?: number };
+              score?: number;
+            }>;
+          }
+        ).matches ?? [];
+
+      const allChunks = matches.map((match) => match.score ?? 0);
       const relevantChunks = allChunks.filter(
         (score: number) => score >= this.ragConfig.minScore
       );
 
-      const processedChunks = searchResponse.matches.map((match: any) => ({
-        text: match.metadata.text,
-        score: match.score,
-        chunkIndex: match.metadata.chunk_index,
-        tokenCount: this.estimateTokens(match.metadata.text),
+      const processedChunks = matches.map((match) => ({
+        text: match.metadata?.text ?? "",
+        score: match.score ?? 0,
+        chunkIndex: match.metadata?.chunk_index ?? 0,
+        tokenCount: this.estimateTokens(match.metadata?.text ?? ""),
       }));
 
       const recommendedChunks = this.applyDynamicFiltering(processedChunks);

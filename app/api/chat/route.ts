@@ -1,7 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { ChatService } from "../../../services/chat-service";
 import { APIResponse, FunctionResponse } from "../../../types";
-import { KnowledgeBaseService } from "@/services/knowledge-base";
 import { getCorsHeaders } from "@/utils/cors";
 import { logger } from "@/utils/logger";
 import { validateEnvironment, validateMessages } from "@/utils/validation";
@@ -31,7 +30,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { messages, useRAG = false } = await request.json();
+    const { messages, useRAG = true } = await request.json();
     logger.info("Request parsed", {
       requestId,
       useRAG,
@@ -50,9 +49,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const knowledgeBaseService = new KnowledgeBaseService(
-      process.env.HF_TOKEN!
-    );
     const chatService = new ChatService(process.env.HF_TOKEN!);
 
     const lastUserMessage =
@@ -64,30 +60,8 @@ export async function POST(request: NextRequest) {
       messageLength: lastUserMessage.length,
     });
 
-    // let contextualKnowledge: string;
-    // if (useRAG) {
-    //   logger.info("Using RAG for contextual knowledge", { requestId });
-    //   contextualKnowledge =
-    //     await knowledgeBaseService.fetchRelevantContext(lastUserMessage);
-    //   if (!contextualKnowledge) {
-    //     logger.warn("RAG returned empty context, falling back to full KB", {
-    //       requestId,
-    //     });
-    //     contextualKnowledge = await knowledgeBaseService.getKnowledgeBase();
-    //   }
-    // } else {
-    //   logger.info("Using full knowledge base", { requestId });
-    //   contextualKnowledge = await knowledgeBaseService.getKnowledgeBase();
-    // } TO FIX TO USE RAG CORRECTLY
-
-    const contextualKnowledge = await knowledgeBaseService.getKnowledgeBase(); // TO REMOVE
-
-    const systemMessage = {
-      role: "system" as const,
-      content: chatService.createSecureSystemPrompt(contextualKnowledge),
-    };
-
-    const chatMessages = [systemMessage, ...messages];
+    // Let the ChatService manage RAG and system prompt creation internally.
+    const chatMessages = messages;
     logger.debug("Chat messages prepared", {
       requestId,
       totalMessages: chatMessages.length,
@@ -157,7 +131,7 @@ export async function POST(request: NextRequest) {
       response: cleanResponse,
       metadata: {
         useRAG,
-        knowledgeBaseSource: useRAG ? "RAG" : "Full KB",
+        knowledgeBaseSource: "RAG",
         timestamp: new Date().toISOString(),
       },
       images,
