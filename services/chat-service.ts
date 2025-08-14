@@ -459,7 +459,7 @@ You are developed via Hugging Face, powered by a RAG system with Pinecone, with 
         responseLength: response.length,
       });
 
-      this.emailService
+      await this.emailService
         .sendConversationLog(
           lastUserMessage,
           response,
