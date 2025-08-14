@@ -7,6 +7,7 @@ declare global {
       eventName: string,
       parameters?: Record<string, unknown>
     ) => void;
+    dataLayer: any[];
   }
 }
 
@@ -23,15 +24,45 @@ export const useGoogleAnalytics = () => {
 
   const trackEvent = useCallback(
     (eventName: string, parameters: TrackEventParameters = {}) => {
-      if (isProduction && typeof window !== "undefined" && "gtag" in window) {
-        window.gtag("event", eventName, {
-          event_category: "Bot_Interaction",
-          ...parameters,
-        });
+      if (
+        isProduction &&
+        typeof window !== "undefined" &&
+        "gtag" in window &&
+        typeof window.gtag === "function"
+      ) {
+        try {
+          window.gtag("event", eventName, {
+            event_category: "Bot_Interaction",
+            ...parameters,
+          });
+        } catch (error) {
+          console.error("GA tracking error:", error);
+        }
       }
     },
     [isProduction]
   );
 
-  return { trackEvent };
+  const trackPageView = useCallback(
+    (url: string, title?: string) => {
+      if (
+        isProduction &&
+        typeof window !== "undefined" &&
+        "gtag" in window &&
+        typeof window.gtag === "function"
+      ) {
+        try {
+          window.gtag("config", "G-3CQRTTN3DL", {
+            page_path: url,
+            page_title: title,
+          });
+        } catch (error) {
+          console.error("GA page view error:", error);
+        }
+      }
+    },
+    [isProduction]
+  );
+
+  return { trackEvent, trackPageView };
 };
