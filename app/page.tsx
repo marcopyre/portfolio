@@ -20,6 +20,7 @@ import ConfirmModal from "../components/confirm-modal";
 import LanguageSelector from "@/components/language-selector";
 import { LanguageContext } from "./i18n/language-provider";
 import { useContentTransition } from "@/components/hooks/content-transition";
+import { useGoogleAnalytics } from "@/components/hooks/google-analytics";
 
 interface Message {
   id: string;
@@ -50,6 +51,7 @@ export default function Portfolio() {
   }>({ open: false, question: "", onConfirm: null });
 
   const { language } = useContext(LanguageContext);
+  const { trackEvent } = useGoogleAnalytics();
 
   const isSimulated = false;
 
@@ -89,6 +91,10 @@ export default function Portfolio() {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
+    trackEvent("user_message_bot", {
+      content: input.trim(),
+    });
+
     if (!hasRealMessages) {
       setIsSwitchingToChat(true);
       setTimeout(() => {
@@ -113,6 +119,9 @@ export default function Portfolio() {
 
     try {
       if (isSimulated) {
+        trackEvent("simulated_trigger", {
+          content: input.trim(),
+        });
         await new Promise((resolve) => setTimeout(resolve, 2000));
         const data = {
           response:
@@ -153,6 +162,7 @@ export default function Portfolio() {
           const { action, params } = data.response;
 
           if (action === "get_resume") {
+            trackEvent("bot_get_resume");
             setConfirmState({
               open: true,
               question: translation("confirm_download_cv"),
@@ -163,6 +173,7 @@ export default function Portfolio() {
           }
 
           if (action === "send_contact_email") {
+            trackEvent("bot_send_contact_email");
             setConfirmState({
               open: true,
               question: translation("confirm_send_email"),
@@ -174,6 +185,9 @@ export default function Portfolio() {
 
           if (action === "get_link") {
             const url = params?.url;
+            trackEvent("bot_open_link", {
+              url,
+            });
             if (url) {
               setConfirmState({
                 open: true,
@@ -207,6 +221,9 @@ export default function Portfolio() {
         }
       }
     } catch (error) {
+      trackEvent("bot_error", {
+        content: error,
+      });
       console.error("Erreur:", error);
       setMessages((prev) => [
         ...prev,

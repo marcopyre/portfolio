@@ -14,20 +14,34 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <Script
-        src="https://www.googletagmanager.com/gtag/js?id=G-3CQRTTN3DL"
-        strategy="afterInteractive"
-      />
-      <Script id="ga-init" strategy="afterInteractive">
-        {`
+  const isProduction = process.env.NODE_ENV === "production";
+
+  if (isProduction) {
+    return (
+      <html lang="en">
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-3CQRTTN3DL"
+          strategy="afterInteractive"
+        />
+        <Script id="ga-init" strategy="afterInteractive">
+          {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', 'G-3CQRTTN3DL');
         `}
-      </Script>
+        </Script>
+        <body className="antialiased">
+          <LanguageProvider>
+            <SplashScreen>{children}</SplashScreen>
+          </LanguageProvider>
+        </body>
+      </html>
+    );
+  }
+
+  return (
+    <html lang="en">
       <body className="antialiased">
         <LanguageProvider>
           <SplashScreen>{children}</SplashScreen>
