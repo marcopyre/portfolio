@@ -1,5 +1,11 @@
 import { useCallback } from "react";
 
+export type GtagDataLayerItem =
+  | ["js", Date]
+  | ["config", string, Record<string, unknown>?]
+  | ["event", string, Record<string, unknown>?]
+  | [string, ...unknown[]];
+
 declare global {
   interface Window {
     gtag: (
@@ -7,7 +13,7 @@ declare global {
       eventName: string,
       parameters?: Record<string, unknown>
     ) => void;
-    dataLayer: any[];
+    dataLayer: GtagDataLayerItem[];
   }
 }
 

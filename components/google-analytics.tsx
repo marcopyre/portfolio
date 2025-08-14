@@ -1,7 +1,7 @@
 "use client";
-
 import Script from "next/script";
 import { useEffect } from "react";
+import { GtagDataLayerItem } from "./hooks/google-analytics";
 
 const GA_TRACKING_ID = "G-3CQRTTN3DL";
 
@@ -12,8 +12,9 @@ export default function GoogleAnalytics() {
   useEffect(() => {
     if (isProduction && typeof window !== "undefined") {
       window.dataLayer = window.dataLayer || [];
-      function gtag(...args: any[]) {
-        window.dataLayer.push(args);
+
+      function gtag(command: string, ...args: unknown[]): void {
+        window.dataLayer.push([command, ...args] as GtagDataLayerItem);
       }
 
       window.gtag = gtag;
