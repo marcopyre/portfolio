@@ -368,7 +368,7 @@ You are developed via Hugging Face, powered by a RAG system with Pinecone, with 
 - Normal conversations without explicit visual request
 
 ### AVAILABLE IMAGES:
-- 1k8GsIhF6HFerkYPR33f0e9g0vFfyCr4Q: Portfolio architecture diagram
+- 1eriGA7PbxLxJFAqbJlhR8rNpAojL4sbS: Portfolio architecture diagram
 - 1NFlRRtgvxf76hKmQRyt_IqL_3MkNJ803: Ostea38 project architecture diagram
 
 ### RESPONSE STRATEGY FOR IMAGES:
