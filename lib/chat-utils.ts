@@ -20,16 +20,14 @@ export const getApiUrl = () => {
   }
 };
 
-
 export const downloadResume = () => {
   const googleDriveLink =
-    "https://drive.google.com/uc?export=download&id=1Wjp02VjqKPbGkk9vReIHe6JNk0mlKfpv";
+    "https://drive.google.com/uc?export=download&id=1lHQwSsTy_I6PMK1F3vAP7MlL0CSBPi0k";
   const link = document.createElement("a");
   link.href = googleDriveLink;
   link.download = "CV-Marco-Pyré.pdf";
   link.click();
 };
-
 
 export const openContactEmail = (sujet: string, message: string) => {
   const email = "ytmarcopyre@gmail.com";
@@ -38,7 +36,6 @@ export const openContactEmail = (sujet: string, message: string) => {
   )}&body=${encodeURIComponent(message)}`;
   window.open(mailtoLink, "_blank");
 };
-
 
 export const openLink = (url: string) => {
   window.open(url, "_blank");
