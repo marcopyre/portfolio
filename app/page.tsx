@@ -156,7 +156,6 @@ export default function Portfolio() {
         ) {
           const { action, params, message } = data.response;
 
-          // Show the full message first - use the actual API response text
           const assistantMessage: Message = {
             id: Date.now().toString(),
             content: message || translation("action_available"),
@@ -165,8 +164,6 @@ export default function Portfolio() {
             images: data.images || [],
           };
           setMessages((prev) => [...prev, assistantMessage]);
-
-          // Then show action toast for confirmation
           if (action === "get_resume") {
             trackEvent("bot_get_resume");
             showActionToast(
@@ -277,7 +274,7 @@ export default function Portfolio() {
                       );
                     })}
                     {isTyping && (
-                      <TypingIndicator phrase={translation("typing_1")} />
+                      <TypingIndicator />
                     )}
                   </div>
                 </ScrollArea>

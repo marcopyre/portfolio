@@ -93,7 +93,6 @@ export async function POST(request: NextRequest) {
         functionName: functionCall.name,
       });
 
-      // Clean the response to extract the actual message without function calls
       const cleanResponse = response
         .replace(/\[FUNCTION_CALL\].*?\[\/FUNCTION_CALL\]/gs, "")
         .replace(/\[IMAGE\][\s\S]*?\[\/IMAGE\]/gs, "")

@@ -12,7 +12,7 @@ class PortfolioDataUploader {
         
         this.indexName = 'portfolio-knowledge-base';
         this.index = null;
-        // Use a multilingual embedding model to align FR/EN (and more) in the same vector space
+        
         this.embeddingModel = 'sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2';
     }
 
@@ -48,7 +48,6 @@ class PortfolioDataUploader {
     }
 
     async ensureEnglish(text) {
-        // Force English-only content in the DB by translating FR→EN when needed
         return this.translateToEnglish(text);
     }
 
@@ -256,7 +255,6 @@ class PortfolioDataUploader {
             await this.index.deleteAll();
             console.log('Database cleared successfully');
         } catch (error) {
-            // Handle 404 errors when database is already empty
             if (error.status === 404 || error.code === 404 || error.message?.includes('404')) {
                 console.log('Database is already empty, continuing...');
                 return;
@@ -270,7 +268,6 @@ class PortfolioDataUploader {
         await this.clearDatabase();
         
         const portfolioData = this.getPortfolioData();
-        // Precompute canonical English tags per category to keep metadata consistent and multilingual-friendly
         const tagsProfileEn = this.normalizeTags(['profile','about','bio','contact','email','github']);
         const tagsExperienceEn = await this.translateKeywordsToEnglish(['experience','expérience','work','job','emploi','poste','company','mission']);
         const tagsProjectsEn = await this.translateKeywordsToEnglish(['projets','réalisations','project','projects','portfolio','travaux','application','produit']);
@@ -345,7 +342,6 @@ class PortfolioDataUploader {
             await this.delay(100);
         }
 
-        // Projects overview to match broad questions
         const projectNames = portfolioData.projects.map(p => p.name).join(', ');
         const projectsOverview = `Projects overview | Portfolio. Category: projects. Projects: ${projectNames}. Summary: list of projects and achievements. Related questions: Can you tell me about your projects? Present your projects. What are your projects? Keywords: projects, portfolio, achievements, list, overview.`;
         const projectsOverviewEn = await this.ensureEnglish(projectsOverview);
@@ -436,7 +432,6 @@ class PortfolioDataUploader {
         });
         await this.delay(100);
 
-        // Technology-specific entries for better detection
         const angularText = `Angular Framework | Frontend Technology. Category: skills. Technology: Angular. Context: Marco uses Angular extensively in professional projects including Pernod Ricard Data Portal, Deloitte Neptune, and Odyssee. Angular is a core frontend framework in his stack. Related questions: Do you use Angular? Do you know Angular? Can you work with Angular?`;
         const angularTextEn = await this.ensureEnglish(angularText);
         const angularEmbedding = await this.generateEmbedding(angularTextEn);
@@ -491,7 +486,6 @@ class PortfolioDataUploader {
         });
         await this.delay(100);
 
-        // Add more technology-specific entries
         const awsText = `AWS Cloud Platform | Amazon Web Services. Category: skills. Technology: AWS. Context: Marco has extensive experience with AWS through his work on World Athletics Stats Zone Pro project where he participated in AWS cloud deployment. AWS is one of his main cloud platforms alongside Azure and GCP. Related questions: Do you use AWS? Do you know Amazon Web Services? Can you work with AWS?`;
         const awsTextEn = await this.ensureEnglish(awsText);
         const awsEmbedding = await this.generateEmbedding(awsTextEn);
@@ -564,7 +558,6 @@ class PortfolioDataUploader {
         });
         await this.delay(100);
 
-        // FAQ-style entries for common questions
         const frontendQuestionText = `Frontend Development Question. Category: questions. Question: What frontend technologies do you use? Answer: Marco is proficient in Angular and Next.js for frontend development, with extensive experience in TypeScript, JavaScript, HTML, and CSS. He has used these technologies in multiple professional projects.`;
         const frontendQuestionTextEn = await this.ensureEnglish(frontendQuestionText);
         const frontendQuestionEmbedding = await this.generateEmbedding(frontendQuestionTextEn);
@@ -619,7 +612,6 @@ class PortfolioDataUploader {
         });
         await this.delay(100);
 
-        // EXPERIENCE-RELATED QUESTIONS
         const deloitteQuestionText = `Deloitte Experience Question. Category: questions. Question: Tell me about your experience at Deloitte. Answer: Marco worked as a Cloud Developer Apprentice at Deloitte Grenoble from September 2022 to September 2025. He worked on major projects including Pernod Ricard Data Portal, World Athletics Stats Zone Pro, Deloitte Neptune, and Odyssee. He specialized in fullstack and cloud development with Angular, NestJS, PostgreSQL stack.`;
         const deloitteQuestionTextEn = await this.ensureEnglish(deloitteQuestionText);
         const deloitteQuestionEmbedding = await this.generateEmbedding(deloitteQuestionTextEn);
@@ -674,7 +666,6 @@ class PortfolioDataUploader {
         });
         await this.delay(100);
 
-        // PROJECT-SPECIFIC QUESTIONS
         const pernodRicardText = `Pernod Ricard Project Question. Category: questions. Question: Tell me about the Pernod Ricard project. Answer: Marco worked on the Pernod Ricard Data Portal, designing and developing a data management solution with cloud integration and serverless architecture. He used Angular, NestJS, PostgreSQL stack and also conducted training for new developers during handover.`;
         const pernodRicardTextEn = await this.ensureEnglish(pernodRicardText);
         const pernodRicardEmbedding = await this.generateEmbedding(pernodRicardTextEn);
@@ -747,7 +738,6 @@ class PortfolioDataUploader {
         });
         await this.delay(100);
 
-        // EDUCATION QUESTIONS
         const educationText = `Education Question. Category: questions. Question: What is your educational background? Answer: Marco completed a Master's in Computer Science and Information Systems at Epsi, Grenoble (2023-2025) and has a Bachelor's in Application Developer Designer from the same school (2020-2023). He is now available for new opportunities.`;
         const educationTextEn = await this.ensureEnglish(educationText);
         const educationEmbedding = await this.generateEmbedding(educationTextEn);
@@ -784,7 +774,6 @@ class PortfolioDataUploader {
         });
         await this.delay(100);
 
-        // PERSONAL/PROFILE QUESTIONS
         const contactText = `Contact Information Question. Category: questions. Question: How can I contact you? Answer: You can reach Marco Pyré at ytmarcopyre@gmail.com or check his GitHub profile at https://github.com/marcopyre. He is available for new opportunities having completed his apprenticeship at Deloitte in September 2025.`;
         const contactTextEn = await this.ensureEnglish(contactText);
         const contactEmbedding = await this.generateEmbedding(contactTextEn);
@@ -839,7 +828,6 @@ class PortfolioDataUploader {
         });
         await this.delay(100);
 
-        // TECHNICAL ACHIEVEMENTS QUESTIONS
         const achievementsText = `Technical Achievements Question. Category: questions. Question: What are your main technical achievements? Answer: Marco resolved complex bugs at JavaScript compiler level through reverse engineering, collaborated on cloud architecture decisions with high technical impact, achieved first position in Google searches through SEO optimization, and successfully supervised Azure cloud deployment following AZ204 certification.`;
         const achievementsTextEn = await this.ensureEnglish(achievementsText);
         const achievementsEmbedding = await this.generateEmbedding(achievementsTextEn);
@@ -876,7 +864,6 @@ class PortfolioDataUploader {
         });
         await this.delay(100);
 
-        // SPECIALIZATION QUESTIONS
         const cloudExpertiseText = `Cloud Expertise Question. Category: questions. Question: What is your cloud expertise? Answer: Marco specializes in cloud native architecture, serverless computing, and FinOps (cost optimization). He has experience with AWS, Azure, and GCP platforms, with particular expertise in Azure (certified Azure Developer Associate). He has deployed applications on all three platforms.`;
         const cloudExpertiseTextEn = await this.ensureEnglish(cloudExpertiseText);
         const cloudExpertiseEmbedding = await this.generateEmbedding(cloudExpertiseTextEn);
@@ -949,7 +936,6 @@ class PortfolioDataUploader {
         });
         await this.delay(100);
 
-        // METHODOLOGY QUESTIONS
         const agileText = `Agile Methodology Question. Category: questions. Question: Do you work with Agile methodologies? Answer: Yes, Marco has experience with Agile methodologies and project management. His work at Deloitte involves collaborative development environments and iterative development processes typical of Agile frameworks.`;
         const agileTextEn = await this.ensureEnglish(agileText);
         const agileEmbedding = await this.generateEmbedding(agileTextEn);
@@ -986,7 +972,6 @@ class PortfolioDataUploader {
         });
         await this.delay(100);
 
-        // Skills overview
         const skillsOverview = `Skills overview. Category: skills. Languages: ${portfolioData.skills.languages.join(', ')}. Frameworks: ${portfolioData.skills.frameworks.join(', ')}. Cloud: ${portfolioData.skills.cloud.join(', ')}. Specializations: ${portfolioData.skills.specializations.join(', ')}. Related questions: What are your skills? Tell me about your skills. What is your stack? Which technologies do you master? Do you use Angular? Do you work with React? Do you know Next.js?`;
         const skillsOverviewEn = await this.ensureEnglish(skillsOverview);
         const skillsOverviewEmbedding = await this.generateEmbedding(skillsOverviewEn);
@@ -1024,7 +1009,6 @@ class PortfolioDataUploader {
             await this.delay(100);
         }
 
-        // Education overview
         const eduOverview = `Education overview. Category: education. Degrees: ${portfolioData.education.map(e => e.degree).join(', ')}. Related questions: What is your education? Which degrees do you have? Tell me about your studies.`;
         const eduOverviewEn = await this.ensureEnglish(eduOverview);
         const eduOverviewEmbedding = await this.generateEmbedding(eduOverviewEn);
@@ -1061,7 +1045,6 @@ class PortfolioDataUploader {
             await this.delay(100);
         }
 
-        // Certifications overview
         const certOverview = `Certifications overview. Category: certifications. Certifications: ${portfolioData.certifications.map(c => c.name).join(', ')}. Related questions: What are your certifications? Do you have certifications?`;
         const certOverviewEn = await this.ensureEnglish(certOverview);
         const certOverviewEmbedding = await this.generateEmbedding(certOverviewEn);
@@ -1097,7 +1080,6 @@ class PortfolioDataUploader {
             await this.delay(100);
         }
 
-        // Achievements overview
         const achievementsOverview = `Achievements overview. Category: achievements. Achievements: ${portfolioData.achievements.join(' | ')}. Related questions: What are your achievements? Tell me about your successes.`;
         const achievementsOverviewEn = await this.ensureEnglish(achievementsOverview);
         const achievementsOverviewEmbedding = await this.generateEmbedding(achievementsOverviewEn);

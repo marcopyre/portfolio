@@ -1,6 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "../app/i18n/use-translation";
+import { getRandomTypingPhrase } from "../lib/typing-utils";
 
-export default function TypingIndicator({ phrase }: { phrase: string }) {
+export default function TypingIndicator() {
+  const { translation } = useTranslation();
+  const [phrase, setPhrase] = useState("");
+
+  useEffect(() => {
+    setPhrase(getRandomTypingPhrase(translation));
+  }, [translation]);
   return (
     <div className="flex items-start space-x-4 animate-fade-in">
       <div className="flex items-center space-x-3">

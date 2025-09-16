@@ -3,14 +3,14 @@ export const KNOWLEDGE_BASE_CONFIG = {
   embeddingModel: "sentence-transformers/all-MiniLM-L6-v2",
   knowledgeBaseEndpoint:
     "https://api-inference.huggingface.co/models/marcopyre/portfolio-kb",
-  // Taille des chunks de texte
+  
   chunkSize: 512,
   chunkOverlap: 50,
 
-  // Nombre de résultats à retourner par défaut
+  
   defaultTopK: 3,
 
-  // Seuil de similarité minimum
+  
   similarityThreshold: 0.3,
 };
 
