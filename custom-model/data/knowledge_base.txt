@@ -4,12 +4,12 @@ Fullstack Developer & Cloud Engineering — Architecture-Oriented
 ## Contact Information
 - **Email**: ytmarcopyre@gmail.com
 - **GitHub**: https://github.com/marcopyre
-- **Status**: Seeking a permanent position post-graduation (2025)
+- **Status**: Available for new opportunities (completed apprenticeship at Deloitte in September 2025)
 
 ## Professional Experience
 
 ### Deloitte, Grenoble — Cloud Developer Apprentice
-**September 2022 - PRESENT**
+**September 2022 - September 2025**
 - **Key Projects**:
   - *Pernod Ricard - Data Portal*: Design and development of a data management solution, cloud integration, serverless architecture, fullstack development, stack: Angular, NestJS, PostgreSQL. I worked as a fullstack developer and also conducted training for new developers during handover
   - *World Athletics - Stats Zone Pro*: Development of modern interfaces, microservices integration, cloud native, stack: NextJS, Strapi. I worked as a fullstack developer, participated in architecture design, DevOps, and AWS cloud deployment
@@ -70,4 +70,4 @@ Fullstack Developer & Cloud Engineering — Architecture-Oriented
 ## Professional Profile
 Marco Pyré is a technically-oriented fullstack developer with a strong appetite for cloud architecture and complex systems. He stands out through his versatility — cloud, back-end, front-end, firmware — and his constant curiosity for cutting-edge technologies. Drawing from his apprenticeship at Deloitte, he has successfully tackled complex challenges ranging from serverless to low-level code analysis, including cloud pipeline optimization. In parallel, he leads ambitious personal and open-source projects. His rigorous discipline, nurtured by daily weightlifting practice since 2022, reflects his long-term commitment and consistency.
 
-He is currently seeking a permanent position to continue his evolution toward roles with strong technical or architectural components.
+Having completed his apprenticeship at Deloitte in September 2025, he is now available for new opportunities and seeking a permanent position to continue his evolution toward roles with strong technical or architectural components.

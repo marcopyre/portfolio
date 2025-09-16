@@ -99,7 +99,7 @@ class PortfolioDataUploader {
                 title: "Fullstack Developer & Cloud Engineering — Architecture-Oriented",
                 email: "ytmarcopyre@gmail.com",
                 github: "https://github.com/marcopyre",
-                status: "Seeking a permanent position post-graduation (2025)"
+                status: "Available for new opportunities (completed apprenticeship at Deloitte in September 2025)"
             },
 
             experiences: [
@@ -107,7 +107,7 @@ class PortfolioDataUploader {
                     company: "Deloitte",
                     location: "Grenoble",
                     position: "Cloud Developer Apprentice",
-                    period: "September 2022 - PRESENT",
+                    period: "September 2022 - September 2025",
                     description: "Fullstack and cloud development on multiple high-impact projects"
                 },
                 {
@@ -185,7 +185,7 @@ class PortfolioDataUploader {
                 ],
                 
                 frameworks: [
-                    "NestJS", "Express", "Strapi", "AngularJS", "Next.js", "SwiftUI"
+                    "NestJS", "Express", "Strapi", "Angular", "AngularJS", "Next.js", "SwiftUI"
                 ],
                 
                 tools: [
@@ -431,8 +431,558 @@ class PortfolioDataUploader {
         });
         await this.delay(100);
 
+        // Technology-specific entries for better detection
+        const angularText = `Angular Framework | Frontend Technology. Category: skills. Technology: Angular. Context: Marco uses Angular extensively in professional projects including Pernod Ricard Data Portal, Deloitte Neptune, and Odyssee. Angular is a core frontend framework in his stack. Related questions: Do you use Angular? Do you know Angular? Can you work with Angular?`;
+        const angularTextEn = await this.ensureEnglish(angularText);
+        const angularEmbedding = await this.generateEmbedding(angularTextEn);
+        vectors.push({
+            id: `tech_angular_${vectorId++}`,
+            values: angularEmbedding,
+            metadata: {
+                type: 'technology',
+                technology: 'Angular',
+                content: angularTextEn,
+                category: 'skills',
+                name: 'Angular Framework',
+                chunk_index: 0,
+                tags: this.normalizeTags(['angular', 'framework', 'frontend', 'javascript', 'typescript'])
+            }
+        });
+        await this.delay(100);
+
+        const nextjsText = `Next.js Framework | React Framework. Category: skills. Technology: Next.js. Context: Marco uses Next.js in professional projects like World Athletics Stats Zone Pro and personal projects like Ostea38. Next.js is a key React framework in his toolkit. Related questions: Do you use Next.js? Do you know Next.js? Can you work with Next.js?`;
+        const nextjsTextEn = await this.ensureEnglish(nextjsText);
+        const nextjsEmbedding = await this.generateEmbedding(nextjsTextEn);
+        vectors.push({
+            id: `tech_nextjs_${vectorId++}`,
+            values: nextjsEmbedding,
+            metadata: {
+                type: 'technology',
+                technology: 'Next.js',
+                content: nextjsTextEn,
+                category: 'skills',
+                name: 'Next.js Framework',
+                chunk_index: 0,
+                tags: this.normalizeTags(['nextjs', 'react', 'framework', 'frontend', 'javascript', 'typescript'])
+            }
+        });
+        await this.delay(100);
+
+        const nestjsText = `NestJS Framework | Backend Framework. Category: skills. Technology: NestJS. Context: Marco uses NestJS extensively in multiple professional projects including Pernod Ricard Data Portal, Deloitte Neptune, and Odyssee. NestJS is his primary backend framework. Related questions: Do you use NestJS? Do you know NestJS? Can you work with NestJS?`;
+        const nestjsTextEn = await this.ensureEnglish(nestjsText);
+        const nestjsEmbedding = await this.generateEmbedding(nestjsTextEn);
+        vectors.push({
+            id: `tech_nestjs_${vectorId++}`,
+            values: nestjsEmbedding,
+            metadata: {
+                type: 'technology',
+                technology: 'NestJS',
+                content: nestjsTextEn,
+                category: 'skills',
+                name: 'NestJS Framework',
+                chunk_index: 0,
+                tags: this.normalizeTags(['nestjs', 'nodejs', 'backend', 'framework', 'typescript'])
+            }
+        });
+        await this.delay(100);
+
+        // Add more technology-specific entries
+        const awsText = `AWS Cloud Platform | Amazon Web Services. Category: skills. Technology: AWS. Context: Marco has extensive experience with AWS through his work on World Athletics Stats Zone Pro project where he participated in AWS cloud deployment. AWS is one of his main cloud platforms alongside Azure and GCP. Related questions: Do you use AWS? Do you know Amazon Web Services? Can you work with AWS?`;
+        const awsTextEn = await this.ensureEnglish(awsText);
+        const awsEmbedding = await this.generateEmbedding(awsTextEn);
+        vectors.push({
+            id: `tech_aws_${vectorId++}`,
+            values: awsEmbedding,
+            metadata: {
+                type: 'technology',
+                technology: 'AWS',
+                content: awsTextEn,
+                category: 'skills',
+                name: 'AWS Cloud Platform',
+                chunk_index: 0,
+                tags: this.normalizeTags(['aws', 'cloud', 'amazon', 'infrastructure', 'devops'])
+            }
+        });
+        await this.delay(100);
+
+        const azureText = `Azure Cloud Platform | Microsoft Azure. Category: skills. Technology: Azure. Context: Marco has Azure Developer Associate certification (7AD53B-G21DD4) and supervised Azure cloud deployment for Deloitte Neptune project. He also used Azure for hosting personal projects like Ostea38. Azure is a core competency. Related questions: Do you use Azure? Do you know Microsoft Azure? Are you Azure certified?`;
+        const azureTextEn = await this.ensureEnglish(azureText);
+        const azureEmbedding = await this.generateEmbedding(azureTextEn);
+        vectors.push({
+            id: `tech_azure_${vectorId++}`,
+            values: azureEmbedding,
+            metadata: {
+                type: 'technology',
+                technology: 'Azure',
+                content: azureTextEn,
+                category: 'skills',
+                name: 'Azure Cloud Platform',
+                chunk_index: 0,
+                tags: this.normalizeTags(['azure', 'microsoft', 'cloud', 'certification', 'infrastructure'])
+            }
+        });
+        await this.delay(100);
+
+        const typescriptText = `TypeScript Programming Language. Category: skills. Technology: TypeScript. Context: Marco uses TypeScript extensively across multiple projects and frameworks including Angular, NestJS, and Next.js. TypeScript is his primary language for both frontend and backend development. Related questions: Do you use TypeScript? Do you know TypeScript? Can you work with TypeScript?`;
+        const typescriptTextEn = await this.ensureEnglish(typescriptText);
+        const typescriptEmbedding = await this.generateEmbedding(typescriptTextEn);
+        vectors.push({
+            id: `tech_typescript_${vectorId++}`,
+            values: typescriptEmbedding,
+            metadata: {
+                type: 'technology',
+                technology: 'TypeScript',
+                content: typescriptTextEn,
+                category: 'skills',
+                name: 'TypeScript Language',
+                chunk_index: 0,
+                tags: this.normalizeTags(['typescript', 'javascript', 'programming', 'language', 'frontend', 'backend'])
+            }
+        });
+        await this.delay(100);
+
+        const postgresqlText = `PostgreSQL Database. Category: skills. Technology: PostgreSQL. Context: Marco uses PostgreSQL in multiple professional projects including Pernod Ricard Data Portal, Deloitte Neptune, and Odyssee. PostgreSQL is his primary database choice for enterprise applications. Related questions: Do you use PostgreSQL? Do you know PostgreSQL? Can you work with databases?`;
+        const postgresqlTextEn = await this.ensureEnglish(postgresqlText);
+        const postgresqlEmbedding = await this.generateEmbedding(postgresqlTextEn);
+        vectors.push({
+            id: `tech_postgresql_${vectorId++}`,
+            values: postgresqlEmbedding,
+            metadata: {
+                type: 'technology',
+                technology: 'PostgreSQL',
+                content: postgresqlTextEn,
+                category: 'skills',
+                name: 'PostgreSQL Database',
+                chunk_index: 0,
+                tags: this.normalizeTags(['postgresql', 'database', 'sql', 'data', 'backend'])
+            }
+        });
+        await this.delay(100);
+
+        // FAQ-style entries for common questions
+        const frontendQuestionText = `Frontend Development Question. Category: questions. Question: What frontend technologies do you use? Answer: Marco is proficient in Angular and Next.js for frontend development, with extensive experience in TypeScript, JavaScript, HTML, and CSS. He has used these technologies in multiple professional projects.`;
+        const frontendQuestionTextEn = await this.ensureEnglish(frontendQuestionText);
+        const frontendQuestionEmbedding = await this.generateEmbedding(frontendQuestionTextEn);
+        vectors.push({
+            id: `faq_frontend_${vectorId++}`,
+            values: frontendQuestionEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'frontend',
+                content: frontendQuestionTextEn,
+                category: 'skills',
+                name: 'Frontend Technologies FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['frontend', 'angular', 'nextjs', 'react', 'javascript', 'typescript'])
+            }
+        });
+        await this.delay(100);
+
+        const backendQuestionText = `Backend Development Question. Category: questions. Question: What backend technologies do you use? Answer: Marco specializes in NestJS for backend development, working with Node.js, TypeScript, and PostgreSQL databases. He has extensive experience building APIs and serverless architectures.`;
+        const backendQuestionTextEn = await this.ensureEnglish(backendQuestionText);
+        const backendQuestionEmbedding = await this.generateEmbedding(backendQuestionTextEn);
+        vectors.push({
+            id: `faq_backend_${vectorId++}`,
+            values: backendQuestionEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'backend',
+                content: backendQuestionTextEn,
+                category: 'skills',
+                name: 'Backend Technologies FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['backend', 'nestjs', 'nodejs', 'api', 'serverless', 'database'])
+            }
+        });
+        await this.delay(100);
+
+        const cloudQuestionText = `Cloud Development Question. Category: questions. Question: What cloud platforms do you use? Answer: Marco is experienced with AWS, Azure, and GCP. He is Microsoft Azure certified and has deployed applications on all three platforms, with expertise in serverless, containerization, and infrastructure as code.`;
+        const cloudQuestionTextEn = await this.ensureEnglish(cloudQuestionText);
+        const cloudQuestionEmbedding = await this.generateEmbedding(cloudQuestionTextEn);
+        vectors.push({
+            id: `faq_cloud_${vectorId++}`,
+            values: cloudQuestionEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'cloud',
+                content: cloudQuestionTextEn,
+                category: 'skills',
+                name: 'Cloud Platforms FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['cloud', 'aws', 'azure', 'gcp', 'serverless', 'infrastructure', 'devops'])
+            }
+        });
+        await this.delay(100);
+
+        // EXPERIENCE-RELATED QUESTIONS
+        const deloitteQuestionText = `Deloitte Experience Question. Category: questions. Question: Tell me about your experience at Deloitte. Answer: Marco worked as a Cloud Developer Apprentice at Deloitte Grenoble from September 2022 to September 2025. He worked on major projects including Pernod Ricard Data Portal, World Athletics Stats Zone Pro, Deloitte Neptune, and Odyssee. He specialized in fullstack and cloud development with Angular, NestJS, PostgreSQL stack.`;
+        const deloitteQuestionTextEn = await this.ensureEnglish(deloitteQuestionText);
+        const deloitteQuestionEmbedding = await this.generateEmbedding(deloitteQuestionTextEn);
+        vectors.push({
+            id: `faq_deloitte_${vectorId++}`,
+            values: deloitteQuestionEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'experience',
+                content: deloitteQuestionTextEn,
+                category: 'experience',
+                name: 'Deloitte Experience FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['deloitte', 'experience', 'cloud', 'apprentice', 'projects'])
+            }
+        });
+        await this.delay(100);
+
+        const currentRoleText = `Current Status Question. Category: questions. Question: What is your current position? Answer: Marco recently completed his Cloud Developer Apprentice position at Deloitte Grenoble (September 2022 - September 2025) and is now available for new opportunities. He has experience in fullstack development and cloud architecture for enterprise clients and is seeking a permanent position.`;
+        const currentRoleTextEn = await this.ensureEnglish(currentRoleText);
+        const currentRoleEmbedding = await this.generateEmbedding(currentRoleTextEn);
+        vectors.push({
+            id: `faq_current_role_${vectorId++}`,
+            values: currentRoleEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'experience',
+                content: currentRoleTextEn,
+                category: 'experience',
+                name: 'Current Role FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['current', 'position', 'role', 'deloitte', 'apprentice'])
+            }
+        });
+        await this.delay(100);
+
+        const yearsExpText = `Years of Experience Question. Category: questions. Question: How many years of experience do you have? Answer: Marco has been working since 2015 with internships at Oracle and Hurence, and completed a 3-year apprenticeship at Deloitte (2022-2025). He has extensive experience in fullstack development, cloud architecture, and enterprise applications spanning over 10 years.`;
+        const yearsExpTextEn = await this.ensureEnglish(yearsExpText);
+        const yearsExpEmbedding = await this.generateEmbedding(yearsExpTextEn);
+        vectors.push({
+            id: `faq_experience_years_${vectorId++}`,
+            values: yearsExpEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'experience',
+                content: yearsExpTextEn,
+                category: 'experience',
+                name: 'Years of Experience FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['experience', 'years', 'career', 'timeline', 'professional'])
+            }
+        });
+        await this.delay(100);
+
+        // PROJECT-SPECIFIC QUESTIONS
+        const pernodRicardText = `Pernod Ricard Project Question. Category: questions. Question: Tell me about the Pernod Ricard project. Answer: Marco worked on the Pernod Ricard Data Portal, designing and developing a data management solution with cloud integration and serverless architecture. He used Angular, NestJS, PostgreSQL stack and also conducted training for new developers during handover.`;
+        const pernodRicardTextEn = await this.ensureEnglish(pernodRicardText);
+        const pernodRicardEmbedding = await this.generateEmbedding(pernodRicardTextEn);
+        vectors.push({
+            id: `faq_pernod_ricard_${vectorId++}`,
+            values: pernodRicardEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'project',
+                content: pernodRicardTextEn,
+                category: 'projects',
+                name: 'Pernod Ricard Project FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['pernod', 'ricard', 'data', 'portal', 'angular', 'nestjs', 'postgresql'])
+            }
+        });
+        await this.delay(100);
+
+        const worldAthleticsText = `World Athletics Project Question. Category: questions. Question: What did you do for World Athletics? Answer: Marco worked on World Athletics Stats Zone Pro, developing modern interfaces and microservices integration with cloud native architecture. He used Next.js and Strapi, participated in architecture design, DevOps, and AWS cloud deployment.`;
+        const worldAthleticsTextEn = await this.ensureEnglish(worldAthleticsText);
+        const worldAthleticsEmbedding = await this.generateEmbedding(worldAthleticsTextEn);
+        vectors.push({
+            id: `faq_world_athletics_${vectorId++}`,
+            values: worldAthleticsEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'project',
+                content: worldAthleticsTextEn,
+                category: 'projects',
+                name: 'World Athletics Project FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['world', 'athletics', 'stats', 'zone', 'nextjs', 'strapi', 'aws'])
+            }
+        });
+        await this.delay(100);
+
+        const neptuneText = `Neptune Project Question. Category: questions. Question: What is the Neptune project? Answer: Deloitte Neptune is a modular SaaS that Marco helped develop, adaptable to different clients and rapidly deployable. It's used as Deloitte's showcase project. Marco worked as fullstack and cloud developer, implemented AI assistant functionality, and supervised Azure cloud deployment following his AZ204 certification.`;
+        const neptuneTextEn = await this.ensureEnglish(neptuneText);
+        const neptuneEmbedding = await this.generateEmbedding(neptuneTextEn);
+        vectors.push({
+            id: `faq_neptune_${vectorId++}`,
+            values: neptuneEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'project',
+                content: neptuneTextEn,
+                category: 'projects',
+                name: 'Neptune Project FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['neptune', 'saas', 'modular', 'ai', 'assistant', 'azure', 'showcase'])
+            }
+        });
+        await this.delay(100);
+
+        const ostea38Text = `Ostea38 Project Question. Category: questions. Question: Tell me about Ostea38. Answer: Ostea38 is a personal project - a showcase website for an animal osteopath. Marco implemented it with cost limitation objectives while maximizing performance (FinOps). Developed in NextJS using CloudFlare as CDN, hosted on Azure. Extensive SEO work achieved first position in Google searches, ahead of CMS sites like WordPress and PrestaShop.`;
+        const ostea38TextEn = await this.ensureEnglish(ostea38Text);
+        const ostea38Embedding = await this.generateEmbedding(ostea38TextEn);
+        vectors.push({
+            id: `faq_ostea38_${vectorId++}`,
+            values: ostea38Embedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'project',
+                content: ostea38TextEn,
+                category: 'projects',
+                name: 'Ostea38 Project FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['ostea38', 'nextjs', 'seo', 'finops', 'cloudflare', 'azure', 'personal'])
+            }
+        });
+        await this.delay(100);
+
+        // EDUCATION QUESTIONS
+        const educationText = `Education Question. Category: questions. Question: What is your educational background? Answer: Marco completed a Master's in Computer Science and Information Systems at Epsi, Grenoble (2023-2025) and has a Bachelor's in Application Developer Designer from the same school (2020-2023). He is now available for new opportunities.`;
+        const educationTextEn = await this.ensureEnglish(educationText);
+        const educationEmbedding = await this.generateEmbedding(educationTextEn);
+        vectors.push({
+            id: `faq_education_${vectorId++}`,
+            values: educationEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'education',
+                content: educationTextEn,
+                category: 'education',
+                name: 'Education Background FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['education', 'master', 'bachelor', 'epsi', 'grenoble', 'graduation'])
+            }
+        });
+        await this.delay(100);
+
+        const certificationText = `Azure Certification Question. Category: questions. Question: Do you have any certifications? Answer: Yes, Marco is Microsoft Certified: Azure Developer Associate (Level 2, Certification ID: 7AD53B-G21DD4). This certification validates his expertise in Azure cloud development and deployment.`;
+        const certificationTextEn = await this.ensureEnglish(certificationText);
+        const certificationEmbedding = await this.generateEmbedding(certificationTextEn);
+        vectors.push({
+            id: `faq_certification_${vectorId++}`,
+            values: certificationEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'certification',
+                content: certificationTextEn,
+                category: 'certifications',
+                name: 'Azure Certification FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['certification', 'azure', 'microsoft', 'developer', 'associate', 'cloud'])
+            }
+        });
+        await this.delay(100);
+
+        // PERSONAL/PROFILE QUESTIONS
+        const contactText = `Contact Information Question. Category: questions. Question: How can I contact you? Answer: You can reach Marco Pyré at ytmarcopyre@gmail.com or check his GitHub profile at https://github.com/marcopyre. He is available for new opportunities having completed his apprenticeship at Deloitte in September 2025.`;
+        const contactTextEn = await this.ensureEnglish(contactText);
+        const contactEmbedding = await this.generateEmbedding(contactTextEn);
+        vectors.push({
+            id: `faq_contact_${vectorId++}`,
+            values: contactEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'contact',
+                content: contactTextEn,
+                category: 'profile',
+                name: 'Contact Information FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['contact', 'email', 'github', 'marco', 'pyre', 'reach'])
+            }
+        });
+        await this.delay(100);
+
+        const availabilityText = `Availability Question. Category: questions. Question: Are you available for hire? Answer: Yes, Marco is available for new opportunities having completed his apprenticeship at Deloitte in September 2025. He is seeking a permanent position in fullstack development, cloud architecture, or technical leadership roles.`;
+        const availabilityTextEn = await this.ensureEnglish(availabilityText);
+        const availabilityEmbedding = await this.generateEmbedding(availabilityTextEn);
+        vectors.push({
+            id: `faq_availability_${vectorId++}`,
+            values: availabilityEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'availability',
+                content: availabilityTextEn,
+                category: 'profile',
+                name: 'Availability FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['availability', 'hire', 'job', 'seeking', 'position', 'graduation'])
+            }
+        });
+        await this.delay(100);
+
+        const spokenLanguagesText = `Languages Question. Category: questions. Question: What languages do you speak? Answer: Marco is a native French speaker and is fluent in English (C2 level). This bilingual proficiency allows him to work effectively in international environments.`;
+        const spokenLanguagesTextEn = await this.ensureEnglish(spokenLanguagesText);
+        const spokenLanguagesEmbedding = await this.generateEmbedding(spokenLanguagesTextEn);
+        vectors.push({
+            id: `faq_languages_${vectorId++}`,
+            values: spokenLanguagesEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'languages',
+                content: spokenLanguagesTextEn,
+                category: 'profile',
+                name: 'Spoken Languages FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['languages', 'french', 'english', 'bilingual', 'native', 'fluent'])
+            }
+        });
+        await this.delay(100);
+
+        // TECHNICAL ACHIEVEMENTS QUESTIONS
+        const achievementsText = `Technical Achievements Question. Category: questions. Question: What are your main technical achievements? Answer: Marco resolved complex bugs at JavaScript compiler level through reverse engineering, collaborated on cloud architecture decisions with high technical impact, achieved first position in Google searches through SEO optimization, and successfully supervised Azure cloud deployment following AZ204 certification.`;
+        const achievementsTextEn = await this.ensureEnglish(achievementsText);
+        const achievementsEmbedding = await this.generateEmbedding(achievementsTextEn);
+        vectors.push({
+            id: `faq_achievements_${vectorId++}`,
+            values: achievementsEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'achievements',
+                content: achievementsTextEn,
+                category: 'achievements',
+                name: 'Technical Achievements FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['achievements', 'javascript', 'compiler', 'cloud', 'architecture', 'seo'])
+            }
+        });
+        await this.delay(100);
+
+        const problemSolvingText = `Problem Solving Question. Category: questions. Question: Can you give examples of complex problems you solved? Answer: Marco resolved complex bugs at JavaScript compiler level through reverse engineering, which required deep technical analysis. He also collaborated on cloud architecture decisions with high technical impact and optimized applications for performance and cost (FinOps principles).`;
+        const problemSolvingTextEn = await this.ensureEnglish(problemSolvingText);
+        const problemSolvingEmbedding = await this.generateEmbedding(problemSolvingTextEn);
+        vectors.push({
+            id: `faq_problem_solving_${vectorId++}`,
+            values: problemSolvingEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'problem_solving',
+                content: problemSolvingTextEn,
+                category: 'achievements',
+                name: 'Problem Solving FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['problem', 'solving', 'debugging', 'analysis', 'optimization', 'finops'])
+            }
+        });
+        await this.delay(100);
+
+        // SPECIALIZATION QUESTIONS
+        const cloudExpertiseText = `Cloud Expertise Question. Category: questions. Question: What is your cloud expertise? Answer: Marco specializes in cloud native architecture, serverless computing, and FinOps (cost optimization). He has experience with AWS, Azure, and GCP platforms, with particular expertise in Azure (certified Azure Developer Associate). He has deployed applications on all three platforms.`;
+        const cloudExpertiseTextEn = await this.ensureEnglish(cloudExpertiseText);
+        const cloudExpertiseEmbedding = await this.generateEmbedding(cloudExpertiseTextEn);
+        vectors.push({
+            id: `faq_cloud_expertise_${vectorId++}`,
+            values: cloudExpertiseEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'expertise',
+                content: cloudExpertiseTextEn,
+                category: 'skills',
+                name: 'Cloud Expertise FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['cloud', 'native', 'serverless', 'finops', 'aws', 'azure', 'gcp'])
+            }
+        });
+        await this.delay(100);
+
+        const fullstackText = `Fullstack Development Question. Category: questions. Question: Are you a fullstack developer? Answer: Yes, Marco is a fullstack developer with expertise in both frontend (Angular, Next.js) and backend (NestJS, Express) technologies. He has experience with databases (PostgreSQL, MongoDB), cloud deployment, and DevOps practices. He has worked on complete application development cycles.`;
+        const fullstackTextEn = await this.ensureEnglish(fullstackText);
+        const fullstackEmbedding = await this.generateEmbedding(fullstackTextEn);
+        vectors.push({
+            id: `faq_fullstack_${vectorId++}`,
+            values: fullstackEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'expertise',
+                content: fullstackTextEn,
+                category: 'skills',
+                name: 'Fullstack Development FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['fullstack', 'frontend', 'backend', 'complete', 'cycle', 'development'])
+            }
+        });
+        await this.delay(100);
+
+        const aiExperienceText = `AI Experience Question. Category: questions. Question: Do you have experience with AI? Answer: Yes, Marco implemented AI assistant functionality in the Deloitte Neptune project and has experience with Machine Learning, Data Mining, and Big Data. He also developed an iOS App with integrated Siri AI featuring advanced voice commands.`;
+        const aiExperienceTextEn = await this.ensureEnglish(aiExperienceText);
+        const aiExperienceEmbedding = await this.generateEmbedding(aiExperienceTextEn);
+        vectors.push({
+            id: `faq_ai_experience_${vectorId++}`,
+            values: aiExperienceEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'ai',
+                content: aiExperienceTextEn,
+                category: 'skills',
+                name: 'AI Experience FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['ai', 'artificial', 'intelligence', 'machine', 'learning', 'siri', 'assistant'])
+            }
+        });
+        await this.delay(100);
+
+        const hardwareText = `Hardware Experience Question. Category: questions. Question: Do you work with hardware? Answer: Yes, Marco has experience with hardware development. He developed a custom PCB (Printed Circuit Board) with embedded firmware, and has experience with firmware design and PCB development. He also uses tools like PlatformIO for embedded development.`;
+        const hardwareTextEn = await this.ensureEnglish(hardwareText);
+        const hardwareEmbedding = await this.generateEmbedding(hardwareTextEn);
+        vectors.push({
+            id: `faq_hardware_${vectorId++}`,
+            values: hardwareEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'hardware',
+                content: hardwareTextEn,
+                category: 'skills',
+                name: 'Hardware Experience FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['hardware', 'pcb', 'firmware', 'embedded', 'electronics', 'platformio'])
+            }
+        });
+        await this.delay(100);
+
+        // METHODOLOGY QUESTIONS
+        const agileText = `Agile Methodology Question. Category: questions. Question: Do you work with Agile methodologies? Answer: Yes, Marco has experience with Agile methodologies and project management. His work at Deloitte involves collaborative development environments and iterative development processes typical of Agile frameworks.`;
+        const agileTextEn = await this.ensureEnglish(agileText);
+        const agileEmbedding = await this.generateEmbedding(agileTextEn);
+        vectors.push({
+            id: `faq_agile_${vectorId++}`,
+            values: agileEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'methodology',
+                content: agileTextEn,
+                category: 'skills',
+                name: 'Agile Methodology FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['agile', 'methodology', 'project', 'management', 'collaborative', 'iterative'])
+            }
+        });
+        await this.delay(100);
+
+        const devopsText = `DevOps Experience Question. Category: questions. Question: Do you have DevOps experience? Answer: Yes, Marco has extensive DevOps experience including Docker, Kubernetes, CI/CD pipelines, and Infrastructure as Code (Terraform). He participated in DevOps and AWS cloud deployment for World Athletics, and supervised Azure cloud deployment for Neptune project.`;
+        const devopsTextEn = await this.ensureEnglish(devopsText);
+        const devopsEmbedding = await this.generateEmbedding(devopsTextEn);
+        vectors.push({
+            id: `faq_devops_${vectorId++}`,
+            values: devopsEmbedding,
+            metadata: {
+                type: 'faq',
+                question_type: 'devops',
+                content: devopsTextEn,
+                category: 'skills',
+                name: 'DevOps Experience FAQ',
+                chunk_index: 0,
+                tags: this.normalizeTags(['devops', 'docker', 'kubernetes', 'cicd', 'terraform', 'infrastructure'])
+            }
+        });
+        await this.delay(100);
+
         // Skills overview
-        const skillsOverview = `Skills overview. Category: skills. Languages: ${portfolioData.skills.languages.join(', ')}. Frameworks: ${portfolioData.skills.frameworks.join(', ')}. Cloud: ${portfolioData.skills.cloud.join(', ')}. Specializations: ${portfolioData.skills.specializations.join(', ')}. Related questions: What are your skills? Tell me about your skills. What is your stack? Which technologies do you master?`;
+        const skillsOverview = `Skills overview. Category: skills. Languages: ${portfolioData.skills.languages.join(', ')}. Frameworks: ${portfolioData.skills.frameworks.join(', ')}. Cloud: ${portfolioData.skills.cloud.join(', ')}. Specializations: ${portfolioData.skills.specializations.join(', ')}. Related questions: What are your skills? Tell me about your skills. What is your stack? Which technologies do you master? Do you use Angular? Do you work with React? Do you know Next.js?`;
         const skillsOverviewEn = await this.ensureEnglish(skillsOverview);
         const skillsOverviewEmbedding = await this.generateEmbedding(skillsOverviewEn);
         vectors.push({

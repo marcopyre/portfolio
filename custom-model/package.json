@@ -2,11 +2,11 @@
   "name": "portfolio-uploader",
   "version": "1.0.0",
   "description": "Portfolio data uploader for vector database indexing",
-  "main": "index.js",
+  "main": "dbUpload.js",
   "scripts": {
-    "start": "node index.js",
-    "upload": "node index.js",
-    "dev": "node index.js"
+    "start": "node dbUpload.js",
+    "upload": "node dbUpload.js",
+    "dev": "node dbUpload.js"
   },
   "keywords": [
     "portfolio",
