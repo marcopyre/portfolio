@@ -16,11 +16,12 @@ import {
   openLink,
 } from "../lib/chat-utils";
 import { quickQuestionsKeys } from "../constants/chat";
-import ConfirmModal from "../components/confirm-modal";
 import LanguageSelector from "@/components/language-selector";
 import { LanguageContext } from "./i18n/language-provider";
 import { useContentTransition } from "@/components/hooks/content-transition";
 import { useGoogleAnalytics } from "@/components/hooks/google-analytics";
+import { Toaster } from 'react-hot-toast';
+import { showActionToast } from "../lib/toast-utils";
 
 interface Message {
   id: string;
@@ -43,12 +44,6 @@ export default function Portfolio() {
   const [animateComposerIn, setAnimateComposerIn] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [confirmState, setConfirmState] = useState<{
-    open: boolean;
-    question: string;
-    onConfirm: (() => void) | null;
-    link?: string;
-  }>({ open: false, question: "", onConfirm: null });
 
   const { language } = useContext(LanguageContext);
   const { trackEvent } = useGoogleAnalytics();
@@ -159,28 +154,39 @@ export default function Portfolio() {
           typeof data.response === "object" &&
           data.response.action
         ) {
-          const { action, params } = data.response;
+          const { action, params, message } = data.response;
 
+          // Show the full message first - use the actual API response text
+          const assistantMessage: Message = {
+            id: Date.now().toString(),
+            content: message || translation("action_available"),
+            role: "assistant",
+            timestamp: new Date(),
+            images: data.images || [],
+          };
+          setMessages((prev) => [...prev, assistantMessage]);
+
+          // Then show action toast for confirmation
           if (action === "get_resume") {
             trackEvent("bot_get_resume");
-            setConfirmState({
-              open: true,
-              question: translation("confirm_download_cv"),
-              onConfirm: () => {
-                downloadResume();
-              },
-            });
+            showActionToast(
+              translation("confirm_download_cv"),
+              () => downloadResume(),
+              translation("confirm"),
+              translation("cancel"),
+              translation("action_confirmed")
+            );
           }
 
           if (action === "send_contact_email") {
             trackEvent("bot_send_contact_email");
-            setConfirmState({
-              open: true,
-              question: translation("confirm_send_email"),
-              onConfirm: () => {
-                openContactEmail(params?.sujet || "", params?.message || "");
-              },
-            });
+            showActionToast(
+              translation("confirm_send_email"),
+              () => openContactEmail(params?.sujet || "", params?.message || ""),
+              translation("confirm"),
+              translation("cancel"),
+              translation("action_confirmed")
+            );
           }
 
           if (action === "get_link") {
@@ -189,26 +195,15 @@ export default function Portfolio() {
               url,
             });
             if (url) {
-              setConfirmState({
-                open: true,
-                question: translation("confirm_open_link"),
-                onConfirm: () => {
-                  openLink(url);
-                },
-                link: url,
-              });
+              showActionToast(
+                translation("confirm_open_link"),
+                () => openLink(url),
+                translation("confirm"),
+                translation("cancel"),
+                translation("action_confirmed")
+              );
             }
           }
-
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: Date.now().toString(),
-              content: translation("action_in_progress"),
-              role: "assistant",
-              timestamp: new Date(),
-            },
-          ]);
         } else {
           const assistantMessage: Message = {
             id: Date.now().toString(),
@@ -435,20 +430,28 @@ export default function Portfolio() {
         </div>
       </footer>
 
-      <ConfirmModal
-        open={confirmState.open}
-        question={confirmState.question}
-        onConfirm={() => {
-          if (confirmState.onConfirm) confirmState.onConfirm();
-          setConfirmState({ ...confirmState, open: false });
+
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          duration: 6000,
+          style: {
+            animation: 'toast-slide-in-right 0.3s ease-out',
+          },
         }}
-        onCancel={() => setConfirmState({ ...confirmState, open: false })}
-        yesLabel={translation("confirm")}
-        noLabel={translation("cancel") || "Annuler"}
-        link={confirmState.link}
       />
 
       <style jsx>{`
+        @keyframes toast-slide-in-right {
+          from {
+            opacity: 0;
+            transform: translateX(100%);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
         @keyframes fadeOut {
           from {
             opacity: 1;

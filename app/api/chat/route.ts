@@ -93,9 +93,16 @@ export async function POST(request: NextRequest) {
         functionName: functionCall.name,
       });
 
+      // Clean the response to extract the actual message without function calls
+      const cleanResponse = response
+        .replace(/\[FUNCTION_CALL\].*?\[\/FUNCTION_CALL\]/gs, "")
+        .replace(/\[IMAGE\][\s\S]*?\[\/IMAGE\]/gs, "")
+        .trim();
+
       const functionResponse: FunctionResponse = {
         action: functionCall.name,
         params: functionCall.parameters,
+        message: cleanResponse,
       };
 
       const apiResponse: APIResponse = {
@@ -109,6 +116,7 @@ export async function POST(request: NextRequest) {
       logger.info("Function response returned", {
         requestId,
         functionName: functionCall.name,
+        messageLength: cleanResponse.length,
       });
 
       return NextResponse.json(apiResponse, {

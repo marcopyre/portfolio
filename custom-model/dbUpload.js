@@ -256,6 +256,11 @@ class PortfolioDataUploader {
             await this.index.deleteAll();
             console.log('Database cleared successfully');
         } catch (error) {
+            // Handle 404 errors when database is already empty
+            if (error.status === 404 || error.code === 404 || error.message?.includes('404')) {
+                console.log('Database is already empty, continuing...');
+                return;
+            }
             console.error('Error clearing database:', error);
             throw error;
         }

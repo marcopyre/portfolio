@@ -6,6 +6,7 @@ export interface FunctionCall {
 export interface FunctionResponse {
   action: string;
   params?: Record<string, unknown>;
+  message?: string;
 }
 
 export interface ChatMessage {
