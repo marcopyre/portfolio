@@ -445,12 +445,21 @@ You are developed via Hugging Face, powered by a RAG system with Pinecone, with 
         systemPrompt
       );
 
+      // Calculate available tokens: model max (32768) - message tokens - safety buffer
+      const estimatedMessageTokens = this.estimateTokens(
+        JSON.stringify(messagesWithSystem)
+      );
+      const maxCompletionTokens = Math.min(
+        4096,
+        32768 - estimatedMessageTokens - 500 // 500 token safety buffer
+      );
+
       const chatCompletion = await this.client.chatCompletion({
-        model: "google/gemma-3-27b-it",
+        model: "meta-llama/Llama-3.3-70B-Instruct",
         messages: messagesWithSystem,
         temperature: 1.0,
-        top_k: 64,
         top_p: 0.95,
+        max_tokens: maxCompletionTokens,
       });
 
       const response =
