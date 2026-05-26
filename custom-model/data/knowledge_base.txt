@@ -4,9 +4,19 @@ Fullstack Developer & Cloud Engineering — Architecture-Oriented
 ## Contact Information
 - **Email**: ytmarcopyre@gmail.com
 - **GitHub**: https://github.com/marcopyre
-- **Status**: Available for new opportunities (completed apprenticeship at Deloitte in September 2025)
+- **LinkedIn**: https://linkedin.com/in/marco-pyré-51187b200
+- **Portfolio**: https://marcopyre.github.io/portfolio/
+- **Status**: En poste au CHPF depuis novembre 2025
 
 ## Professional Experience
+
+### Centre Hospitalier de Polynésie française (CHPF), Papeete — Ingénieur Développeur Intégrateur d'Applications Médicales
+**Novembre 2025 – Présent**
+- Développement et maintenance de logiciels médicaux critiques en Java Spring Boot (backend) et Angular (frontend), garantissant l'intégrité et la sécurité des données dans un environnement hospitalier sensible
+- Interfaçage avec les systèmes IBM AS400/iSeries (IBM i) : intégration de connecteurs JDBC, développement de services d'échange de données entre les applications modernes et le système d'information historique
+- Interfaçage avec des équipements médicaux via des protocoles standardisés du domaine de la santé
+- Gestion et stockage de données médicales sensibles dans le respect des normes hospitalières et réglementations en vigueur (confidentialité, traçabilité, intégrité des données patient)
+- Mise en place d'une infrastructure Kubernetes pour l'orchestration des services applicatifs du système d'information hospitalier (Gestion du projet, Choix des technos, Mise en place de l'infrastructure)
 
 ### Deloitte, Grenoble — Cloud Developer Apprentice
 **September 2022 - September 2025**
@@ -28,8 +38,10 @@ Fullstack Developer & Cloud Engineering — Architecture-Oriented
 - Development of encryption software
 
 ## Education
-- **Master's in Computer Science and Information Systems** - Epsi, Grenoble (2023 - 2025)
-- **Bachelor's in Application Developer Designer** - Epsi, Grenoble (2020 - 2023)
+- **Master Expert en informatique et systèmes d'information** - Epsi, Grenoble (2023 - 2025)
+  - Cours en Machine Learning, Deep Learning, Data Science, et Systèmes de Calcul Grande Échelle
+  - Atelier de Computing Visuel : Projet de baby-foot connecté utilisant suivi de balle par caméra avec machine learning pour reconnaissance de balle en temps réel et analyses de jeu
+- **Licence Concepteur Développeur d'Applications** - Epsi, Grenoble (2020 - 2023)
 
 ## Technical Skills
 
@@ -40,28 +52,40 @@ Fullstack Developer & Cloud Engineering — Architecture-Oriented
 - **Systems**: Linux, Windows
 
 ### Development
-- **Languages**: TypeScript, JavaScript, C++, C, Python, Java, Scala, Kotlin, Swift, C#, R, SQL, CSS, HTML
-- **Frameworks**: NestJS, Express, Strapi, AngularJS, Next.js, SwiftUI
-- **Tools**: Node.js, Git, VSCode, XCode, PlatformIO, Knime, Jest
+- **Languages**: TypeScript, JavaScript, Python, Java, C/C++, C#, SQL
+- **Frameworks**: React, Angular, Next.js, SwiftUI, NestJS, Express, Strapi, Spring Boot
+- **Tools**: Node.js, Git, Jenkins, GitHub Actions, VSCode, XCode, PlatformIO
 
 ### Databases
-- **SQL**: PostgreSQL, MySQL, SQLite
+- **SQL**: PostgreSQL, MySQL, SQLite, IBM DB2 for i (AS400)
 - **NoSQL**: MongoDB
 
+### Network & Security
+- Cloudflare (DNS, CDN, Turnstile, Zero Trust), Nginx, Firewall
+
+### Monitoring
+- CloudWatch, Azure Monitor
+
+### AI / ML
+- PyTorch, TensorFlow, Machine Learning, RAG Architecture, GPU Acceleration, CUDA, Knowledge Base Design
+
+### Hardware / Embedded
+- KiCad, PlatformIO, Embedded Systems, PCB Design
+
 ### Specialization Areas
-- **Architecture**: Cloud, database, microservices
+- **Architecture**: Cloud, database, microservices, distributed computing, large-scale systems
 - **Firmware / Hardware**: PCB development, firmware design
 - **Data**: Machine Learning, Data Mining, Big Data, visualization
-- **Other**: Agile methodologies, project management, IT governance
+- **Other**: Agile/Scrum, technical presentations, training & mentoring, FinOps
 
 ## Personal Projects
 - **Ostea38**: Showcase website for an animal osteopath, implemented with cost limitation objectives while maximizing performance (FinOps), developed in NextJS, using CloudFlare as CDN, hosted on Azure. Extensive SEO work was performed to improve Google ranking, resulting in first position in searches, ahead of CMS sites (WordPress, PrestaShop...)
-- **iOS App with integrated Siri AI**: Intelligent mobile application with advanced voice commands, stack: Swift, SwiftUI
-- **Custom PCB**: Development of an electronic board with embedded firmware
+- **AirF - Hardware AI Voice Assistant**: Physical AI voice assistant using TensorFlow and PyTorch for voice processing, Swift/SwiftUI mobile app for device control, custom PCB designed with KiCad, C/C++ firmware with PlatformIO. End-to-end project combining machine learning, mobile development and hardware engineering. In progress since 2022
+- **Portfolio - RAG Chatbot**: Intelligent chatbot using Retrieval-Augmented Generation (RAG) architecture, vector database for semantic search, deployed with scalable cloud infrastructure. Available at marcopyre.github.io/portfolio/
 - **Open-source projects**: GitHub contributions in various domains (firmware, cloud, dev tools)
 
 ## Certifications
-- **Microsoft Certified: Azure Developer Associate** (Level 2 - Certification 7AD53B-G21DD4)
+- **Microsoft Certified: Azure Developer Associate** (Level 2 - Certification #7AD53B-G21DD4)
 
 ## Languages
 - **French**: Native language
@@ -70,4 +94,4 @@ Fullstack Developer & Cloud Engineering — Architecture-Oriented
 ## Professional Profile
 Marco Pyré is a technically-oriented fullstack developer with a strong appetite for cloud architecture and complex systems. He stands out through his versatility — cloud, back-end, front-end, firmware — and his constant curiosity for cutting-edge technologies. Drawing from his apprenticeship at Deloitte, he has successfully tackled complex challenges ranging from serverless to low-level code analysis, including cloud pipeline optimization. In parallel, he leads ambitious personal and open-source projects. His rigorous discipline, nurtured by daily weightlifting practice since 2022, reflects his long-term commitment and consistency.
 
-Having completed his apprenticeship at Deloitte in September 2025, he is now available for new opportunities and seeking a permanent position to continue his evolution toward roles with strong technical or architectural components.
+Currently working as Ingénieur Développeur Intégrateur d'Applications Médicales at CHPF in Papeete, Tahiti, where he works on critical medical software (Spring Boot, Angular, IBM AS400/iSeries, Kubernetes).

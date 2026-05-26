@@ -1,5 +1,6 @@
 "use client";
-import React, { useContext } from "react";
+
+import React, { useContext, useEffect } from "react";
 import { LanguageContext } from "../app/i18n/language-provider";
 
 export default function SplashScreen({
@@ -8,19 +9,26 @@ export default function SplashScreen({
   children: React.ReactNode;
 }) {
   const { isLoading } = useContext(LanguageContext);
-  if (isLoading) {
-    return (
-      <div
-        style={{
-          background: "black",
-          width: "100vw",
-          height: "100vh",
-          position: "fixed",
-          inset: 0,
-          zIndex: 9999,
-        }}
-      />
-    );
-  }
-  return <>{children}</>;
+
+  useEffect(() => {
+    if (isLoading) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isLoading]);
+
+  return (
+    <>
+      {children}
+
+      {isLoading && (
+        <div className="fixed inset-0 z-[9999] bg-black" />
+      )}
+    </>
+  );
 }
